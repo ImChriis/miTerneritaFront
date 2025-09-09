@@ -1,0 +1,112 @@
+<div class="banner">
+  <div class="bannerInfo">
+        <div class="txt">
+            
+        </div>
+
+            <div class="carousel">
+      <div
+        class="carousel-item"
+        *ngFor="let event of testEvents; let i = index"
+        [class.active]="i === currentSlideIndex"
+        [style.backgroundImage]="'url(' + event.imagen + ')'"
+      >
+        <div class="carousel-content" *ngIf="i === currentSlideIndex">
+          <h2>{{ event.nombre }}</h2>
+          <p>{{ event.descripcion }}</p>
+          <button class="btn2">Comprar</button>
+        </div>
+      </div>
+      <button *ngIf="testEvents.length > 1" class="carousel-control prev" (click)="prevSlide()">&#10094;</button>
+      <button *ngIf="testEvents.length > 1" class="carousel-control next" (click)="nextSlide()">&#10095;</button>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+    <div class="events">
+        <div class="title">
+            <h1>Eventos</h1>
+            <div class="line"></div>
+        </div>
+
+        <div class="eventsGrid">
+            <div class="event">
+                <div class="eventImg">
+                    <img class="imgEvent" src="../../../assets/img/foto5.jfif" alt="">
+                </div>
+
+                <div class="eventInfo">
+                    <h2>Fiesta de Halloween</h2>
+                    <p>Fecha: 31 de Octubre</p>
+                    <p>Hora: 10:00 PM</p>
+                    <button class="btn3">Comprar</button>
+                </div>
+            </div>
+
+                        <div class="event">
+                <div class="eventImg">
+                    <img class="imgEvent" src="../../../assets/img/evento2.jfif" alt="">
+                </div>
+
+                <div class="eventInfo">
+                    <h2>Nombre del evento</h2>
+                    <p>Descripcion del evento</p>
+                    <button class="btn3">Comprar</button>
+                </div>
+            </div>
+
+                        <div class="event">
+                <div class="eventImg">
+                    <img class="imgEvent" src="../../../assets/img/evento1.jpg" alt="">
+                </div>
+
+                <div class="eventInfo">
+                    <h2>Nombre del evento</h2>
+                    <p>Descripcion del evento</p>
+                    <button class="btn3">Comprar</button>
+                </div>
+            </div>
+
+            <div class="event">
+                <div class="eventImg">
+                    <img class="imgEvent" src="../../../assets/img/foto1.jpg" alt="">
+                </div>
+
+                <div class="eventInfo">
+                    <h2>Nombre del evento</h2>
+                    <p>Descripcion del evento</p>
+                    <button class="btn3">Comprar</button>
+                </div>
+            </div>
+
+                        <div class="event">
+                <div class="eventImg">
+                    <img class="imgEvent" src="../../../assets/img/foto2.jpg" alt="">
+                </div>
+
+                <div class="eventInfo">
+                    <h2>Nombre del evento</h2>
+                    <p>Descripcion del evento</p>
+                    <button class="btn3">Comprar</button>
+                </div>
+            </div>
+
+                        <div class="event">
+                <div class="eventImg">
+                    <img class="imgEvent" src="../../../assets/img/foto4.jpg" alt="">
+                </div>
+
+                <div class="eventInfo">
+                    <h2>Nombre del evento</h2>
+                    <p>Descripcion del evento</p>
+                    <button class="btn3">Comprar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="add">
+        <img class="addImg" src="../../../assets/img/evento.jpg" alt="">
+    </div>
+</div>

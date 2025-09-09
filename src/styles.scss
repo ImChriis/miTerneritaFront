@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+
+html, body{
+    height: 100%;
+    margin: 0;
+    background-color: #0D0D0D;
+}
+
+app-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ocupa toda la altura de la ventana */
+}
