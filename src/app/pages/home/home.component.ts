@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { OnInit, OnDestroy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   imports: [
-    CommonModule
+    CommonModule,
+    RouterLink
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -29,7 +31,7 @@ ngOnDestroy() {
   {
     nombre: 'Evento 1',
     descripcion: 'Descripción del evento 1',
-    imagen: '../../../assets/img/foto3.jpg'
+    imagen: '../../../assets/img/foto1.jpg'
   },
   {
     nombre: 'Evento 2',

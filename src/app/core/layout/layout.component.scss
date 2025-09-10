@@ -30,6 +30,10 @@ nav{
     color: white;
 }
 
+.logo h2{
+    font-weight: 300;
+}
+
 img{
     width: 20%;
 }
@@ -48,12 +52,12 @@ img{
 }
 
 .items a:hover{
-    color: #4361ee;
+    color: #1522D1;
 }
 
 .login{
     margin-right: 20px;
-    background-color: #1e3a8a;
+    background-color: #1522D1;
     border: none;
     color: white;
     border-radius: 10px;
@@ -63,7 +67,8 @@ img{
 
 .login:hover{
     cursor: pointer;
-     background-color: #2345a1;
+    //  background-color: #2345a1;
+    opacity: 0.9;
 }
 
 .content{

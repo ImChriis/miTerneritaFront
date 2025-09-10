@@ -1,42 +1,64 @@
-<div class="banner">
-  <div class="bannerInfo">
-    <div class="txt"></div>
-
-    <div class="carousel">
-      <div
-        class="carousel-item"
-        *ngFor="let event of testEvents; let i = index"
-        [class.active]="i === currentSlideIndex"
-        [style.backgroundImage]="'url(' + event.imagen + ')'"
-      >
-        <div class="carousel-content" *ngIf="i === currentSlideIndex">
-          <h2>{{ event.nombre }}</h2>
-          <p>{{ event.descripcion }}</p>
-          <button class="btn2">Comprar</button>
-        </div>
-      </div>
-      <button
-        *ngIf="testEvents.length > 1"
-        class="carousel-control prev"
-        (click)="prevSlide()"
-      >
-        &#10094;
-      </button>
-      <button
-        *ngIf="testEvents.length > 1"
-        class="carousel-control next"
-        (click)="nextSlide()"
-      >
-        &#10095;
-      </button>
-    </div>
-  </div>
+<div class="sections">
+    <p class="selected">Detalles del evento ></p> <p>Entradas ></p> <p>Confimar datos ></p> <p>Pagar</p>
 </div>
 
 <div class="content">
-  <div class="events">
+  <div class="details">
     <div class="title">
-      <h1>Eventos</h1>
+      <h1>Latino Gang</h1>
+    </div>
+
+    <div class="date">
+      <p><i class="pi pi-calendar"></i> 15 de marzo</p>
+      <p><i class="pi pi-clock"></i> 10:00 PM</p>
+    </div>
+
+    <div class="description">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+
+      </p>
+
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+
+      </p>
+
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+        
+      </p>
+    </div>
+
+    <div class="btnDetails">
+      <button class="btn2">Reservar Entrada</button>
+    </div>
+  </div>
+
+  <div class="imagen">
+    <img class="imgEvents" src="../../../assets/img/eventoig.jpeg" alt="" />
+  </div>
+</div>
+
+<div class="related">
+    <div class="events">
+    <div class="title">
+      <h1>Recomendaciones</h1>
       <!-- <div class="line"></div> -->
     </div>
 
@@ -152,66 +174,5 @@
           </div>
         </div>
       </div>
-
-        <div class="event">
-        <div class="eventImg">
-          <img
-            class="imgEvent"
-            src="../../../assets/img/eventoig.jpeg"
-            alt=""
-          />
-          <div class="badge">
-            <p>VIP</p>
-          </div>
-        </div>
-
-        <div class="eventInfo">
-          <h2>Latino Gang</h2>
-          <div class="date">
-            <p>
-              <i class="pi pi-calendar"></i> 15 de marzo 
-            </p>
-            <p>
-              <i class="pi pi-clock"></i> 10:00 PM
-            </p>
-          </div>
-          <div class="btn">
-            <button class="btn3">Reserva ahora</button>
-          </div>
-        </div>
-      </div>
-
-        <div class="event">
-        <div class="eventImg">
-          <img
-            class="imgEvent"
-            src="../../../assets/img/eventoig.jpeg"
-            alt=""
-          />
-          <div class="badge">
-            <p>VIP</p>
-          </div>
-        </div>
-
-        <div class="eventInfo">
-          <h2>Latino Gang</h2>
-          <div class="date">
-            <p>
-              <i class="pi pi-calendar"></i> 15 de marzo 
-            </p>
-            <p>
-              <i class="pi pi-clock"></i> 10:00 PM
-            </p>
-          </div>
-          <div class="btn">
-            <button class="btn3">Reserva ahora</button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
-
-  <div class="add">
-    <img class="addImg" src="../../../assets/img/evento.jpg" alt="" />
-  </div>
-</div>
