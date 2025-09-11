@@ -1,0 +1,122 @@
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    margin-top: 5vh;
+}
+
+form{
+    width: 30%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #1c1c1c;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 5vh;
+}
+
+.logo{
+    height: 30%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 5vh;
+}
+
+.loginImg{
+    width: 40%;
+}
+
+.group{
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.inputGroup{
+    width: 60%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.inputGroupType{
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.inputGroupId{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+label{
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+input{
+    height: 3vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+}
+
+select{
+    height: 3.3vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+}
+
+.btn{
+    margin-bottom: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btnRegister{
+    margin-top: 20px;
+    background-color: #1522D1;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    width: 20%;
+    height: 4vh;
+    font-weight: bold;
+}
+
+.btnRegister:hover{
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.links{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 5vh;
+}

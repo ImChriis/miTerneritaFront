@@ -31,17 +31,17 @@ ngOnDestroy() {
   {
     nombre: 'Evento 1',
     descripcion: 'Descripción del evento 1',
-    imagen: '../../../assets/img/foto1.jpg'
+    imagen: '../../../assets/img/zona1.jpg'
   },
   {
     nombre: 'Evento 2',
     descripcion: 'Descripción del evento 2',
-    imagen: '../../../assets/img/foto3.jpg'
+    imagen: '../../../assets/img/zona2.jpg'
   },
   {
     nombre: 'Evento 3',
     descripcion: 'Descripción del evento 3',
-    imagen: '../../../assets/img/foto4.jpg'
+    imagen: '../../../assets/img/zona3.jpg'
   }
 ];
 
