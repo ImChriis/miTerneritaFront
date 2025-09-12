@@ -1,0 +1,106 @@
+<div class="sections">
+  <p>Detalles del evento ></p>
+  <p>Entradas ></p>
+  <p>Confimar datos ></p>
+  <p class="selected">Pagar</p>
+</div>
+
+<div class="content">
+    <div class="payment">
+        <div class="title">
+            <h1>Información de pago</h1>
+        </div>
+
+        <form>
+            <div class="inputGroup">
+                <label for="cardNumber">Banco</label>
+                <select name="bank" id="bank" formControlName="banco">
+                    <option value="Banesco">BANESCO BANCO UNIVERSAL S.A.C.A.</option>
+                    <option value="100% Banco">100% BANCO, BANCO UNIVERSAL C.A.</option>
+                    <option value="Bancamiga">BANCAMIGA, BANCO UNIVERSAL, C.A.</option>
+                    <option value="Bancaribe">BANCARIBE C.A. BANCO UNIVERSAL</option>
+                    <option value="Banco activo">BANCO ACTIVO</option>
+                    <option value="Banco caroni">Banco CARONI C.A. BANCO UNIVERSAL</option>
+                    <option value="Banco de la  FANB">BANCO DE LA FANB</option>
+                    <option value="Banco de la gente emprendedora">
+                    BANCO DE LA GENTE EMPRENDEDORA
+                    </option>
+                    <option value="Banco de Venezuela">BANCO DE VENEZUELA</option>
+                    <option value="Banco del Tesoro">BANCO DEL TESORO</option>
+                    <option value="Banco digital de los trabajadores">
+                    BANCO DIGITAL DE LOS TRABAJADORES
+                    </option>
+                    <option value="Banco Exterior">
+                    BANCO EXTERIOR C.A BANCO UNIVERSAL
+                    </option>
+                    <option value="Banco Mercantil">BANCO MERCANTIL</option>
+                    <option value="Banco Nacional de credito">
+                    BANCO NACIONAL DE CREDITO
+                    </option>
+                    <option value="Banco plaza">BANCO PLAZA, BANCO UNIVERSAL</option>
+                    <option value="Banco provincial">BANCO PROVINCIAL</option>
+                    <option value="Banco Sofitasa">BANCO SOFITASA</option>
+                    <option value="Bancrecer">BANCRECER, S.A. BANCO MICROFINANCIERO</option>
+                    <option value="Banplus">BANPLUS BANCO UNIVERSAL, C.A.</option>
+                    <option value="BFC banco fondo comun">BFC BANCO FONDO COMÚN</option>
+                    <option value="Del sur banco universal">DEL SUR BANCO UNIVERSAL</option>
+                    <option value="R4">R4, BANCO MICROFINANCIERO, C.A.</option>
+                    <option value="Venezolano de credito">VENEZOLANO DE CRÉDITO</option>
+                    <!-- <option value="Bank Of America">Bank of America</option>
+                    <option value="Zelle">Zelle</option> -->
+                </select>
+            </div>
+
+            <div class="inputGroup">
+                <label for="cardNumber">Número de referencia</label>
+                <input
+                    type="text"
+                    id="cardNumber"
+                    name="cardNumber"
+                    formControlName="numeroReferencia"
+                />
+            </div>
+
+            <div class="inputGroup">
+                <label for="fecha">Fecha de pago</label>
+                <input type="date" id="fecha" name="fecha" formControlName="fechaPago"/>
+            </div>
+
+            <div class="inputGroup">
+                <label for="monto">Monto pagado</label>
+                <input type="text" id="monto" name="monto" formControlName="monto"/>
+            </div>
+        </form>
+
+        <div class="total"> 
+            <h3>Total a pagar: <span>$200.00</span></h3>
+        </div>
+
+        <div class="btns">
+            <button class="btn2">Pagar</button>
+            <!-- <button class="btn3">Cancelar</button> -->
+        </div>
+    </div>
+
+    <div class="bank">
+        <div class="img">
+            <img class="bankImg" src="../../../assets/img/logo.png" alt="">
+        </div>
+
+        <div class="title">
+            <h2>Datos Bancarios</h2>
+        </div>
+
+        <div class="info">
+            <p>Banesco</p>
+            <p>0124-0124-01-0123456789</p>
+            <p>Corriente</p>
+            <p>04241234567</p>
+        </div>
+
+        <div class="inputGroup">
+            <label for="monto">Adjuntar Comprobante de pago</label>
+            <button class="fileBtn">Subir archivo</button>
+        </div>
+    </div>
+</div>

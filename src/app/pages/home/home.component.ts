@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -12,7 +12,35 @@ import { RouterLink } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+
+   @ViewChild('eventsGrid') eventsSection!: ElementRef;
+    @ViewChild('zones') zonesSection!: ElementRef;
+    @ViewChild('zones2') zonesSection2!: ElementRef;
+
+ 
+  ngAfterViewInit() {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    if (this.eventsSection && this.eventsSection.nativeElement) {
+      observer.observe(this.eventsSection.nativeElement);
+    }
+
+    if (this.zonesSection && this.zonesSection.nativeElement) {
+      observer.observe(this.zonesSection.nativeElement);
+    }
+
+    if (this.zonesSection2 && this.zonesSection2.nativeElement) {
+      observer.observe(this.zonesSection2.nativeElement);
+    }
+  }
+
   private intervalId: any;
 
   ngOnInit() {

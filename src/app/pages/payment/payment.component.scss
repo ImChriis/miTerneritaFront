@@ -1,0 +1,150 @@
+.sections{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    margin-left: 5%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.selected{
+    color: #1522D1;
+}
+
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    height: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    flex-direction: row;
+}
+
+.payment{
+    width: 50%;
+    height: auto;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.payment .title h1{
+    font-weight: 600;
+}
+
+.inputGroup{
+    color: #FFFFFF;
+    text-align: left;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    font-size: 20px;
+    width: 100%;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    gap: 20px;
+    width: 50%;
+}
+
+label{
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+input{
+    height: 3vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    background-color: #2b2b2b;
+    color: white;
+}
+
+select{
+    height: 3.3vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    background-color: #2b2b2b;
+    color: white;
+}
+
+.total h3{
+    color: #FFFFFF;
+    font-size: 25px;
+    font-weight: 400;
+}
+
+.total span{
+    font-weight: 600;
+}
+
+.fileBtn{
+  background: #1522D1;
+  color: #EFE7D4 ;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 30%;
+  height: 5vh;
+  font-weight: bold;
+}
+
+.btns{
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.btn2 {
+  background: #1522D1;
+  color: #EFE7D4 ;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 15%;
+  height: 5vh;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.btn2:hover {
+  opacity: 0.9;
+}
+
+.bank{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 20px;
+    width: 30%;
+}
+
+.img{
+    width: 50%;
+}
+
+.bankImg{
+    width: 100%;
+    height: auto;
+}
+
+.bank .title h2{
+    font-weight: 600;
+}
+
+.bank .info{
+    font-size: 21px;
+}

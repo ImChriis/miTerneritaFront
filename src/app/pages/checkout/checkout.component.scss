@@ -1,0 +1,173 @@
+.sections{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    margin-left: 5%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.selected{
+    color: #1522D1;
+}
+
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    height: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    flex-direction: row;
+}
+
+.details{
+    width: 50%;
+    height: auto;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.title{
+    display: flex;
+    align-content: start;
+    flex-direction: column;
+    width: 95%;
+    height: auto;
+}
+
+.title h1{
+    color: #EFE7D4;
+    font-size: 50px;
+    font-weight: 900;
+}
+
+.date{
+    color: #b3b3b3;
+    font-size: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.date p, i{
+    color: #b3b3b3;
+    font-weight: 500;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    gap: 20px;
+    width: 50%;
+}
+
+.inputGroup{
+    color: #FFFFFF;
+    text-align: left;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    font-size: 20px;
+    width: 100%;
+}
+
+.name{
+    display: flex;
+    gap: 20px;
+}
+
+.group{
+    display: flex;
+    gap: 20px;
+}
+
+.inputGroupId{
+    width: 80%;
+}
+
+label{
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+input{
+    height: 3vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    background-color: #2b2b2b;
+    color: white;
+}
+
+select{
+    height: 3.3vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+}
+
+.btn2 {
+  background: #1522D1;
+  color: #EFE7D4 ;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+  width: 30%;
+  height: 5vh;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.btn2:hover {
+  opacity: 0.9;
+}
+
+.ticketDetails{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 20px;
+    width: 30%;
+}
+
+.title h2{
+    color: white;
+}
+
+.ticketInfo p{
+    font-weight: 400;
+}
+
+.ticketInfo span{
+    font-weight: 600;
+}
+
+.total h3{
+    color: #FFFFFF;
+    font-weight: 400;
+}
+
+.total span{
+    font-weight: 600;
+}
+
+.eventImg{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+}
+
+.eventImage{
+    max-width: 60%;
+    height: auto;
+}

@@ -12,8 +12,23 @@
                 <a href="#">Contacto</a>
                 <button class="login" routerLink="/login">Login</button>
             </div>
+
+            <div class="menu">
+                <button class="menu-toggle" (click)="showMobileMenu = !showMobileMenu">
+                    <i class="pi pi-bars menuBtn"></i>
+                </button>
+            </div>
+
+            <div class="mobile-menu" *ngIf="showMobileMenu" [class.open]="showMobileMenu">
+                <a href="#">Inicio</a>
+                <a href="#">Eventos</a>
+                <a href="#">Contacto</a>
+                <a>Chris</a>
+            </div>
         </div>
     </nav>
+    
+    
 
     <div class="content">
         <router-outlet></router-outlet>
@@ -38,4 +53,26 @@
             <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
         </div>
     </footer>
+
+    <div class="mobileFooter">
+        <div class="footerLogo">
+            <img class="footerImg" src="../../../assets/img/logo.png" alt="">
+        </div>
+
+        <div class="socialMedia">
+            <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
+            <i class="pi pi-telegram" style="font-size: 2.5rem"></i>
+            <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
+            <i class="pi pi-facebook" style="font-size: 2.5rem"></i>
+            <i class="pi pi-youtube" style="font-size: 2.5rem"></i>
+            <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
+        </div>
+
+        <hr>
+
+         <div class="footerInfo">
+            <p>© 2024 Mi Ternerita. Todos los derechos reservados.</p>
+            <p>Contacto: info&#64;miternerita.com</p>
+        </div>
+    </div>
 </div>
