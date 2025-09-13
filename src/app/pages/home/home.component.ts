@@ -22,8 +22,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['/home/event']).then(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    console.log("click")
   }
- 
+
   ngAfterViewInit() {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {

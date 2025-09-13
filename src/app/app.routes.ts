@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { LayoutComponent } from './core/layout/layout.component';
+import { AdminLayoutComponent } from './core/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
     {
@@ -43,7 +44,20 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent),
             title: 'Payment'
         }
-    ]
+    ],
+
+},
+
+{
+  path: 'admin',
+  component: AdminLayoutComponent,
+  children:[
+    {
+      path:'dashboard',
+      loadComponent: () => import('./admin/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      title: 'Dashboard'
+    }
+  ]
 }
 
 ];
