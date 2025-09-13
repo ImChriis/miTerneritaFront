@@ -148,3 +148,106 @@ select{
 .bank .info{
     font-size: 21px;
 }
+
+@media(max-width: 1440px){
+    .fileBtn{
+        width: 40%;
+    }
+}
+
+@media(max-width: 1024px){
+    .fileBtn{
+        width: 50%;
+    }
+}
+
+@media(max-width: 768px){
+    .content{
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .payment{
+        width: 80%;
+    }
+
+    form{
+        width: 100%;
+    }
+
+    .bank{
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btns{
+        justify-content: center;
+    }
+
+    .file{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@media(max-width: 425px){
+    .title h1{
+        font-size: 30px
+    }
+
+    .sections{
+        font-size: 13px;
+    }
+
+    .btn2{
+        width: 30%;
+    }
+}
+
+@media(max-width: 375px){
+    .title h1{
+        font-size: 25px
+    }
+
+    .sections{
+        font-size: 11px;
+    }
+
+    .btn2{
+        width: 30%;
+    }
+
+    .file label{
+        font-size: 18px
+    }
+}
+
+@media(max-width: 320px){
+    .title h1{
+        font-size: 20px
+    }
+
+    .sections{
+        font-size: 9px;
+    }
+
+    .btn2{
+        width: 40%;
+    }
+
+    .total h3{
+        font-size: 20px;
+    }
+
+    .file label{
+        font-size: 15px;
+    }
+
+    .fileBtn{
+        width: 60%;
+    }
+}

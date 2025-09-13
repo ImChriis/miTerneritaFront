@@ -171,3 +171,62 @@ select{
     max-width: 60%;
     height: auto;
 }
+
+@media(max-width: 1024px){
+    .btn2{
+        width: 50%;
+    }
+}
+
+@media(max-width: 768px){
+    .content{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .details{
+        width: 90%;
+    }
+
+    .name{
+        display: flex;
+        flex-direction: column;
+    }
+
+    form{
+        width: 90%;
+    }
+
+    .ticketDetails{
+        width: 90%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .btn2{
+        width: 50%;
+    }
+
+    .eventImage{
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@media(max-width: 425px){
+    .sections{
+        font-size: 13px;
+    }
+}
+
+@media(max-width: 375px){
+    .sections{
+        font-size: 11px;
+    }
+}
+
+@media(max-width: 320px){
+    .sections{
+        font-size: 9px;
+    }
+}
