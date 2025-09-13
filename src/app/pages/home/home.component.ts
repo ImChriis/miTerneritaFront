@@ -1,23 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { OnInit, OnDestroy } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   imports: [
-    CommonModule,
-    RouterLink
+    CommonModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+  private router = inject(Router);
 
-   @ViewChild('eventsGrid') eventsSection!: ElementRef;
-    @ViewChild('zones') zonesSection!: ElementRef;
-    @ViewChild('zones2') zonesSection2!: ElementRef;
+  @ViewChild('eventsGrid') eventsSection!: ElementRef;
+  @ViewChild('zones') zonesSection!: ElementRef;
+  @ViewChild('zones2') zonesSection2!: ElementRef;
 
+  goToEvent() {
+    this.router.navigate(['/home/event']).then(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
  
   ngAfterViewInit() {
     const observer = new IntersectionObserver(entries => {

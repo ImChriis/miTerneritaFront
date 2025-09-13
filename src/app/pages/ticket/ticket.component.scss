@@ -165,4 +165,72 @@ select{
     width: 80%;
 }
 
+@media(max-width: 768px){
+    .content{
+        flex-direction: column-reverse;
+        align-items: center;
+    }
 
+    .details{
+        width: 90%;
+        align-items: center;
+        text-align: center;
+    }
+
+    .title{
+        align-items: center;
+        text-align: center;
+    }
+
+    form{
+        width: 90%;
+        align-items: center;
+    }
+
+    .inputGroup{
+        width: 100%;
+    }
+
+    .summaryList{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .summaryInfo{
+        width: 80%;
+        align-items: center;
+        text-align: center;
+    }
+
+    .cancelBtn{
+        width: 80%;
+    }
+
+    .imagen{
+        width: 50%;
+        height: auto;
+        margin-top: 20px;
+    }
+
+    .imgEvents{
+        width: 100%;
+    }
+}
+
+@media(max-width: 425px){
+    .sections{
+        font-size: 13px;
+    }
+}
+
+@media(max-width: 375px){
+    .sections{
+        font-size: 11px
+    }
+}
+
+@media(max-width: 320px){
+    .sections{
+        font-size: 9px;
+    }
+}
