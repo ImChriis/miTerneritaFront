@@ -1,9 +1,14 @@
 <div class="content">
   <div class="cards">
     <div class="card">
-      <div class="cardTitle">
-        <h4>Entradas Vendidas</h4>
-        <i class="pi pi-ticket"></i>
+      <div class="cardHeader">
+        <div class="cardTitle">
+          <h4>Entradas Vendidas</h4>
+        </div>
+
+        <div class="cardIcon">
+            <i class="pi pi-ticket"></i>
+        </div>
       </div>
 
       <div class="cardContent">
@@ -12,45 +17,61 @@
     </div>
 
         <div class="card">
-      <div class="cardTitle">
-        <h4>Facturas realizadas</h4>
-        <i class="pi pi-receipt"></i>
-      </div>
+      <div class="cardHeader">
+        <div class="cardTitle">
+          <h4>Entradas Vendidas</h4>
+        </div>
 
-      <div class="cardContent">
-        <h5>50</h5>
-      </div>
-    </div>
-
-        <div class="card">
-      <div class="cardTitle">
-        <h4>Usuarios Registrados</h4>
-        <i class="pi pi-user"></i>
+        <div class="cardIcon">
+            <i class="pi pi-ticket"></i>
+        </div>
       </div>
 
       <div class="cardContent">
         <h5>100</h5>
       </div>
     </div>
+
         <div class="card">
-      <div class="cardTitle">
-        <h4>Usurios nuevos</h4>
-        <i class="pi pi-receipt"></i>
+      <div class="cardHeader">
+        <div class="cardTitle">
+          <h4>Entradas Vendidas</h4>
+        </div>
+
+        <div class="cardIcon">
+            <i class="pi pi-ticket"></i>
+        </div>
       </div>
 
       <div class="cardContent">
-        <h5>10</h5>
+        <h5>100</h5>
+      </div>
+    </div>
+
+        <div class="card">
+      <div class="cardHeader">
+        <div class="cardTitle">
+          <h4>Entradas Vendidas</h4>
+        </div>
+
+        <div class="cardIcon">
+            <i class="pi pi-ticket"></i>
+        </div>
+      </div>
+
+      <div class="cardContent">
+        <h5>100</h5>
       </div>
     </div>
   </div>
 
   <div class="charts">
     <div class="left">
-       <canvas id="barChart"></canvas>
+        <p-chart class="chart" type="bar" [data]="basicData" [options]="basicOptions" />
     </div>
 
     <div class="right">
-       <canvas id="barChart"></canvas>
+       <p-chart class="chart" type="bar" [data]="basicData" [options]="basicOptions" />
     </div>
   </div>
 </div>

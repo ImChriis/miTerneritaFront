@@ -1,18 +1,61 @@
 <div class="app-container">
-  <nav>
-    <div class="logo">
-      <img src="../../../assets/img/logo.png" alt="">
-      <h1>Mi Ternerita House</h1>
+ <nav #nav>
+  <div class="logo">
+    <i class="pi pi-bars menu-icon" (click)="openSidebar(nav)"></i>
+    <div class="logoImg">
+        <img src="../../../assets/img/logo.png" alt="">
+        <span class="logo-name">Mi Ternerita House</span>
     </div>
-  </nav>
+  </div>
+
+  <div class="sidebar">
+    <div class="logo">
+      <i class="pi pi-times menu-icon-close" (click)="closeSidebar(nav)"></i>
+    </div>
+
+    <div class="sidebar-user">
+      <i class="pi pi-user icon"></i>
+      <span class="username">Christopher Medina</span>
+    </div>
+
+    <div class="sidebar-content">
+      <ul class="lists">
+        @for (route of routes; track route.name) {
+          <li class="list" (click)="closeSidebar(nav)">
+            <a [routerLink]="route.routerLink" class="nav-link">
+              <i class="{{route.icon}} icon"></i>
+              <span class="link">{{route.name}}</span>
+            </a>
+          </li>
+        }
+      </ul>
+
+      <div class="bottom-content">
+        <li class="list">
+          <a href="#" class="nav-link">
+            <i class="pi pi-cog icon"></i>
+            <span class="link">Settings </span>
+          </a>
+        </li>
+        <li class="list">
+          <a routerLink="/auth/login" class="nav-link">
+            <i class="pi pi-sign-out icon"></i>
+            <span class="link">Logout </span>
+          </a>
+        </li>
+      </div>
+    </div>
+  </div>
+</nav>
 
 
    <div class="content">
         <router-outlet></router-outlet>
     </div>
 
+    <section class="overlay" (click)="closeSidebar(nav)"></section>
 
-        <footer>
+  <footer>
         <div class="footerLogo">
             <img class="footerImg" src="../../../assets/img/logo.png" alt="">
         </div>
@@ -32,3 +75,4 @@
         </div>
     </footer>
 </div>
+
