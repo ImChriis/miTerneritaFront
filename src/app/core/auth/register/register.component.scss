@@ -69,6 +69,30 @@ form{
     gap: 10px;
 }
 
+.inputGroup .btn-Pass {
+    position: absolute;
+    right: 42%;
+    bottom: 21%;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+
+.inputGroup .btn-Pass2 {
+    position: absolute;
+    right: 42%;
+    bottom: 12.6%;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+
 label{
     color: white;
     font-size: 20px;
@@ -123,6 +147,10 @@ select{
     gap: 10px;
     align-items: center;
     margin-bottom: 5vh;
+}
+
+small{
+    color: red;
 }
 
 @media(max-width: 1440px){

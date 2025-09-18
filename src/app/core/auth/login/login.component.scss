@@ -45,6 +45,17 @@ form{
     margin-bottom: 20px;
 }
 
+.inputGroup .btn-Pass {
+    position: absolute;
+    right: 43%;
+    top: 51.6%;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+}
+
 label{
     color: white;
     font-size: 20px;
@@ -56,6 +67,8 @@ input{
     width: 100%;
     border-radius: 10px;
     border: none;
+    background-color: #2b2b2b;
+    color: white;
 }
 
 .btn{
