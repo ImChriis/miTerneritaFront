@@ -13,7 +13,7 @@ export class AuthService {
   private http = inject(HttpClient);
 
   login(body: Partial<User>){
-    return this.http.post<User>(`${this.api}/users/login`, body).pipe(
+    return this.http.post<User>(`${this.api}/auth/login`, body).pipe(
       tap((user: User) => {
         localStorage.setItem('token', user.token || ''),
         localStorage.setItem('user', JSON.stringify(user));
@@ -22,6 +22,6 @@ export class AuthService {
   }
 
   register(body: Partial<User>){
-    return this.http.post<User>(`${this.api}/users/register`, body);
+    return this.http.post<User>(`${this.api}/auth/register`, body);
   }
 }

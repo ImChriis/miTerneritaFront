@@ -35,6 +35,11 @@ export const routes: Routes = [
             title: 'Ticket'
         },
         {
+            path: 'home/event/ticket/consume',
+            loadComponent: () => import('./pages/consume/consume.component').then(m => m.ConsumeComponent),
+            title: 'Consume'
+        },
+        {
             path: 'home/event/ticket/checkout',
             loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent),
             title: 'Checkout'

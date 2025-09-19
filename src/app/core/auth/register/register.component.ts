@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { RegisterForm } from '../../models/forms/form-register';
 import { CommonModule } from '@angular/common';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -34,7 +35,7 @@ export class RegisterComponent implements OnInit{
       password: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
       phone: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/^(?!\s*$).+/)]}),
       idRol: new FormControl(1, {nonNullable: true}),
-      status: new FormControl('Inactivo', {nonNullable: true}),
+      status: new FormControl(1, {nonNullable: true}),
       tipo: new FormControl('V', {nonNullable: true , validators: [Validators.required]}),
       cedula: new FormControl('', {nonNullable: true, validators: [Validators.required,]}),
       confirmPassword: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
@@ -45,7 +46,7 @@ export class RegisterComponent implements OnInit{
 
   ngOnInit(): void {
     this.registerForm.get('tipo')?.valueChanges.subscribe(() => this.updateIdentificacion());
-    this.registerForm.get('cedula')?.valueChanges.subscribe(() => this.updateIdentificacion());
+    this.registerForm.get('noCedula')?.valueChanges.subscribe(() => this.updateIdentificacion());
   }
 
    getErrorMessage(field: string): string {
@@ -84,7 +85,7 @@ export class RegisterComponent implements OnInit{
   updateIdentificacion() {
     const tipo = this.registerForm.get('tipo')?.value;
     const numero = this.registerForm.get('noCedula')?.value;
-    this.registerForm.patchValue({ cedula: `${tipo} - ${numero}` });
+    this.registerForm.patchValue({ cedula: `${tipo}-${numero}` });
   }
 
      showPassword() {
@@ -126,8 +127,19 @@ export class RegisterComponent implements OnInit{
 
         this.registerForm.patchValue({ cedula });
 
-            const formData = { ...this.registerForm.value };
-    delete formData.tipo;
-    delete formData.noCedula;
+      const formData = { ...this.registerForm.value };
+      delete formData.tipo;
+      delete formData.noCedula;
+      delete formData.confirmPassword;
+
+      console.log(formData);
+      this.authService.register(formData).subscribe({
+        next: (response) => {
+          this.messageService.add({severity:'success', summary: 'Registro Exitoso', detail: 'Usuario registrado correctamente'});
+        },
+        error: (err) => {
+          this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});
+        }
+      })
     }
 }

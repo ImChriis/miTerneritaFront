@@ -1,0 +1,13 @@
+.sections{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    margin-left: 5%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.selected{
+    color: #1522D1;
+}

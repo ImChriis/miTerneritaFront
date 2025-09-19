@@ -7,7 +7,7 @@ export interface RegisterForm{
   password: FormControl<string>;
   phone: FormControl<string>;
   idRol: FormControl<number>;
-  status: FormControl<string>;
+  status: FormControl<number>;
   tipo: FormControl<string>;
   cedula: FormControl<string>;
   confirmPassword: FormControl<string>;

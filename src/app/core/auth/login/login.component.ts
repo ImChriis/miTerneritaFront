@@ -71,11 +71,11 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
 
-        const userRole = res.usuario.idRol;
+        const userRole = res.Rol;
 
-        if(userRole === 1){
+        if(userRole !== 'User') {
           this.router.navigateByUrl('/admin/dashboard');
-        } else if(userRole === 2){
+        } else {
           this.router.navigateByUrl('/home');
         }
 

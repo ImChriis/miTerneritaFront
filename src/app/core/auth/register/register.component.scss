@@ -153,6 +153,30 @@ small{
     color: red;
 }
 
+   input{
+             /* --- Remove arrows for Webkit browsers (Chrome, Safari, Edge, Opera) --- */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none; /* This is the key property */
+        margin: 0; /* Sometimes needed to remove extra space */
+    }
+
+    /* --- Remove arrows for Firefox --- */
+    &[type='number'] {
+        -moz-appearance: textfield; /* This makes it look like a regular text input */
+    }     /* --- Remove arrows for Webkit browsers (Chrome, Safari, Edge, Opera) --- */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none; /* This is the key property */
+        margin: 0; /* Sometimes needed to remove extra space */
+    }
+
+    /* --- Remove arrows for Firefox --- */
+    &[type='number'] {
+        -moz-appearance: textfield; /* This makes it look like a regular text input */
+    }
+    }
+
 @media(max-width: 1440px){
  .inputGroupType{
   width: 20%;
