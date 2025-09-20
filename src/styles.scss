@@ -26,3 +26,41 @@ p, h1, h2, h3, h4, h5, h6, span, a, li {
     padding: 0;
     color: white;
 }
+
+
+.p-tabpanels{
+    background-color: transparent !important;
+}
+
+.p-tablist-tab-list{
+    background-color: transparent !important;
+    color: white;
+}
+
+.p-tab{
+    background-color: transparent !important;
+    color: white !important ;
+}
+
+.p-tablist-active-bar{
+    background-color: #1522D1 !important;
+    color: #1522D1 !important;
+}
+
+@media(max-width: 425px){
+    .sections{
+        font-size: 13px;
+    }
+}
+
+@media(max-width: 375px){
+    .sections{
+        font-size: 11px
+    }
+}
+
+@media(max-width: 320px){
+    .sections{
+        font-size: 9px;
+    }
+}
