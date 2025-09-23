@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { EventsService } from '../../core/services/events.service';
+import { Observable } from 'rxjs';
+import { Event } from '../../core/models/event.model';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +16,8 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private router = inject(Router);
+  private eventService = inject(EventsService);
+  events$!: Observable<Event[]>
 
   @ViewChild('eventsGrid') eventsSection!: ElementRef;
   @ViewChild('zones') zonesSection!: ElementRef;
@@ -54,6 +59,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   this.intervalId = setInterval(() => {
     this.nextSlide();
   }, 3500); // Cambia cada 3.5 segundos
+
+  this.events$ = this.eventService.getEvents();
+  this.events$.subscribe(events => {
+    console.log(events);
+  })
+
 }
 
 ngOnDestroy() {
@@ -90,5 +101,29 @@ prevSlide() {
 nextSlide() {
   this.currentSlideIndex =
     (this.currentSlideIndex + 1) % this.testEvents.length;
+}
+
+  formatTime(time: string): string {
+    if (!time) return '';
+  
+    // Divide la hora en partes (HH:mm:ss)
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+  
+    // Determina AM o PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+  
+    // Convierte a formato de 12 horas
+    const formattedHours = hours % 12 || 12; // La hora 0 debe ser 12
+  
+    // Formatea los minutos con dos dígitos
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+  
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+  }
+
+navigateToEvent(idEvento: number){
+  this.router.navigate(['/home/event/', idEvento]).then(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 }

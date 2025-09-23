@@ -40,12 +40,12 @@ export const routes: Routes = [
             title: 'Consume'
         },
         {
-            path: 'home/event/ticket/checkout',
+            path: 'home/event/ticket/consume/checkout',
             loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent),
             title: 'Checkout'
         },
         {
-            path: 'home/event/ticket/checkout/payment',
+            path: 'home/event/ticket/consume/checkout/payment',
             loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent),
             title: 'Payment'
         }

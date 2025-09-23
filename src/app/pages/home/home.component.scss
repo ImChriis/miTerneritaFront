@@ -140,11 +140,6 @@
   font-size: 50px;
 }
 
-.line{
-  border-bottom: 1px solid #b3b3b3;
-  width: 100%;
-}
-
 .eventsGrid {
   width: 95%;
   display: flex;
@@ -185,30 +180,6 @@
   object-fit: cover;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-}
-
-.badge{
-  width: 40px;
-  height: 28px;
-  background-color: #1d4dd3;
-  position: absolute;
-  top: 10px;
-  right: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  z-index: 2;
-}
-
-.badge p{
-  color: #fff;
-  font-size: 15px;
-  text-align: center;
-  margin: 0;
-  font-weight: bold;
-  letter-spacing: 1px;
 }
 
 .eventInfo {

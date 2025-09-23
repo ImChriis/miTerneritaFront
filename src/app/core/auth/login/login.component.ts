@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LoginForm } from '../../models/forms/form-login';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
@@ -10,7 +10,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-login',
   imports: [
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    RouterLink
 
   ],
   templateUrl: './login.component.html',
