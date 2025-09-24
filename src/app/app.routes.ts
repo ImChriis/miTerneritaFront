@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
-import { LayoutComponent } from './core/layout/layout.component';
-import { AdminLayoutComponent } from './core/admin-layout/admin-layout.component';
+import { LayoutComponent } from './@core/layout/layout.component';
+import { AdminLayoutComponent } from './@core/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
     {
@@ -16,12 +16,12 @@ export const routes: Routes = [
         },
         {
             path: 'login',
-            loadComponent: () => import('./core/auth/login/login.component').then(m => m.LoginComponent),
+            loadComponent: () => import('./@core/auth/login/login.component').then(m => m.LoginComponent),
             title: 'Login'
         },
         {
             path: 'register',
-            loadComponent: () => import('./core/auth/register/register.component').then(m => m.RegisterComponent),
+            loadComponent: () => import('./@core/auth/register/register.component').then(m => m.RegisterComponent),
             title: 'Register'
         },
         {
@@ -61,6 +61,21 @@ export const routes: Routes = [
       path:'dashboard',
       loadComponent: () => import('./admin/dashboard/dashboard.component').then(m => m.DashboardComponent),
       title: 'Dashboard'
+    },
+    {
+        path: 'dashboard/events',
+        loadComponent: () => import('./admin/events/events.component').then(m => m.EventsComponent),
+        title: 'Events'
+    },
+    {
+        path: 'dashboard/tickets',
+        loadComponent: () => import('./admin/tickets/tickets.component').then(m => m.TicketsComponent),
+        title: 'Tickets'
+    },
+    {
+        path: 'dashboard/payments',
+        loadComponent: () => import('./admin/payments/payments.component').then(m => m.PaymentsComponent),
+        title: 'Payments'
     }
   ]
 }

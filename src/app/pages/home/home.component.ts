@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { EventsService } from '../../core/services/events.service';
-import { Observable } from 'rxjs';
-import { Event } from '../../core/models/event.model';
+import { EventsService } from '../../@core/services/events.service';
+import { Observable, tap } from 'rxjs';
+import { Event } from '../../@core/models/event.model';
 
 @Component({
   selector: 'app-home',
@@ -18,18 +18,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private router = inject(Router);
   private eventService = inject(EventsService);
   events$!: Observable<Event[]>
+  slideIndex = signal(0);
+  private intervalId: any;
 
   @ViewChild('eventsGrid') eventsSection!: ElementRef;
   @ViewChild('zones') zonesSection!: ElementRef;
   @ViewChild('zones2') zonesSection2!: ElementRef;
-
-  goToEvent() {
-    this.router.navigate(['/home/event']).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    console.log("click")
-  }
 
   ngAfterViewInit() {
     const observer = new IntersectionObserver(entries => {
@@ -53,18 +47,16 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private intervalId: any;
-
   ngOnInit() {
   this.intervalId = setInterval(() => {
     this.nextSlide();
   }, 3500); // Cambia cada 3.5 segundos
 
-  this.events$ = this.eventService.getEvents();
-  this.events$.subscribe(events => {
-    console.log(events);
-  })
-
+  this.events$ = this.eventService.getEvents().pipe(
+    tap(events => {
+      console.log(events);
+    })
+  )
 }
 
 ngOnDestroy() {
@@ -91,17 +83,16 @@ ngOnDestroy() {
   }
 ];
 
-currentSlideIndex = 0;
+  nextSlide() {
+    this.slideIndex.update(i => (i + 1 + this.testEvents.length) % this.testEvents.length);
+  }
 
-prevSlide() {
-  this.currentSlideIndex =
-    (this.currentSlideIndex - 1 + this.testEvents.length) % this.testEvents.length;
-}
+  prevSlide() {
+    if (this.testEvents.length > 0) {
+      this.slideIndex.update(i => (i - 1 + this.testEvents.length) % this.testEvents.length);
+    }
+  }
 
-nextSlide() {
-  this.currentSlideIndex =
-    (this.currentSlideIndex + 1) % this.testEvents.length;
-}
 
   formatTime(time: string): string {
     if (!time) return '';

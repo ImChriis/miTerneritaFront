@@ -6,10 +6,10 @@
       <div
         class="carousel-item"
         *ngFor="let event of testEvents; let i = index"
-        [class.active]="i === currentSlideIndex"
+        [class.active]="i === slideIndex()"
         [style.backgroundImage]="'url(' + event.imagen + ')'"
       >
-        <div class="carousel-content" *ngIf="i === currentSlideIndex">
+        <div class="carousel-content" *ngIf="i === slideIndex()">
           <h2>Latino Gang</h2>
             <div class="date2">
             <p>
@@ -67,7 +67,7 @@
             </p>
           </div>
           <div class="btn">
-            <button class="btn3" (click)="goToEvent()">Reservar</button>
+            <button class="btn3" (click)="navigateToEvent(event.idEvents)">Reservar</button>
           </div>
         </div>
       </div>
