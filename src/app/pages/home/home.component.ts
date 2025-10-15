@@ -9,8 +9,9 @@ import { Event } from '../../@core/models/event.model';
 @Component({
   selector: 'app-home',
   imports: [
-    CommonModule
-  ],
+    CommonModule,
+    RouterLink
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -112,9 +113,15 @@ ngOnDestroy() {
     return `${formattedHours}:${formattedMinutes} ${ampm}`;
   }
 
-navigateToEvent(idEvento: number){
-  this.router.navigate(['/home/event/', idEvento]).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  navigateToEvent(idEvento: number){
+    this.router.navigate(['/home/event/', idEvento]).then(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+  }
+
+  goToEvent(){
+    this.router.navigate(['/home/event']).then(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-}
+  }
 }

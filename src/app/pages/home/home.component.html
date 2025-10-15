@@ -46,31 +46,107 @@
       <h1>Eventos</h1>
     </div>
 
-    <div class="eventsGrid" *ngIf="events$ | async as events">
-      <div class="event" *ngFor="let event of events">
-          <div class="eventImg">
-            <img
-              class="imgEvent"
-              src="../../../assets/img/chicago.jpg"
-              alt=""
-            />
-          </div>
+    <div class="eventsGrid">
+      <div class="event">
+        <div class="eventImg">
+          <img
+            class="imgEvent"
+            src="../../../assets/img/chicago.jpg"
+            alt=""
+          />
+        </div>
 
         <div class="eventInfo">
-          <h2>{{ event.name }}</h2>
+          <h2>Latino Gang</h2>
           <div class="date">
             <p>
-              <i class="pi pi-calendar"></i> {{ event.date | date:'dd/MM/yyyy' }}
+              <i class="pi pi-calendar"></i> 15 de marzo
             </p>
             <p>
-              <i class="pi pi-clock"></i> {{ formatTime(event.time) }}
+              <i class="pi pi-clock"></i> 10:00 PM
             </p>
           </div>
           <div class="btn">
-            <button class="btn3" (click)="navigateToEvent(event.idEvents)">Reservar</button>
+            <button class="btn3" (click)="goToEvent()">Reservar</button>
           </div>
         </div>
       </div>
+
+            <div class="event">
+        <div class="eventImg">
+          <img
+            class="imgEvent"
+            src="../../../assets/img/sillas1.jpg"
+            alt=""
+          />
+        </div>
+
+        <div class="eventInfo">
+          <h2>Latino Gang</h2>
+          <div class="date">
+            <p>
+              <i class="pi pi-calendar"></i> 15 de marzo
+            </p>
+            <p>
+              <i class="pi pi-clock"></i> 10:00 PM
+            </p>
+          </div>
+          <div class="btn">
+            <button class="btn3" (click)="goToEvent()">Reservar</button>
+          </div>
+        </div>
+      </div>
+
+            <div class="event">
+        <div class="eventImg">
+          <img
+            class="imgEvent"
+            src="../../../assets/img/jordan.jpg"
+            alt=""
+          />
+        </div>
+
+        <div class="eventInfo">
+          <h2>Latino Gang</h2>
+          <div class="date">
+            <p>
+              <i class="pi pi-calendar"></i> 15 de marzo
+            </p>
+            <p>
+              <i class="pi pi-clock"></i> 10:00 PM
+            </p>
+          </div>
+          <div class="btn">
+            <button class="btn3" (click)="goToEvent()">Reservar</button>
+          </div>
+        </div>
+      </div>
+
+            <div class="event">
+        <div class="eventImg">
+          <img
+            class="imgEvent"
+            src="../../../assets/img/sillas2.jpg"
+            alt=""
+          />
+        </div>
+
+        <div class="eventInfo">
+          <h2>Latino Gang</h2>
+          <div class="date">
+            <p>
+              <i class="pi pi-calendar"></i> 15 de marzo
+            </p>
+            <p>
+              <i class="pi pi-clock"></i> 10:00 PM
+            </p>
+          </div>
+          <div class="btn">
+            <button class="btn3" (click)="goToEvent()">Reservar</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
