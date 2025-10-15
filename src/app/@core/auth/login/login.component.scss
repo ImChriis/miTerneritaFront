@@ -103,6 +103,11 @@ input{
     margin-bottom: 5vh;
 }
 
+.links a{
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 @media(max-width: 1440px){
   .inputGroup{
     width: 50%;
