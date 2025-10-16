@@ -148,6 +148,21 @@
   }
 }
 
+@media (min-width: 1366px){
+  .container{
+    height: auto;
+  }
+
+  .details{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    height: 100%;
+    margin-top: -100px;
+  }
+
+}
+
 @media(max-width: 1024px){
   .related{
     width: 100%;
