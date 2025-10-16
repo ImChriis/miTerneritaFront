@@ -1,28 +1,61 @@
 .app-container{
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 nav{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     background-color: #2E2E2E;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    height: 7vh;
-    font-family: "Montserrat" !important;;
-}
-
-.info{
-    display: flex;
+    // position: sticky;
+    // top: 0;
+    // z-index: 1000;
+    height: 10vh;
     width: 100%;
 }
 
-.logo{
+.items{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 30%;
+}
+
+.items a{
+    color: white;
+    text-decoration: none;
+}
+
+.items a:hover{
+    color: #1522D1;
+}
+
+.info{
+    display: none;
+}
+
+.navLogo{
     width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    color: white;
+}
+
+.navLogo h2{
+    font-weight: 300;
+}
+
+.navLogo img{
+    width: 20%;
+}
+
+.logo{
+    width: 40%;
     display: flex;
     align-items: center;
     justify-content: start;
@@ -38,31 +71,31 @@ img{
     width: 20%;
 }
 
-.items{
+.auth{
     display: flex;
-    justify-content: end;
+    justify-content: center;
     align-items: center;
+    width: 30%;
     gap: 20px;
-    width: 80%;
 }
 
-.items a{
+.auth a{
     color: white;
     text-decoration: none;
 }
 
-.items a:hover{
+.auth a:hover{
     color: #1522D1;
 }
 
 .login{
     margin-right: 20px;
-    background-color: #1522D1;
-    border: none;
+    border: 1px solid white;
+    background-color: transparent;
     color: white;
     border-radius: 10px;
-    width: 10%;
-    height: 3vh;
+    height: 5vh;
+    width: 20%;
 }
 
 .login:hover{
@@ -72,11 +105,11 @@ img{
 }
 
 .content{
-      flex: 1 0 auto;
+    flex: 1 0 auto;
 }
 
 footer{
-    flex-shrink: 0;
+    // flex-shrink: 0;
     background-color: #2E2E2E;
     height: 10vh;
     display: flex;
@@ -152,6 +185,11 @@ footer{
 }
 
 @media(max-width: 768px){
+    .info{
+        display: flex;
+        width: 100%;
+    }
+
     .logo{
         width: 80% !important;
     }
@@ -250,6 +288,11 @@ footer{
 }
 
 @media(max-width: 425px){
+    .info{
+        display: flex;
+        width: 100%;
+    }
+
     .logo{
         width: 80% !important;
     }

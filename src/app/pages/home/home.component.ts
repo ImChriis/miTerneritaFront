@@ -10,7 +10,7 @@ import { Event } from '../../@core/models/event.model';
   selector: 'app-home',
   imports: [
     CommonModule,
-    RouterLink
+    // RouterLink
 ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
