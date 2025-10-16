@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   events$!: Observable<Event[]>
   slideIndex = signal(0);
   private intervalId: any;
+  selectedIndex = 0;
 
   @ViewChild('eventsGrid') eventsSection!: ElementRef;
   @ViewChild('zones') zonesSection!: ElementRef;
@@ -59,6 +60,29 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     })
   )
 }
+
+ events = [
+    { title: 'Halloween Event', description: 'Written by Taylor Swift & Aaron Dessner', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo1.jpg' },
+    { title: 'Cardigan', description: 'Written by Taylor Swift & Aaron Dessner', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo3.jpg' },
+    { title: 'The Last Great American Dynasty', description: 'Written by Taylor Swift & Aaron Dessner', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo2.jpg' },
+    { title: 'Exile', description: 'Written by Taylor Swift & Justin Vernon', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo3.jpg' },
+    { title: 'My Tears Ricochet', description: 'Written by Taylor Swift', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo2.jpg' },
+  ];
+
+  selectEvent(index: number){
+    this.selectedIndex = index;
+  }
+
+  // Returns a CSS background-image value for the selected event.
+  get selectedBackground(): string {
+    const ev = this.events && this.events[this.selectedIndex];
+    if (!ev) {
+      return '';
+    }
+    // Prefer `foto`, fall back to `fondo`, `image` or `imagen` depending on source
+    const url = (ev as any).foto ?? (ev as any).fondo ?? (ev as any).image ?? (ev as any).imagen;
+    return url ? `url('${url}')` : '';
+  }
 
 ngOnDestroy() {
   if (this.intervalId) {

@@ -41,118 +41,28 @@
 </div>
 
 <div class="content" >
-  <div class="events"  #eventsGrid>
+  <div class="events"  #eventsGrid [style.background-image]="selectedBackground">
     <div class="title">
       <h1>Eventos</h1>
     </div>
-
-    <div class="eventsGrid">
-      <div class="event">
-        <div class="eventImg">
-          <img
-            class="imgEvent"
-            src="../../../assets/img/chicago.jpg"
-            alt=""
-          />
-        </div>
-
-        <div class="eventInfo">
-          <h2>Latino Gang</h2>
-          <div class="date">
+     <div class="eventsCarousel">
+        <div class="card" *ngFor="let event of events; let i = index" [class.active]="i === selectedIndex" (click)="selectEvent(i)">
+        <img [src]="event.image" [alt]="event.title">
+        <div class="info">
+          <h2>{{ event.title }}</h2>
+          <div class="infoDate">
             <p>
-              <i class="pi pi-calendar"></i> 15 de marzo
+              <i class="pi pi-calendar"></i> 31/10/2025
             </p>
             <p>
               <i class="pi pi-clock"></i> 10:00 PM
             </p>
           </div>
-          <div class="btn">
-            <button class="btn3" (click)="goToEvent()">Reservar</button>
-          </div>
+          <a (click)="goToEvent()">Ver más</a>
         </div>
-      </div>
-
-            <div class="event">
-        <div class="eventImg">
-          <img
-            class="imgEvent"
-            src="../../../assets/img/sillas1.jpg"
-            alt=""
-          />
         </div>
-
-        <div class="eventInfo">
-          <h2>Latino Gang</h2>
-          <div class="date">
-            <p>
-              <i class="pi pi-calendar"></i> 15 de marzo
-            </p>
-            <p>
-              <i class="pi pi-clock"></i> 10:00 PM
-            </p>
-          </div>
-          <div class="btn">
-            <button class="btn3" (click)="goToEvent()">Reservar</button>
-          </div>
-        </div>
-      </div>
-
-            <div class="event">
-        <div class="eventImg">
-          <img
-            class="imgEvent"
-            src="../../../assets/img/jordan.jpg"
-            alt=""
-          />
-        </div>
-
-        <div class="eventInfo">
-          <h2>Latino Gang</h2>
-          <div class="date">
-            <p>
-              <i class="pi pi-calendar"></i> 15 de marzo
-            </p>
-            <p>
-              <i class="pi pi-clock"></i> 10:00 PM
-            </p>
-          </div>
-          <div class="btn">
-            <button class="btn3" (click)="goToEvent()">Reservar</button>
-          </div>
-        </div>
-      </div>
-
-            <div class="event">
-        <div class="eventImg">
-          <img
-            class="imgEvent"
-            src="../../../assets/img/sillas2.jpg"
-            alt=""
-          />
-        </div>
-
-        <div class="eventInfo">
-          <h2>Latino Gang</h2>
-          <div class="date">
-            <p>
-              <i class="pi pi-calendar"></i> 15 de marzo
-            </p>
-            <p>
-              <i class="pi pi-clock"></i> 10:00 PM
-            </p>
-          </div>
-          <div class="btn">
-            <button class="btn3" (click)="goToEvent()">Reservar</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
+     </div>
   </div>
-
-  <!-- <div class="add">    
-    <img class="addImg" src="../../../assets/img/evento.jpg" alt="" />
-  </div> -->
 </div>
 
 <div class="zones">
@@ -174,10 +84,22 @@
         <img src="../../../assets/img/zona2.jpg" alt="Imagen 3" />
           <div class="bento-overlay">Barra</div>
       </div>
+      
+      <!-- bottom full-width row inside the bento grid with two images side-by-side -->
+      <div class="bento-bottom-row">
+        <div class="pair-item-small">
+          <img src="../../../assets/img/sillas1.jpg" alt="Imagen abajo 1" />
+          <div class="bento-overlay">Sala</div>
+        </div>
+        <div class="pair-item-small">
+          <img src="../../../assets/img/sillas2.jpg" alt="Imagen abajo 2" />
+          <div class="bento-overlay">Terraza</div>
+        </div>
+      </div>
     </div>
   </div>
 
-    <div class="imageGrid"  #zones2>
+    <!-- <div class="imageGrid"  #zones2>
       <div class="imageItem">
         <img src="../../../assets/img/sillas2.jpg" alt="Imagen 1" />
         <div class="overlay">Lobby</div>
@@ -194,7 +116,7 @@
         <img src="../../../assets/img/chicago.jpg" alt="Imagen 4" />
         <div class="overlay">Terraza</div>
       </div>
-    </div>
+    </div> -->
 </div>
 
 

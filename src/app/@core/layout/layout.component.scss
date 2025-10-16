@@ -9,10 +9,10 @@ nav{
     justify-content: space-around;
     align-items: center;
     background-color: #2E2E2E;
-    // position: sticky;
-    // top: 0;
-    // z-index: 1000;
-    height: 10vh;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 7vh;
     width: 100%;
 }
 
@@ -30,7 +30,7 @@ nav{
 }
 
 .items a:hover{
-    color: #1522D1;
+    opacity: 0.9;
 }
 
 .info{
@@ -85,7 +85,7 @@ img{
 }
 
 .auth a:hover{
-    color: #1522D1;
+    opacity: 0.9;
 }
 
 .login{
@@ -93,14 +93,13 @@ img{
     border: 1px solid white;
     background-color: transparent;
     color: white;
-    border-radius: 10px;
-    height: 5vh;
+    border-radius: 50px;
+    height: 3vh;
     width: 20%;
 }
 
 .login:hover{
     cursor: pointer;
-    //  background-color: #2345a1;
     opacity: 0.9;
 }
 
@@ -144,7 +143,7 @@ footer{
 }
 
 .socialMedia i{
-    font-size: 30px !important;
+    font-size: 25px !important;
     color: white;
 }
 
@@ -161,30 +160,20 @@ footer{
 }
 
 @media(max-width: 1024px){
-    .logo{
-        width: 50%;
-    }
-
-    .logo img{
-        width: 15%;
-    }
-
-    .logo h2{
-        font-size: 25px;
-    }
-
-    .items{
-        width: 50%;
-    }
-    
-    .login{
-        width: 20%;
-        height: 4vh;
-        font-size: 14px;
+    .navLogo{
+        width: 30%;
     }
 }
 
 @media(max-width: 768px){
+    .navLogo{
+        display: none;
+    }
+
+    .auth{
+        display: none;
+    }
+
     .info{
         display: flex;
         width: 100%;

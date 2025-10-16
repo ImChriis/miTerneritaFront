@@ -15,8 +15,12 @@
     font-style: normal;
 }
 
-p, h1, h2, h3, h4, h5, h6, span, a, li, label, button, small {
+p, span, a, li, label, button, small {
    font-family: "AlteHaasGrotesk" !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "AlteHaasGroteskBold" !important;
 }
 
 
