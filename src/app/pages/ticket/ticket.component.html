@@ -1,4 +1,5 @@
-<div class="sections">
+<div class="container">
+    <div class="sections">
     <p>Detalles del evento ></p> <p  class="selected">Espacios ></p> <p>Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
 </div>
 
@@ -18,22 +19,24 @@
     </div>
 
     <form action="">
-        <div class="inputGroup">
-            <label for="zone">Tipo de espacio</label>
-            <select name="zone" id="zone">
-                <option value="vip">VIP</option>
-                <option value="general">General</option>
-                <option value="preferencial">Preferencial</option>
-            </select>
-        </div>
+        <div class="inputs">
+              <div class="inputGroup">
+                <label for="zone">Tipo de espacio</label>
+                <select name="zone" id="zone">
+                    <option value="vip">VIP</option>
+                    <option value="general">General</option>
+                    <option value="preferencial">Preferencial</option>
+                </select>
+            </div>
 
-        <div class="inputGroup">
-            <label for="zone">Cantidad</label>
-        <div class="cantidad-input">
-            <button type="button" (click)="decrement()" [disabled]="cantidad <= 1">-</button>
-            <input type="number" id="cantidad" [value]="cantidad" readonly>
-            <button type="button" (click)="increment()" [disabled]="cantidad >= 10">+</button>
-        </div>
+            <div class="inputGroup cantidad">
+                <label for="zone">Cantidad</label>
+                <div class="cantidad-input">
+                    <button type="button" (click)="decrement()" [disabled]="cantidad <= 1">-</button>
+                    <input type="number" id="cantidad" [value]="cantidad" readonly>
+                    <button type="button" (click)="increment()" [disabled]="cantidad >= 10">+</button>
+                </div>
+            </div>
         </div>
    
 
@@ -49,24 +52,24 @@
 
         <div class="summaryList">
             <div class="summaryInfo">
+                <i class="pi pi-times delete"></i>
                 <p>Tipo de espacio: <span>VIP</span></p>
                 <p>Cantidad: <span>2</span></p>
                 <p>Total: <span>$200.00</span></p>
-                <button class="cancelBtn">Quitar</button>
             </div>
 
             <div class="summaryInfo">
+                <i class="pi pi-times delete"></i>
                 <p>Tipo de espacio: <span>VIP</span></p>
                 <p>Cantidad: <span>2</span></p>
                 <p>Total: <span>$200.00</span></p>
-                <button class="cancelBtn">Quitar</button>
             </div>
 
-                        <div class="summaryInfo">
+            <div class="summaryInfo">
+                <i class="pi pi-times delete"></i>
                 <p>Tipo de espacio: <span>VIP</span></p>
                 <p>Cantidad: <span>2</span></p>
                 <p>Total: <span>$200.00</span></p>
-                <button class="cancelBtn">Quitar</button>
             </div>
         </div>
     </div>
@@ -75,10 +78,5 @@
             <button class="btn2" routerLink="/home/event/ticket/consume">Continuar</button>
         </div>
   </div>
-  
-
-  <div class="imagen">
-    <img class="imgEvents" src="../../../assets/img/chicago.jpg" alt="" />
-  </div>
 </div>
-
+</div>
