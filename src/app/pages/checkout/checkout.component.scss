@@ -1,10 +1,18 @@
+.container{
+  width: 100%;
+  height: auto;
+  background-image: url('../../../assets/img/halloween4.webp');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .sections{
     display: flex;
     justify-content: start;
     align-items: center;
     gap: 10px;
     margin-left: 5%;
-    margin-top: 20px;
     margin-bottom: 20px;
 }
 
@@ -18,8 +26,8 @@
     align-items: start;
     height: auto;
     margin-top: 25px;
-    margin-bottom: 25px;
     flex-direction: row;
+    padding-bottom: 99px;
 }
 
 .details{
@@ -41,8 +49,8 @@
 }
 
 .title h1{
-    color: #EFE7D4;
-    font-size: 50px;
+    color: white;
+    font-size: 80px;
     font-weight: 900;
 }
 
@@ -97,7 +105,7 @@ label{
 }
 
 input{
-    height: 3vh;
+    height: 4vh;
     width: 100%;
     border-radius: 10px;
     border: none;
@@ -113,15 +121,15 @@ select{
 }
 
 .btn2 {
-  background: #1522D1;
-  color: #EFE7D4 ;
-  border: none;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
   padding: 10px 24px;
-  border-radius: 10px;
+  border-radius: 50px;
   cursor: pointer;
   margin-top: 20px;
   width: 30%;
-  height: 5vh;
+  height: 3.5vh;
   font-weight: bold;
   margin-bottom: 10px;
 }

@@ -1,0 +1,337 @@
+::ng-deep{
+    body::-webkit-scrollbar {
+      width: 0px;
+      background: transparent;
+    }
+  }
+
+  .title{
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 50px;
+    height: auto;
+  }
+  
+  h1, span {
+    font-weight: bold;
+  }
+  
+  td,
+  th {
+    color: white;
+    font-size: 15px;
+    border: transparent;
+    text-align: center;
+  }
+  
+  .blurred-background {
+    filter: blur(4px);
+    transition: filter 0.3s ease;
+  }
+  
+  th {
+    background-color : #3b3d47 !important;
+    border: transparent;
+    font-weight: normal;
+    padding: 0;
+    height: 45px !important;
+  }
+  
+  :host ::ng-deep p-table tr:nth-child(odd) {
+    background-color: #21232D !important;
+  }
+  
+  
+  :host ::ng-deep p-table tr:nth-child(even) {
+    background-color: rgb(25, 28, 36) !important;
+  }
+  
+  .check-estado{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  input:focus {
+    box-shadow: none;
+  }
+  
+  .border {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+  
+  .border2 {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  .p-toolbar-group-start {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    width: 100%;
+  }
+  
+  .rounded-button {
+    border-radius: 13px;
+  }
+  
+  ::ng-deep {
+    .p-inputtext {
+      background-color: #1a1b20;
+    }
+
+    .p-datatable-wrapper{
+      margin-right: 15px;
+    }
+    .p-button{
+      background-color: #26cf0f;
+      border-color: transparent;
+    }
+    .p-dropdown-trigger {
+      background-color: #191c24;
+    }
+    .custom-dialog2 {
+      border: none;
+    }
+    .custom-dialog2 .p-dialog-header {
+      display: flex;
+      justify-content: center;
+    }
+    .custom-dialog2 .p-dialog-header .p-dialog-title {
+      font-size: 20px;
+      flex-grow: 1;
+      text-align: center;
+    }
+    .custom-dialog2 .p-dialog-header .p-dialog-header-icons {
+      position: absolute;
+      right: 2%;
+      top: 70%;
+      transform: translateY(-50%);
+    }
+    .p-dropdown-items {
+      background-color: #191c24;
+    }
+    .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus {
+      background-color: #798002;
+    }
+    .custom-dialog {
+      border: none;
+    }
+    .custom-dialog .p-dialog-header {
+      display: flex;
+      justify-content: center;
+    }
+    .custom-dialog .p-dialog-header .p-dialog-title {
+      font-size: 18px;
+      flex-grow: 1;
+      text-align: center;
+    }
+    .custom-dialog .p-dialog-header .p-dialog-header-icons {
+      position: absolute;
+      right: 2%;
+      top: 6%;
+      transform: translateY(-50%);
+    }
+  
+    .p-toolbar {
+      background-color: #22242e !important;
+      border-color: #21232d !important;
+    }
+  
+    .p-datatable-header {
+      background-color: #22242e !important;
+      border-color: #22242e !important;
+    }
+  
+    .p-paginator {
+      background-color: #22242e !important;
+      border-color: #22242e !important;
+    }
+  
+    .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+      background: #EEFB07 !important;
+      border-color: #EEFB07 !important;
+    }
+  
+    .btnEdit {
+      background-color: transparent !important;
+    //   color: #EEFB07 !important;
+      border: transparent;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .p-button:focus{
+      outline: none !important;
+  
+    }
+    // .btnEdit:hover {
+    //   filter: brightness(1.2);
+    // }
+  
+    .btnDelete {
+      background-color: transparent !important;
+      color: #f16363 !important;
+      border: transparent;
+      font-size: 25px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  
+    // .btnDelete:hover {
+    //   filter: brightness(1.2);
+    // }
+  
+    .p-badge-warning {
+      margin-left: 0px;
+      background-color: transparent !important;
+      color: rgb(235, 165, 59) !important;
+      font-size: 17px;
+    }
+  
+  
+    .p-badge-success {
+      margin-left: 0px ;
+      background-color: transparent !important;
+      color: rgb(112, 223, 112) !important;
+      font-size: 16px;
+    }
+  
+    .p-badge-danger {
+      margin-left: 0px ;
+      background-color: transparent !important;
+      color: #f16363 !important;
+      font-size: 16px;
+    }
+  
+    .p-dialog-content {
+      background-color: #1a1b20;
+      color: #EEFB07;
+    }
+  
+    .p-dialog-header {
+      background-color: #1a1b20;
+      color: #EEFB07;
+    }
+  
+    // .p-button {
+    //   background-color: #3b3d47 ;
+    //   border-color: transparent;
+    // }
+  
+    .p-dialog-header-close-icon {
+      color: #EEFB07;
+    }
+  }
+  
+  .flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: -5px;
+    background-color: #22242e !important;
+  }
+  
+  .toobar {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .toobar span {
+    margin-left: -8px;
+  }
+  
+  .p-inputtext {
+    width: 260px;
+    font-family: poppins;
+    background-color: #191c24;
+    border-radius: 10px;
+    height: 45px;
+  }
+  
+  .btn {
+    background-color: transparent !important;
+    border-radius: 50px;
+    height: 45px;
+    width: 250px;
+    color: white;
+    border: 1px solid white !important;
+    font-family: poppins;
+    &:hover {
+     background-color: transparent !important;
+     color: white;
+    }
+  }
+  
+  .p-button :active {
+    opacity: 0.9;
+  }
+  
+  .column-table-left {
+    border-radius: 10px 0px 0px 10px;
+  }
+  
+  .column-table-right {
+    border-radius: 0px 10px 10px 0px;
+  }
+  
+  .thstyles {
+    justify-content: center;
+  }
+  
+  .piso {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  
+  .turno {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+  }
+  
+  .titulo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .estado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  
+  .option{
+    display: flex;
+    justify-content: center;
+    .pi {
+      font-size: 16px;
+      margin: 5px;
+  
+    }
+  }
+  
+  
+  

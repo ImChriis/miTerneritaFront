@@ -1,10 +1,18 @@
+.container{
+  width: 100%;
+  height: auto;
+//   background-image: url('../../../assets/img/halloween4.webp');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .sections{
     display: flex;
     justify-content: start;
     align-items: center;
     gap: 10px;
     margin-left: 5%;
-    margin-top: 20px;
     margin-bottom: 20px;
 }
 
@@ -18,8 +26,8 @@
     align-items: end;
     height: auto;
     margin-top: 25px;
-    margin-bottom: 25px;
     flex-direction: row;
+    padding-bottom: 150px;
 }
 
 .payment{
@@ -34,6 +42,7 @@
 
 .payment .title h1{
     font-weight: 600;
+    font-size: 80px;
 }
 
 .inputGroup{
@@ -61,7 +70,7 @@ label{
 }
 
 input{
-    height: 3vh;
+    height: 4vh;
     width: 100%;
     border-radius: 10px;
     border: none;
@@ -70,7 +79,7 @@ input{
 }
 
 select{
-    height: 3.3vh;
+    height: 4vh;
     width: 100%;
     border-radius: 10px;
     border: none;
@@ -89,14 +98,14 @@ select{
 }
 
 .fileBtn{
-  background: #1522D1;
-  color: #EFE7D4 ;
-  border: none;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
   padding: 10px 24px;
-  border-radius: 10px;
+  border-radius: 50px;
   cursor: pointer;
   width: 30%;
-  height: 5vh;
+  height: 3.5vh;
   font-weight: bold;
 }
 
@@ -107,14 +116,14 @@ select{
 }
 
 .btn2 {
-  background: #1522D1;
-  color: #EFE7D4 ;
-  border: none;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
   padding: 10px 24px;
-  border-radius: 10px;
+  border-radius: 50px;
   cursor: pointer;
   width: 15%;
-  height: 5vh;
+  height: 3.5vh;
   font-weight: bold;
   margin-bottom: 10px;
 }

@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
   this.intervalId = setInterval(() => {
     this.nextSlide();
-  }, 3500); // Cambia cada 3.5 segundos
+  }, 3500);
 
   this.events$ = this.eventService.getEvents().pipe(
     tap(events => {
@@ -73,13 +73,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedIndex = index;
   }
 
-  // Returns a CSS background-image value for the selected event.
   get selectedBackground(): string {
     const ev = this.events && this.events[this.selectedIndex];
     if (!ev) {
       return '';
     }
-    // Prefer `foto`, fall back to `fondo`, `image` or `imagen` depending on source
+
     const url = (ev as any).foto ?? (ev as any).fondo ?? (ev as any).image ?? (ev as any).imagen;
     return url ? `url('${url}')` : '';
   }
@@ -122,16 +121,12 @@ ngOnDestroy() {
   formatTime(time: string): string {
     if (!time) return '';
   
-    // Divide la hora en partes (HH:mm:ss)
     const [hours, minutes, seconds] = time.split(':').map(Number);
   
-    // Determina AM o PM
     const ampm = hours >= 12 ? 'PM' : 'AM';
   
-    // Convierte a formato de 12 horas
-    const formattedHours = hours % 12 || 12; // La hora 0 debe ser 12
+    const formattedHours = hours % 12 || 12;
   
-    // Formatea los minutos con dos dígitos
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
   
     return `${formattedHours}:${formattedMinutes} ${ampm}`;
