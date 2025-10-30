@@ -108,7 +108,7 @@ img{
 }
 
 footer{
-    // flex-shrink: 0;
+    flex-shrink: 0;
     background-color: #2E2E2E;
     height: 10vh;
     display: flex;
@@ -157,6 +157,12 @@ footer{
 
 .mobileFooter{
     display: none;
+}
+
+@media(min-width: 1366px){
+    footer{
+        height: 15vh;
+    }
 }
 
 @media(max-width: 1024px){
