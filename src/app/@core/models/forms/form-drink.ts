@@ -1,6 +1,8 @@
+import { FormControl } from "@angular/forms";
+
 export interface FormDrink{
-    idDrinks: number;
-    description: string;
-    price: number;
-    status: number;
+    description: FormControl<string>;
+    price: FormControl<number | null>;
+    status: FormControl<number | null>;
+    image: FormControl<File | null>;
 }

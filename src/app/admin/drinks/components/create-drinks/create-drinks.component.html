@@ -1,1 +1,22 @@
-<p>create-drinks works!</p>
+<div class="container">
+    <form [formGroup]="drinksForm" (ngSubmit)="onSubmit()">
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="description" type="text" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Precio">Precio</label>
+            <input pInputText id="Precio" formControlName="price" type="number" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <input pInputText id="Estado" formControlName="status" type="number" />
+        </div>
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Crear bebida" [disabled]="drinksForm.invalid"></button>
+        </div>
+    </form>
+</div>

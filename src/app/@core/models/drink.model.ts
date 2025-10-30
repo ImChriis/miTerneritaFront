@@ -3,4 +3,5 @@ export interface Drink{
     description: string;
     price: number;
     status: number;
+    image: File;
 }

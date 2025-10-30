@@ -41,6 +41,7 @@ export class DrinksComponent {
   openCreateModal(){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(CreateDrinksComponent, {
+      header: 'Agregar Bebida',
       width: '50vw',
       // height: '65vh',
       modal: true,
