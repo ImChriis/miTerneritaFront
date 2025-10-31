@@ -168,30 +168,31 @@
       border-color: #EEFB07 !important;
     }
   
-    .btnEdit {
-      background-color: transparent !important;
+    // .btnEdit {
+    //   background-color: transparent !important;
     //   color: #EEFB07 !important;
-      border: transparent;
-      font-size: 25px;
-      cursor: pointer;
-    }
+    //   border: transparent;
+    //   font-size: 25px;
+    //   cursor: pointer;
+    // }
 
-    .p-button:focus{
-      outline: none !important;
+    // .p-button:focus{
+    //   outline: none !important;
   
-    }
+    // }
+
     // .btnEdit:hover {
     //   filter: brightness(1.2);
     // }
   
-    .btnDelete {
-      background-color: transparent !important;
-      color: #f16363 !important;
-      border: transparent;
-      font-size: 25px;
-      cursor: pointer;
-      margin-left: 10px;
-    }
+    // .btnDelete {
+    //   background-color: transparent !important;
+    //   color: #f16363 !important;
+    //   border: transparent;
+    //   font-size: 25px;
+    //   cursor: pointer;
+    //   margin-left: 10px;
+    // }
   
     // .btnDelete:hover {
     //   filter: brightness(1.2);
@@ -204,39 +205,20 @@
       font-size: 17px;
     }
   
-  
-    .p-badge-success {
-      margin-left: 0px ;
-      background-color: transparent !important;
-      color: rgb(112, 223, 112) !important;
-      font-size: 16px;
-    }
-  
-    .p-badge-danger {
-      margin-left: 0px ;
-      background-color: transparent !important;
-      color: #f16363 !important;
-      font-size: 16px;
-    }
-  
     .p-dialog-content {
       background-color: #1a1b20;
-      color: #EEFB07;
+      color: white;
     }
   
     .p-dialog-header {
       background-color: #1a1b20;
-      color: #EEFB07;
+      color: white;
     }
   
     // .p-button {
     //   background-color: #3b3d47 ;
     //   border-color: transparent;
     // }
-  
-    .p-dialog-header-close-icon {
-      color: #EEFB07;
-    }
   }
   
   .flex-row {
@@ -278,11 +260,9 @@
     &:hover {
      background-color: transparent !important;
      color: white;
+     opacity: 0.9;
+     cursor: pointer;
     }
-  }
-  
-  .p-button :active {
-    opacity: 0.9;
   }
   
   .column-table-left {
@@ -331,6 +311,20 @@
       margin: 5px;
   
     }
+  }
+
+  .disponible {
+    margin-left: 0px ;
+    background-color: transparent !important;
+    color: rgb(112, 223, 112) !important;
+    font-size: 16px;
+  }
+  
+  .noDisponible {
+    margin-left: 0px ;
+    background-color: transparent !important;
+    color: #f16363 !important;
+    font-size: 16px;
   }
   
   

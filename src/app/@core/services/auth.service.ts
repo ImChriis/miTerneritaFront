@@ -15,7 +15,7 @@ export class AuthService {
   login(body: Partial<User>){
     return this.http.post<User>(`${this.api}/auth/login`, body).pipe(
       tap((user: User) => {
-        localStorage.setItem('token', user.token || ''),
+        localStorage.setItem('token', user.access_token || ''),
         localStorage.setItem('user', JSON.stringify(user));
       })
     )

@@ -10,10 +10,21 @@
             <input pInputText id="Precio" formControlName="price" type="number" />
         </div>
 
-        <div class="formGroup">
+        <!-- <div class="formGroup">
             <label for="Estado">Estado</label>
             <input pInputText id="Estado" formControlName="status" type="number" />
+        </div> -->
+
+        <div class="image">
+        <div class="imageTitle">
+            <p>Adjunta la foto que tendrá la bebida</p>
         </div>
+
+        <div class="upload">
+            <input #fileInput type="file" (change)="onFileSelect($event)" accept="image/*" hidden />
+            <button type="button" class="custom-file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
+        </div>
+    </div>
 
         <div class="btnContainer">
             <button class="btn" pButton type="submit" label="Crear bebida" [disabled]="drinksForm.invalid"></button>

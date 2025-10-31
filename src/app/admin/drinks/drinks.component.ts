@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
@@ -10,6 +10,8 @@ import { TableModule } from 'primeng/table';
 import { DrinksService } from '../../@core/services/drinks.service';
 import { MessageService } from 'primeng/api';
 import { CreateDrinksComponent } from './components/create-drinks/create-drinks.component';
+import { map, Observable } from 'rxjs';
+import { Drink } from '../../@core/models/drink.model';
 
 
 @Component({
@@ -29,14 +31,17 @@ import { CreateDrinksComponent } from './components/create-drinks/create-drinks.
   templateUrl: './drinks.component.html',
   styleUrl: './drinks.component.scss'
 })
-export class DrinksComponent {
+export class DrinksComponent implements OnInit{
   private drinksService = inject(DrinksService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   ref: DynamicDialogRef | undefined;
-
   isModalOpen = false;
-  zones$: any;
+  drinks$!: Observable<Drink[]>;
+
+  ngOnInit(): void {
+    this.drinks$ = this.drinksService.getAllDrinks();
+  }
 
   openCreateModal(){
     this.isModalOpen = true;

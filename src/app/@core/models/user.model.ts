@@ -8,5 +8,5 @@ export interface User {
     password: string;
     phone: string;
     idRole: number;
-    token: string;
+    access_token: string;
 }

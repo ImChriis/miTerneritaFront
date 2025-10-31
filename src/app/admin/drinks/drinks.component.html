@@ -1,16 +1,16 @@
 <body class="container">
     <div  [class.blurred-background]="isModalOpen">
-      <!-- @if(
-        zones$ | async
-        ; as state) { -->
+      @if(
+        drinks$ | async
+        ; as state) {
 
         <div class="title">
-          <h1>Zonas</h1>
+          <h1>Bebidas</h1>
         </div>
 
         <p-table
           #dt1
-          
+          [value]="state"
           dataKey="id"
           [rows]="10"
           [showCurrentPageReport]="true"
@@ -33,13 +33,10 @@
                   </span>
                 </div>
                 <button
-                  pButton
-                  pRipple
                   class="btn"
                   icon=""
-                  label="Agregar Bebida"
                   (click)="openCreateModal()"
-                ></button>
+                >Agregar Bebida</button>
               </div>
             </ng-template>
             <ng-template pTemplate="header">
@@ -49,15 +46,6 @@
                 </th>
                 <th style="min-width: 10rem">
                   <div class="flex thstyles">Nombre</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Cantidad de asientos</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Evento</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Lugar</div>
                 </th>
                 <th style="min-width: 10rem">
                   <div class="flex thstyles">Precio</div>
@@ -70,32 +58,23 @@
                 </th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-zone class="p-table">
+            <ng-template pTemplate="body" let-drink class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                  {{ zone.idZona }}
+                  {{ drink.idDrinks }}
                 </td>
                 <td>
-                  {{ zone.descripcion }}
+                  {{ drink.description }}
                 </td>
                 <td>
-                  {{ zone.sillas }}
+                  {{ drink.price }}
                 </td>
                 <td>
-                  <!-- {{ getPlaceName(zone.idLugar) }} -->
-                </td>
-                <td>
-                  <!-- {{ getEventName(zone.idEvento) }} -->
-                </td>
-                <td>
-                  {{ zone.precio }} Bs
-                </td>
-                <td>
-                  <!-- @if (zone.status == zoneStatus.activo) {
-                    <p-badge severity="success" [value]="zone.status"></p-badge>
+                  @if (drink.status === 1) {
+                    <p class="disponible">Disponible</p>
                   }  @else {
-                    <p-badge severity="danger" [value]="zone.status"></p-badge>
-                  } -->
+                    <p class="noDisponible">No Disponible</p>
+                  }
                 </td>
                 <td class="text-center column-table-right">
                   <div class="option">
@@ -111,7 +90,7 @@
               </tr>
             </ng-template>
           </p-table>
-        <!-- } -->
+        }
       </div>
     </body>
     
