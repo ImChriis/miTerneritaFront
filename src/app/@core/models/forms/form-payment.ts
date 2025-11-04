@@ -1,0 +1,28 @@
+// ...existing code...
+import { FormControl } from "@angular/forms";
+
+export interface FormPayment {
+  noDocumento?: FormControl<string | null>;
+  date: FormControl<string>; // 'YYYY-MM-DD'
+  time: FormControl<string>; // 'HH:MM:SS
+  idUser?: FormControl<number | null>;
+  idEvents?: FormControl<number | null>;
+  idConsumeDetails?: FormControl<number | null>;
+  totalBaseImponible?: FormControl<number | null>;
+  impuestoBaseImponible?: FormControl<number | null>;
+  totalExento?: FormControl<number | null>;
+  descuento?: FormControl<number | null>;
+  subtotalGeneral?: FormControl<number | null>;
+  porcentajeIgtf?: FormControl<number | null>;
+  totalIgtf?: FormControl<number | null>;
+  impuesto?: FormControl<number | null>;
+  porcentajeIva?: FormControl<number | null>;
+  totalGeneral?: FormControl<number | null>;
+  tasaDolar?: FormControl<number | null>;
+  montoDolar?: FormControl<number | null>;
+  comprobante?: FormControl<string | null>;
+  banco?: FormControl<string | null>;
+  referencia?: FormControl<string | null>;
+  fechaTransferencia?: FormControl<string | null>; // 'YYYY-MM-DD'
+  status: FormControl<number>;
+}

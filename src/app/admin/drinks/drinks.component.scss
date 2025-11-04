@@ -168,36 +168,6 @@
       border-color: #EEFB07 !important;
     }
   
-    // .btnEdit {
-    //   background-color: transparent !important;
-    //   color: #EEFB07 !important;
-    //   border: transparent;
-    //   font-size: 25px;
-    //   cursor: pointer;
-    // }
-
-    // .p-button:focus{
-    //   outline: none !important;
-  
-    // }
-
-    // .btnEdit:hover {
-    //   filter: brightness(1.2);
-    // }
-  
-    // .btnDelete {
-    //   background-color: transparent !important;
-    //   color: #f16363 !important;
-    //   border: transparent;
-    //   font-size: 25px;
-    //   cursor: pointer;
-    //   margin-left: 10px;
-    // }
-  
-    // .btnDelete:hover {
-    //   filter: brightness(1.2);
-    // }
-  
     .p-badge-warning {
       margin-left: 0px;
       background-color: transparent !important;
@@ -309,7 +279,6 @@
     .pi {
       font-size: 16px;
       margin: 5px;
-  
     }
   }
 
@@ -326,6 +295,36 @@
     color: #f16363 !important;
     font-size: 16px;
   }
+
+    .btnEdit {
+      background-color: transparent !important;
+      color: #EEFB07 !important;
+      border: transparent;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .p-button:focus{
+      outline: none !important;
+  
+    }
+
+    .btnEdit:hover {
+      filter: brightness(1.2);
+    }
+  
+    .btnDelete {
+      background-color: transparent !important;
+      color: #f16363 !important;
+      border: transparent;
+      font-size: 25px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  
+    .btnDelete:hover {
+      filter: brightness(1.2);
+    }
   
   
   

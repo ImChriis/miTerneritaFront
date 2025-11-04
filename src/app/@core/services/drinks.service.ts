@@ -17,6 +17,7 @@ export class DrinksService {
 
         const sorted = items.sort((a: any, b: any) => (b.idDrinks - a.idDrinks));
         return sorted.map((drink: any) => ({ ...drink }));
+        console.log('Bebidas obtenidas:', sorted);
       }),
       catchError((error) => {
         console.error('Error al obtener las bebidas:', error);
@@ -27,6 +28,14 @@ export class DrinksService {
 
   createDrink(data: any){
     return this.http.post(`${this.api}/drinks`, data);
+  }
+
+  updateDrink(id: number, data: any){
+    return this.http.put(`${this.api}/drinks/${id}`, data);
+  }
+
+  updateDrinkJson(id: number, data: any) {
+    return this.http.put(`${this.api}/drinks/${id}`, data);
   }
 }
   

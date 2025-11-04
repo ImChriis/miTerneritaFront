@@ -72,6 +72,8 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
 
+        this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Inicio de sesión exitoso'});
+        
         const userRole = res.Rol;
 
         if(userRole !== 'User') {
@@ -80,7 +82,6 @@ export class LoginComponent {
           this.router.navigateByUrl('/home');
         }
 
-        this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Inicio de sesión exitoso'});
       },
 
       error: (err) => {

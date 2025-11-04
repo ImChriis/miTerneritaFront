@@ -18,11 +18,13 @@
         <h3>Selecciona tu espacio</h3>
     </div>
 
-    <form action="">
+    <form action="" (submit)="$event.preventDefault()">
         <div class="inputs">
               <div class="inputGroup">
                 <label for="zone">Tipo de espacio</label>
-                <select name="zone" id="zone">
+                <!-- Si tienes un array `zones` en el componente, usa *ngFor y [value]="zone.idZona" -->
+                <select name="zone" id="zone" [(ngModel)]="selectedZone" required>
+                    <option value="" disabled selected>Selecciona...</option>
                     <option value="vip">VIP</option>
                     <option value="general">General</option>
                     <option value="preferencial">Preferencial</option>
@@ -38,45 +40,37 @@
                 </div>
             </div>
         </div>
-   
 
         <div class="btnDetails">
-        <button class="btn2">Agregar</button>
+          <!-- llamar al método que añade la selección -->
+          <button class="btn2" type="button" (click)="agregarSeleccion()">Agregar</button>
         </div>
      </form>
 
-     <div class="summary">
-        <div class="summaryTitle">
-            <h3>Seleccion actual</h3>
+     <div class="summary" *ngIf="selected.length > 0">
+
+        <div class="summary" [class.empty]="selected.length === 0">
+      <div class="summaryTitle">
+        <h3>Seleccion actual</h3>
+      </div>
+
+      <div class="summaryList">
+        <div class="summaryInfo" *ngFor="let item of selected; let i = index">
+          <i class="pi pi-times delete" (click)="clearSelection(i)"></i>
+          <p>Tipo de espacio: <span>{{ item.zona }}</span></p>
+          <p>Cantidad: <span>{{ item.cantidad }}</span></p>
+          <p>Total: <span>${{ item.total | number:'1.2-2' }}</span></p>
         </div>
 
-        <div class="summaryList">
-            <div class="summaryInfo">
-                <i class="pi pi-times delete"></i>
-                <p>Tipo de espacio: <span>VIP</span></p>
-                <p>Cantidad: <span>2</span></p>
-                <p>Total: <span>$200.00</span></p>
-            </div>
-
-            <div class="summaryInfo">
-                <i class="pi pi-times delete"></i>
-                <p>Tipo de espacio: <span>VIP</span></p>
-                <p>Cantidad: <span>2</span></p>
-                <p>Total: <span>$200.00</span></p>
-            </div>
-
-            <div class="summaryInfo">
-                <i class="pi pi-times delete"></i>
-                <p>Tipo de espacio: <span>VIP</span></p>
-                <p>Cantidad: <span>2</span></p>
-                <p>Total: <span>$200.00</span></p>
-            </div>
-        </div>
+        <!-- placeholder para reservar espacio cuando no hay items -->
+        <div class="summaryPlaceholder" *ngIf="selected.length === 0"></div>
+      </div>
+    </div>
     </div>
     
-        <div class="btnDetails">
-            <button class="btn2" routerLink="/home/event/ticket/consume">Continuar</button>
+        <div class="btnDetails" *ngIf="selected.length > 0">
+            <button class="btn2" >Continuar</button>
         </div>
-  </div>
+</div>
 </div>
 </div>

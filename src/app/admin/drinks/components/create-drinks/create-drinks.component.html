@@ -24,6 +24,12 @@
             <input #fileInput type="file" (change)="onFileSelect($event)" accept="image/*" hidden />
             <button type="button" class="custom-file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
         </div>
+
+           <!-- Preview -->
+      <div class="image-preview" *ngIf="previewUrl">
+        <img class="preview" [src]="previewUrl" alt="Vista previa" />
+        <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
+      </div>
     </div>
 
         <div class="btnContainer">

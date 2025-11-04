@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api';
 import { CreateDrinksComponent } from './components/create-drinks/create-drinks.component';
 import { map, Observable } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
+import { UpdateDrinksComponent } from './components/update-drinks/update-drinks.component';
 
 
 @Component({
@@ -57,6 +58,25 @@ export class DrinksComponent implements OnInit{
       },
       styleClass: 'custom-dialog'
     });
+    this.ref.onClose.subscribe(() => {
+      this.isModalOpen = false;
+    });
+  }
+
+  openEditModal(drinks: Drink){
+    this.isModalOpen = true;
+    this.ref = this.dialogService.open(UpdateDrinksComponent, {
+      width: '55vw',
+      modal: true,
+      closable: true,
+      data: { drinks },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      styleClass: 'custom-dialog2'
+    });
+
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
     });

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
@@ -22,11 +22,12 @@ import { FormDrink } from '../../../../@core/models/forms/form-drink';
   templateUrl: './create-drinks.component.html',
   styleUrl: './create-drinks.component.scss'
 })
-export class CreateDrinksComponent {
+export class CreateDrinksComponent implements OnDestroy{
   private drinksService = inject(DrinksService);
   private messageService = inject(MessageService);
   private dialogRef = inject(DynamicDialogRef);
   private fb = inject(FormBuilder);
+  previewUrl: string | null = null;
   
   drinksForm: FormGroup<FormDrink> = this.fb.group({
     description: new FormControl<string>('', { nonNullable: true }),
@@ -38,7 +39,34 @@ export class CreateDrinksComponent {
   onFileSelect(event: any) {
   const file = event.target.files && event.target.files.length > 0 ? event.target.files[0] : null;
   this.drinksForm.get('image')?.setValue(file);
+
+  // limpiar preview anterior
+    if (this.previewUrl) {
+      URL.revokeObjectURL(this.previewUrl);
+      this.previewUrl = null;
+    }
+
+    if (file instanceof File) {
+      // Crear URL temporal para preview
+      this.previewUrl = URL.createObjectURL(file);
+    }
 }
+
+  removeSelectedFile() {
+    // limpiar control y preview
+    this.drinksForm.get('image')?.setValue(null);
+    if (this.previewUrl) {
+      URL.revokeObjectURL(this.previewUrl);
+      this.previewUrl = null;
+    }
+  }
+
+    ngOnDestroy(): void {
+    if (this.previewUrl) {
+      URL.revokeObjectURL(this.previewUrl);
+      this.previewUrl = null;
+    }
+  }
 
   onSubmit(){
     const formValue = this.drinksForm.value;
@@ -80,7 +108,8 @@ export class CreateDrinksComponent {
     next: (response) => {
       console.log("Datos recibidos del form:", formData);
       this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Bebida creada correctamente'});
-      // this.dialogRef.close(true);
+      this.dialogRef.close(true);
+      window.location.reload();
     },
     error: (error) => {
       this.messageService.add({severity:'error', summary: 'Error', detail: 'Hubo un problema al crear la bebida'});

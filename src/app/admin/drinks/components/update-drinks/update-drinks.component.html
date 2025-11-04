@@ -1,1 +1,53 @@
-<p>update-drinks works!</p>
+<div class="container">
+    <form [formGroup]="updateDrinksForms" (ngSubmit)="onSubmit()">
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="description" type="text" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Precio">Precio</label>
+            <input pInputText id="Precio" formControlName="price" type="number" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <select name="status" id="status" formControlName="status">
+                <option [value]="1">Disponible</option>
+                <option [value]="0">No Disponible</option>
+            </select>
+        </div>
+
+        <div class="image">
+        <div class="imageTitle">
+            <p>Adjunta la foto que tendrá la bebida</p>
+        </div>
+
+        <div class="upload">
+            <input #fileInput type="file" (change)="onFileSelect($event)" accept="image/*" hidden />
+            <button type="button" class="custom-file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
+        </div>
+
+        
+      <!-- Preview -->
+     <div class="image-preview" *ngIf="previewUrl || drinks?.image || drinks?.imagen">
+  <img
+    [src]="previewUrl ? previewUrl : (apiImg + '/' + (drinks.image || drinks.imagen))"
+    alt="Vista previa"
+    class="preview"
+    (error)="previewUrl = null" />
+  <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
+</div>
+
+<!-- placeholder si no hay ninguna -->
+<div class="image-preview placeholder" *ngIf="!(previewUrl || drinks?.image || drinks?.imagen)">
+  <img src="/assets/images/placeholder.png" alt="Sin imagen" class="preview" />
+</div>
+      
+    </div>
+
+    <div class="btnContainer">
+        <button class="btn" pButton type="submit" label="Actualizar bebida" [disabled]="updateDrinksForms.invalid"></button>
+    </div>
+    </form>
+</div>

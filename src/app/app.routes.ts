@@ -63,22 +63,22 @@ export const routes: Routes = [
       title: 'Dashboard'
     },
     {
-        path: 'dashboard/events',
+        path: 'events',
         loadComponent: () => import('./admin/events/events.component').then(m => m.EventsComponent),
         title: 'Events'
     },
     {
-        path: 'dashboard/tickets',
+        path: 'tickets',
         loadComponent: () => import('./admin/tickets/tickets.component').then(m => m.TicketsComponent),
         title: 'Tickets'
     },
     {
-        path: 'dashboard/payments',
+        path: 'payments',
         loadComponent: () => import('./admin/payments/payments.component').then(m => m.PaymentsComponent),
         title: 'Payments'
     },
     {
-        path: 'dashboard/drinks',
+        path: 'drinks',
         loadComponent: () => import('./admin/drinks/drinks.component').then(m => m.DrinksComponent),
         title: 'Drinks'
     }
