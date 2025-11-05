@@ -11,13 +11,13 @@ export class DrinksService {
   private api: string = environment.api;
 
   getAllDrinks(){
-    return this.http.get(`${this.api}/drinks`).pipe(
+    return this.http.get(`${this.api}/drinks`)
+    .pipe(
       map((res: any) => {
         const items = res ?? [];
 
         const sorted = items.sort((a: any, b: any) => (b.idDrinks - a.idDrinks));
         return sorted.map((drink: any) => ({ ...drink }));
-        console.log('Bebidas obtenidas:', sorted);
       }),
       catchError((error) => {
         console.error('Error al obtener las bebidas:', error);

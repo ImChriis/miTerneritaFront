@@ -41,7 +41,7 @@ export class DrinksComponent implements OnInit{
   drinks$!: Observable<Drink[]>;
 
   ngOnInit(): void {
-    this.drinks$ = this.drinksService.getAllDrinks();
+    // this.drinks$ = this.drinksService.getAllDrinks();
   }
 
   openCreateModal(){

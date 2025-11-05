@@ -38,6 +38,11 @@ export class AdminLayoutComponent {
       routerLink: "/admin/events",
     },
     {
+      name: "Entradas",
+      icon: "pi pi-ticket",
+      routerLink: "/admin/tickets",
+    },
+    {
       name: "Bebidas",
       icon: "pi pi-plus",
       routerLink: "/admin/drinks",

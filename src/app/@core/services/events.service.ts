@@ -20,4 +20,8 @@ export class EventsService {
       })
     );
   }
+
+  createEvent(data: any){
+    return this.http.post(`${this.api}/events`, data);
+  }
 }

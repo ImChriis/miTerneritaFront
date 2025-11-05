@@ -1,1 +1,97 @@
-<p>tickets works!</p>
+<body class="container">
+    <div  [class.blurred-background]="isModalOpen">
+      @if(
+        tickets$ | async
+        ; as state) {
+
+        <div class="title">
+          <h1>Entradas</h1>
+        </div>
+
+        <p-table
+          #dt1
+          [value]="state"
+          dataKey="id"
+          [rows]="10"
+          [showCurrentPageReport]="true"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          [paginator]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+          [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']"
+          styleClass="ml-3 mr-3"
+          >
+          <ng-template pTemplate="caption">
+            <div class="flex-row">
+              <div class="p-toolbar-group-end">
+                <span class="p-input-icon-left ml-auto">
+                  <i class=""></i>
+                  <input
+                    pInputText
+                    type="text"
+                    placeholder="Buscar"
+                    />
+                  </span>
+                </div>
+                <button
+                  class="btn"
+                  icon=""
+                  (click)="openCreateModal()"
+                >Agregar Bebida</button>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="min-width: 10rem" class="border">
+                  <div class="flex thstyles">ID</div>
+                </th>
+                <th style="min-width: 10rem">
+                  <div class="flex thstyles">Nombre</div>
+                </th>
+                <th style="min-width: 10rem">
+                  <div class="flex thstyles">Precio</div>
+                </th>
+                <th style="min-width: 10rem">
+                  <div class="flex thstyles">Estado</div>
+                </th>
+                <th class="text-center" style="min-width: 10rem" class="border2">
+                  <div class="flex thstyles option">Opciones</div>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-drink class="p-table">
+              <tr class="table-content">
+                <td class="column-table-left mr-5">
+                  {{ drink.idDrinks }}
+                </td>
+                <td>
+                  {{ drink.description }}
+                </td>
+                <td>
+                  {{ drink.price }}
+                </td>
+                <td>
+                  @if (drink.status === 1) {
+                    <p class="disponible">Disponible</p>
+                  }  @else {
+                    <p class="noDisponible">No Disponible</p>
+                  }
+                </td>
+                <td class="text-center column-table-right">
+                  <div class="option">
+                    <i class="pi pi-pencil btnEdit" (click)="openEditModal(drink)" ></i>
+                    <i class="pi pi-times btnDelete" ></i>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7">No elementos encontrados.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        }
+      </div>
+    </body>
+    
+  

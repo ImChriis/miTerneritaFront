@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
 import { DrinksService } from '../../@core/services/drinks.service';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
 import { environment } from '../../../environments/environment.developer';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -13,14 +13,14 @@ import { AsyncPipe, CommonModule } from '@angular/common';
     TabsModule,
     RouterLink,
    CommonModule,
-   AsyncPipe
+  //  AsyncPipe
 ],
   templateUrl: './consume.component.html',
   styleUrl: './consume.component.scss'
 })
 export class ConsumeComponent implements OnInit{
   private drinksService = inject(DrinksService);
-  drinks$!: Observable<Drink[]> | undefined;
+  drinks$!: Observable<any> | undefined;
   apiImg: string = environment.apiImg
 
   ngOnInit(): void {
