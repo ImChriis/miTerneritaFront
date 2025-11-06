@@ -1,29 +1,30 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { EventsService } from '../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { Observable } from 'rxjs';
-import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CreateEventsComponent } from './components/create-events/create-events.component';
 import { UpdateEventsComponent } from './components/update-events/update-events.component';
+import { Event } from '../../@core/models/event.model';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-events',
   imports: [
     CommonModule,
-    TableModule
+    TableModule,
+    InputText
   ],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'
 })
 export class EventsComponent implements OnInit{
   private eventsService = inject(EventsService);
-  private messageService = inject(MessageService);
   private dialogService = inject(DialogService);
   ref: DynamicDialogRef | undefined;
   isModalOpen = false;
-  events$!: Observable<any[]>;
+  events$!: Observable<Event[]>;
 
   ngOnInit(): void {
     this.events$ = this.eventsService.getEvents();

@@ -1,8 +1,8 @@
 <body class="container">
     <div  [class.blurred-background]="isModalOpen">
-      <!-- @if(
+      @if(
         events$ | async
-        ; as state) { -->
+        ; as state) {
 
         <div class="title">
           <h1>Eventos</h1>
@@ -10,7 +10,7 @@
 
         <p-table
           #dt1
-      
+          [value]="state"
           dataKey="id"
           [rows]="10"
           [showCurrentPageReport]="true"
@@ -48,7 +48,13 @@
                   <div class="flex thstyles">Nombre</div>
                 </th>
                 <th style="min-width: 10rem">
-                  <div class="flex thstyles">Precio</div>
+                  <div class="flex thstyles">Fecha</div>
+                </th>
+                <th style="min-width: 10rem">
+                  <div class="flex thstyles">Hora</div>
+                </th>                
+                <th style="min-width: 10rem">
+                  <div class="flex thstyles">Capacidad</div>
                 </th>
                 <th style="min-width: 10rem">
                   <div class="flex thstyles">Estado</div>
@@ -58,19 +64,25 @@
                 </th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-drink class="p-table">
+            <ng-template pTemplate="body" let-event class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                  {{ drink.idDrinks }}
+                  {{ event.idEvents }}
                 </td>
                 <td>
-                  {{ drink.description }}
+                  {{ event.name }}
                 </td>
                 <td>
-                  {{ drink.price }}
+                  {{ event.date }}
                 </td>
                 <td>
-                  @if (drink.status === 1) {
+                  {{ event.time }}
+                </td>
+                <td>
+                  {{ event.capacity }}
+                </td>
+                <td>
+                  @if (event.status === 1) {
                     <p class="disponible">Disponible</p>
                   }  @else {
                     <p class="noDisponible">No Disponible</p>
@@ -78,7 +90,7 @@
                 </td>
                 <td class="text-center column-table-right">
                   <div class="option">
-                    <i class="pi pi-pencil btnEdit" (click)="openEditModal(drink)" ></i>
+                    <i class="pi pi-pencil btnEdit" (click)="openEditModal(event)" ></i>
                     <i class="pi pi-times btnDelete" ></i>
                   </div>
                 </td>
@@ -90,7 +102,7 @@
               </tr>
             </ng-template>
           </p-table>
-        <!-- } -->
+        }
       </div>
     </body>
     

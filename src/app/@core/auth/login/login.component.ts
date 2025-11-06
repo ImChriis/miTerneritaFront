@@ -11,8 +11,6 @@ import { CommonModule } from '@angular/common';
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    RouterLink
-
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

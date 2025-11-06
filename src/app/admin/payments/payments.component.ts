@@ -21,7 +21,7 @@ import { PaymentService } from '../../@core/services/payment.service';
     FormsModule,
     ReactiveFormsModule,
     DynamicDialogModule,
-    AsyncPipe
+    // AsyncPipe
   ],
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.scss'

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.developer';
-import { map } from 'rxjs';
+import { catchError, map } from 'rxjs';
 import { Event } from '../models/event.model';
 
 @Injectable({
@@ -17,6 +17,10 @@ export class EventsService {
         return events.map(event => ({
           ...event,
         }));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener los eventos:', error);
+        return [];
       })
     );
   }

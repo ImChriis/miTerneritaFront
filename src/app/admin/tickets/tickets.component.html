@@ -36,7 +36,7 @@
                   class="btn"
                   icon=""
                   (click)="openCreateModal()"
-                >Agregar Bebida</button>
+                >Agregar Entrada</button>
               </div>
             </ng-template>
             <ng-template pTemplate="header">
@@ -58,19 +58,19 @@
                 </th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-drink class="p-table">
+            <ng-template pTemplate="body" let-ticket class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                  {{ drink.idDrinks }}
+                  {{ ticket.idTicket }}
                 </td>
                 <td>
-                  {{ drink.description }}
+                  {{ ticket.description }}
                 </td>
                 <td>
-                  {{ drink.price }}
+                  {{ ticket.price }}
                 </td>
                 <td>
-                  @if (drink.status === 1) {
+                  @if (ticket.status === 1) {
                     <p class="disponible">Disponible</p>
                   }  @else {
                     <p class="noDisponible">No Disponible</p>
@@ -78,7 +78,7 @@
                 </td>
                 <td class="text-center column-table-right">
                   <div class="option">
-                    <i class="pi pi-pencil btnEdit" (click)="openEditModal(drink)" ></i>
+                    <i class="pi pi-pencil btnEdit" (click)="openEditModal(ticket)" ></i>
                     <i class="pi pi-times btnDelete" ></i>
                   </div>
                 </td>
