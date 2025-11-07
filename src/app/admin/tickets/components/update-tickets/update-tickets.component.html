@@ -1,1 +1,34 @@
-<p>update-tickets works!</p>
+<div class="container">
+    <form [formGroup]="updateTicketForm" (ngSubmit)="onSubmit()">
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="name" type="text" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Precio">Precio</label>
+            <input pInputText id="Precio" formControlName="price" type="number" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Seleccionar Evento</label>
+            <select id="Estado" formControlName="idEvents">
+                <option [value]="1">Evento 1</option>
+                <option [value]="2">Evento 2</option>
+                <option [value]="3">Evento 3</option>
+            </select>
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <select id="Estado" formControlName="status">
+                <option [value]="1">Disponible</option>
+                <option [value]="0">No Disponible</option>
+            </select>
+        </div>
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Actualizar" [disabled]="updateTicketForm.invalid"></button>
+        </div>
+    </form>
+</div>

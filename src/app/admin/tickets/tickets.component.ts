@@ -8,12 +8,16 @@ import { MessageService } from 'primeng/api';
 import { Ticket } from '../../@core/models/ticket.model';
 import { CreateTicketsComponent } from './components/create-tickets/create-tickets.component';
 import { UpdateTicketsComponent } from './components/update-tickets/update-tickets.component';
+import { ButtonModule } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-tickets',
   imports: [
     CommonModule,
-    TableModule
+    TableModule,
+    ButtonModule,
+    InputText
   ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.scss'

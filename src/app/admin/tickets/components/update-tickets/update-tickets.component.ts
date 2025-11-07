@@ -1,11 +1,54 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
+import { TicketsService } from '../../../../@core/services/tickets.service';
+import { MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Ticket } from '../../../../@core/models/ticket.model';
+import { FormTicket } from '../../../../@core/models/forms/form-ticket';
 
 @Component({
   selector: 'app-update-tickets',
-  imports: [],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputText,
+    ButtonModule,
+  ],
   templateUrl: './update-tickets.component.html',
   styleUrl: './update-tickets.component.scss'
 })
-export class UpdateTicketsComponent {
+export class UpdateTicketsComponent implements OnInit{
+  private ticketsService = inject(TicketsService);
+  private messageService = inject(MessageService);
+  private dialogRef = inject(DynamicDialogRef);
+  private fb = inject(FormBuilder);
+  private dialogConfig = inject(DynamicDialogConfig);
+  ticket: Ticket = this.dialogConfig.data.ticket;
 
+  updateTicketForm: FormGroup<FormTicket> = this.fb.group({
+    name: this.fb.control<string>('', { nonNullable: true }),
+    price: this.fb.control<number | null>(null),
+    idEvents: this.fb.control<number | null>(null),
+    status: this.fb.control<number | null>(1),
+  });
+
+  ngOnInit(): void {
+    this.updateTicketForm.patchValue(this.ticket);
+  }
+
+  onSubmit(){
+    this.ticketsService.updateTicket(this.ticket.idTicket, this.updateTicketForm.value).subscribe({
+      next: (response) => {
+        this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Entrada actualizada correctamente'});
+        this.dialogRef.close();
+        window.location.reload();
+      },
+      error: (err) => {
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'Hubo un problema al actualizar la entrada'});
+      }
+    }); 
+  }
 }

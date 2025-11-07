@@ -1,1 +1,26 @@
-<p>create-tickets works!</p>
+<div class="container">
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="name" type="text" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Precio">Precio</label>
+            <input pInputText id="Precio" formControlName="price" type="number" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Seleccionar Evento</label>
+            <select id="Estado" formControlName="idEvents">
+                <option [value]="1">Evento 1</option>
+                <option [value]="2">Evento 2</option>
+                <option [value]="3">Evento 3</option>
+            </select>
+        </div>
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Crear" [disabled]="ticketForm.invalid"></button>
+        </div>
+    </form>
+</div>

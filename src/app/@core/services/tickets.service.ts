@@ -27,6 +27,10 @@ export class TicketsService {
 
   createTicket(data: any){
     return this.http.post(`${this.api}/tickets`, data);
-  } 
+  }
+
+  updateTicket(id: number, data: any){
+    return this.http.put(`${this.api}/tickets/${id}`, data);
+  }
 
 }

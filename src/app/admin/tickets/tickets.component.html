@@ -1,8 +1,8 @@
 <body class="container">
     <div  [class.blurred-background]="isModalOpen">
-      @if(
+      <!-- @if(
         tickets$ | async
-        ; as state) {
+        ; as state) { -->
 
         <div class="title">
           <h1>Entradas</h1>
@@ -10,7 +10,6 @@
 
         <p-table
           #dt1
-          [value]="state"
           dataKey="id"
           [rows]="10"
           [showCurrentPageReport]="true"
@@ -90,7 +89,7 @@
               </tr>
             </ng-template>
           </p-table>
-        }
+        <!-- } -->
       </div>
     </body>
     
