@@ -31,7 +31,7 @@ export class TicketsComponent implements OnInit{
   tickets$!: Observable<Ticket[]>;
 
   ngOnInit() {
-    this.ticketsService.getAllTickets();
+    this.tickets$ = this.ticketsService.getTickets();
   }
 
   openCreateModal(){

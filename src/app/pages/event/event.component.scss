@@ -1,10 +1,11 @@
 .container{
   width: 100%;
-  height: 83vh;
-  background-image: url('../../../assets/img/halloween5.webp');
+  min-height: 83vh; /* garantiza que el fondo ocupe al menos la altura visual */
+  background-image: none;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: cover; /* cubrir siempre el contenedor */
+  background-color: transparent;
 }
 
 .sections{
@@ -151,7 +152,8 @@
 
 @media (min-width: 1366px){
   .container{
-    height: auto;
+    /* mantener min-height para que el fondo no se colapse cuando el contenido es corto */
+    min-height: 83vh;
   }
 
   .details{

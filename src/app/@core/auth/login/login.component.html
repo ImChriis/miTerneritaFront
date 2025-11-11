@@ -16,12 +16,12 @@
 
         <div class="inputGroup">
             <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" formControlName="password">
-
-            
-            <button type="button" class="btn-Pass" (click)="showPassword()">
-                <i class="pi pi-eye-slash"></i>
-            </button>
+            <div class="password-wrapper">
+                <input type="password" id="password" name="password" formControlName="password">
+                <button type="button" class="btn-Pass" (click)="showPassword()">
+                    <i class="pi pi-eye-slash"></i>
+                </button>
+            </div>
 
             <div *ngIf="loginForm.get('clave')?.touched && loginForm.get('clave')?.invalid">
                 <small>{{ getErrorMessage('clave') }}</small>

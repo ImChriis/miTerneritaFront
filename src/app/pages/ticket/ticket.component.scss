@@ -1,6 +1,6 @@
 .container{
   width: 100%;
-  height: 100vh;
+  min-height: 83vh;
   background-image: url('../../../assets/img/halloween4.webp');
   background-position: center;
   background-repeat: no-repeat;
@@ -117,7 +117,7 @@ input{
     color: white;
 }
 
-select{
+.p-select{
     height: 3.3vh;
     width: 100%;
     border-radius: 10px;

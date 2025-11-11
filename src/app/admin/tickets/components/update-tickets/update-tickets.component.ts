@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { TicketsService } from '../../../../@core/services/tickets.service';
@@ -8,6 +8,9 @@ import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Ticket } from '../../../../@core/models/ticket.model';
 import { FormTicket } from '../../../../@core/models/forms/form-ticket';
+import { SelectModule } from 'primeng/select';
+import { EventsService } from '../../../../@core/services/events.service';
+import { Event } from '../../../../@core/models/event.model';
 
 @Component({
   selector: 'app-update-tickets',
@@ -16,6 +19,8 @@ import { FormTicket } from '../../../../@core/models/forms/form-ticket';
     ReactiveFormsModule,
     InputText,
     ButtonModule,
+    SelectModule,
+    FormsModule
   ],
   templateUrl: './update-tickets.component.html',
   styleUrl: './update-tickets.component.scss'
@@ -26,7 +31,15 @@ export class UpdateTicketsComponent implements OnInit{
   private dialogRef = inject(DynamicDialogRef);
   private fb = inject(FormBuilder);
   private dialogConfig = inject(DynamicDialogConfig);
-  ticket: Ticket = this.dialogConfig.data.ticket;
+  private eventsService = inject(EventsService);
+  ticket: any = this.dialogConfig.data.ticket;
+  events!: Event[];
+  selectedEvent = this.ticket.event?.idEvents;
+  status = [
+    { label: 'Disponible', value: 1 },
+    { label: 'No Disponible', value: 0 }
+  ];
+  selectedStatus = this.ticket.status;
 
   updateTicketForm: FormGroup<FormTicket> = this.fb.group({
     name: this.fb.control<string>('', { nonNullable: true }),
@@ -37,6 +50,10 @@ export class UpdateTicketsComponent implements OnInit{
 
   ngOnInit(): void {
     this.updateTicketForm.patchValue(this.ticket);
+    
+    this.eventsService.getEvents().subscribe((events) => {
+      this.events = events;
+    });
   }
 
   onSubmit(){

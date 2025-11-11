@@ -117,6 +117,39 @@ select{
     color: white;
 }
 
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 3rem; /* dejar espacio para el botón */
+}
+
+.password-wrapper .btn-Pass, .password-wrapper .btn-Pass2 {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 2rem;
+  width: 2.2rem;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* opcional: ajustar tamaño del icono */
+.password-wrapper .btn-Pass .pi, .password-wrapper .btn-Pass2 .pi {
+  font-size: 1.1rem;
+  color: #555;
+}
+
 .btn{
     margin-bottom: 25px;
     width: 100%;
@@ -127,11 +160,11 @@ select{
 
 .btnRegister{
     margin-top: 20px;
-    background-color: #1522D1;
-    border: none;
+    background-color: transparent;
+    border: 1px solid white;
     color: white;
-    border-radius: 10px;
-    width: 20%;
+    border-radius: 50px;
+    width: 30%;
     height: 4vh;
     font-weight: bold;
 }
@@ -147,6 +180,10 @@ select{
     gap: 10px;
     align-items: center;
     margin-bottom: 5vh;
+}
+
+.links a{
+  text-decoration: underline;
 }
 
 small{

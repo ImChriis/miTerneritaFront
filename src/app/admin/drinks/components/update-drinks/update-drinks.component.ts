@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { InputText } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { environment } from '../../../../../environments/environment.developer';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-update-drinks',
@@ -17,7 +18,8 @@ import { environment } from '../../../../../environments/environment.developer';
     FormsModule,
     CommonModule,
     InputText,
-    ButtonModule
+    ButtonModule,
+    SelectModule
   ],
   templateUrl: './update-drinks.component.html',
   styleUrl: './update-drinks.component.scss'
@@ -32,6 +34,12 @@ export class UpdateDrinksComponent implements OnInit, OnDestroy{
   drinks = this.dialogConfig.data.drinks;
   previewUrl: string | null = null;
   apiImg: string = environment.apiImg;
+  status = [
+    { label: 'Disponible', value: 1 },
+    { label: 'No Disponible', value: 0 }
+  ];
+  selectedStatus = this.drinks.status;
+  
 
   updateDrinksForms: FormGroup<FormDrink> = this.fb.group({
     description: new FormControl<string>('', { nonNullable: true }),

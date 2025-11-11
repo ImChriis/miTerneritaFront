@@ -12,11 +12,7 @@
 
         <div class="formGroup">
             <label for="Estado">Seleccionar Evento</label>
-            <select id="Estado" formControlName="idEvents">
-                <option [value]="1">Evento 1</option>
-                <option [value]="2">Evento 2</option>
-                <option [value]="3">Evento 3</option>
-            </select>
+            <p-select [options]="events" [(ngModel)]="selectedEvent" optionLabel="name" optionValue="idEvents" formControlName="idEvents" appendTo="body"/>
         </div>
 
         <div class="btnContainer">

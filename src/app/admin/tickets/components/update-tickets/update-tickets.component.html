@@ -10,21 +10,14 @@
             <input pInputText id="Precio" formControlName="price" type="number" />
         </div>
 
-        <div class="formGroup">
+      <div class="formGroup">
             <label for="Estado">Seleccionar Evento</label>
-            <select id="Estado" formControlName="idEvents">
-                <option [value]="1">Evento 1</option>
-                <option [value]="2">Evento 2</option>
-                <option [value]="3">Evento 3</option>
-            </select>
+            <p-select [options]="events" [(ngModel)]="selectedEvent" optionLabel="name" optionValue="idEvents" formControlName="idEvents" appendTo="body"/>
         </div>
 
         <div class="formGroup">
             <label for="Estado">Estado</label>
-            <select id="Estado" formControlName="status">
-                <option [value]="1">Disponible</option>
-                <option [value]="0">No Disponible</option>
-            </select>
+            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" formControlName="status" appendTo="body"/>
         </div>
 
         <div class="btnContainer">

@@ -3,8 +3,9 @@ import { AfterViewInit, Component, ElementRef, inject, signal, ViewChild } from 
 import { OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { EventsService } from '../../@core/services/events.service';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { Event } from '../../@core/models/event.model';
+import { environment } from '../../../environments/environment.developer';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   slideIndex = signal(0);
   private intervalId: any;
   selectedIndex = 0;
+  apiImg = environment.apiImg;
+  eventsLoaded: Event[] = [];
 
   @ViewChild('eventsGrid') eventsSection!: ElementRef;
   @ViewChild('zones') zonesSection!: ElementRef;
@@ -49,38 +52,48 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngOnInit() {
+ngOnInit() {
   this.intervalId = setInterval(() => {
     this.nextSlide();
   }, 3500);
 
   this.events$ = this.eventService.getEvents().pipe(
-    tap(events => {
-      console.log(events);
-    })
+    map(events => events.filter((event: Event) => event.status === 1)),
+    tap(events => this.eventsLoaded = events)
   )
 }
-
- events = [
-    { title: 'Halloween Event', description: 'Written by Taylor Swift & Aaron Dessner', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo1.jpg' },
-    { title: 'Cardigan', description: 'Written by Taylor Swift & Aaron Dessner', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo3.jpg' },
-    { title: 'The Last Great American Dynasty', description: 'Written by Taylor Swift & Aaron Dessner', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo2.jpg' },
-    { title: 'Exile', description: 'Written by Taylor Swift & Justin Vernon', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo3.jpg' },
-    { title: 'My Tears Ricochet', description: 'Written by Taylor Swift', image: 'assets/img/jordan.jpg', fondo: 'assets/img/fondo2.jpg' },
-  ];
 
   selectEvent(index: number){
     this.selectedIndex = index;
   }
 
   get selectedBackground(): string {
-    const ev = this.events && this.events[this.selectedIndex];
+    // Prefer events loaded from the service; fall back to local sample `testEvents` if none loaded
+    const ev = (this.eventsLoaded && this.eventsLoaded.length > 0)
+      ? (this.eventsLoaded[this.selectedIndex] as any)
+      : (this.testEvents && this.testEvents.length > 0)
+        ? (this.testEvents[this.selectedIndex] as any)
+        : undefined;
     if (!ev) {
       return '';
     }
 
-    const url = (ev as any).foto ?? (ev as any).fondo ?? (ev as any).image ?? (ev as any).imagen;
-    return url ? `url('${url}')` : '';
+    // Prefer image1 property when available (comes from backend model)
+    const candidate = (ev as any).image1 ?? (ev as any).foto ?? (ev as any).fondo ?? (ev as any).image ?? (ev as any).imagen ?? (ev as any).flyer;
+    if (!candidate) return '';
+
+    const full = this.getFullUrl(candidate);
+    return `url('${full}')`;
+  }
+
+  private getFullUrl(path: string): string {
+    if (!path) return '';
+    // If it's already an absolute URL, return as-is
+    if (/^https?:\/\//i.test(path)) return path;
+    // If it's an assets path (starts with assets or /), return as-is
+    if (/^(assets\/|\/)/.test(path)) return path;
+    // Otherwise assume it's a server-stored image and prefix with apiImg
+    return `${this.apiImg}/${path}`;
   }
 
 ngOnDestroy() {
@@ -138,8 +151,8 @@ ngOnDestroy() {
       });
   }
 
-  goToEvent(){
-    this.router.navigate(['/home/event']).then(() => {
+  goToEvent(idEvent: number){
+    this.router.navigate(['/home/event/', idEvent]).then(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }

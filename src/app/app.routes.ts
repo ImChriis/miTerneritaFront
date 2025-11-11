@@ -25,27 +25,27 @@ export const routes: Routes = [
             title: 'Register'
         },
         {
-            path: 'home/event',
+            path: 'home/event/:id',
             loadComponent: () => import('./pages/event/event.component').then(m => m.EventComponent),
             title: 'Event'
         },
         {
-            path: 'home/event/ticket',
+            path: 'home/event/:id/ticket',
             loadComponent: () => import('./pages/ticket/ticket.component').then(m => m.TicketComponent),
             title: 'Ticket'
         },
         {
-            path: 'home/event/ticket/consume',
+            path: 'home/event/:id/ticket/consume',
             loadComponent: () => import('./pages/consume/consume.component').then(m => m.ConsumeComponent),
             title: 'Consume'
         },
         {
-            path: 'home/event/ticket/consume/checkout',
+            path: 'home/event/:id/ticket/checkout',
             loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent),
             title: 'Checkout'
         },
         {
-            path: 'home/event/ticket/consume/checkout/payment',
+            path: 'home/event/:id/ticket/checkout/payment',
             loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent),
             title: 'Payment'
         }

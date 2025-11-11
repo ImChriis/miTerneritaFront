@@ -27,7 +27,7 @@
 
         <div class="group">
             <div class="inputGroupType">
-                <label for="email">Tipo</label>
+                <label for="tipo">Tipo</label>
                 <select name="tipo" id="tipo" formControlName="tipo">
                     <option value="V">V</option>
                     <option value="J">J</option>
@@ -39,7 +39,7 @@
             </div>
 
             <div class="inputGroupId">
-                <label for="email">Cedula</label>
+                <label for="cedula">Cedula</label>
                 <input type="number" class="cedula" id="cedula" formControlName="noCedula" >
                  <small class="error-message">
                     {{ isValidField('cedula') ? getErrorMessage('cedula') : '' }}
@@ -48,26 +48,30 @@
         </div>
 
         <div class="inputGroup">
-            <label for="password">Teléfono</label>
+            <label for="telefono">Teléfono</label>
             <input type="number" id="telefono" name="telefono" formControlName="phone">
             <small *ngIf="isValidField('phone')">{{ getErrorMessage('phone') }}</small>
         </div>
 
         <div class="inputGroup">
             <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" formControlName="password" autocomplete="off">
-            <button type="button" class="btn-Pass" (click)="showPassword()">
+            <div class="password-wrapper">
+                <input type="password" id="password" name="password" formControlName="password" autocomplete="off">
+                <button type="button" class="btn-Pass" (click)="showPassword()">
                 <i class="pi pi-eye-slash"></i>
             </button>
+            </div>
             <small *ngIf="isValidField('password')">{{ getErrorMessage('password') }}</small>
         </div>
 
         <div class="inputGroup">
             <label for="password">Confirmar Contraseña</label>
-            <input type="password" id="password2" name="password" formControlName="confirmPassword">
-            <button type="button" class="btn-Pass2" (click)="showPassword2()">
+            <div class="password-wrapper">
+                <input type="password" id="password2" name="password" formControlName="confirmPassword">
+                <button type="button" class="btn-Pass2" (click)="showPassword2()">
                 <i class="pi pi-eye-slash"></i>
             </button>
+            </div>
             <small *ngIf="registerForm.hasError('passwordsMismatch') && registerForm.touched">
                     Las contraseñas no coinciden.
             </small>
@@ -78,7 +82,7 @@
         </div>
 
         <div class="links">
-            <p>Ya tienes una cuenta? <a>Inicia Sesión</a></p>
+            <p>Ya tienes una cuenta? <a routerLink="/login">Inicia Sesión</a></p>
         </div>
     </form>
 </div>

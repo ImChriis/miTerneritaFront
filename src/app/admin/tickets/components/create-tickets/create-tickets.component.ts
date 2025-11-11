@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { TicketsService } from '../../../../@core/services/tickets.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { FormTicket } from '../../../../@core/models/forms/form-ticket';
+import { SelectModule } from 'primeng/select';
+import { EventsService } from '../../../../@core/services/events.service';
+import { Event } from '../../../../@core/models/event.model';
 
 @Component({
   selector: 'app-create-tickets',
@@ -14,7 +17,9 @@ import { FormTicket } from '../../../../@core/models/forms/form-ticket';
     CommonModule,
     ReactiveFormsModule,
     InputText,
-    ButtonModule
+    ButtonModule,
+    SelectModule,
+    FormsModule
   ],
   templateUrl: './create-tickets.component.html',
   styleUrl: './create-tickets.component.scss'
@@ -23,11 +28,17 @@ export class CreateTicketsComponent implements OnInit{
   private ticketsService = inject(TicketsService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
+  private eventsService = inject(EventsService);
   private fb = inject(FormBuilder);
   ref: DynamicDialogRef | undefined;
+  events!: Event[];
+  selectedEvent: any = null;
 
   ngOnInit(): void {
-    this.ticketsService.getAllTickets();
+    this.ticketsService.getTickets();
+    this.eventsService.getEvents().subscribe((events) => { 
+      this.events = events;
+    });
   }
 
   ticketForm: FormGroup<FormTicket> = this.fb.group({

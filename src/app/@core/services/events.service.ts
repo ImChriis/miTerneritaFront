@@ -25,7 +25,24 @@ export class EventsService {
     );
   }
 
+  getEventById(id: number) {
+    return this.http.get<Event>(`${this.api}/events/${id}`).pipe(
+      catchError((error) => {
+        console.error(`Error al obtener el evento con ID ${id}:`, error);
+        throw error;
+      })
+    );
+  }
+
   createEvent(data: any){
     return this.http.post(`${this.api}/events`, data);
+  }
+
+  updateEvent(id: number, data: any){
+    return this.http.put(`${this.api}/events/${id}`, data);
+  }
+
+  deleteEvent(id: number){
+    return this.http.delete(`${this.api}/events/${id}`);
   }
 }

@@ -6,12 +6,12 @@
 <div class="content">
   <div class="details">
     <div class="title">
-      <h1>Latino Gang</h1>
+      <h1>{{ name }}</h1>
     </div>
 
     <div class="date">
-      <p><i class="pi pi-calendar"></i> 15 de marzo</p>
-      <p><i class="pi pi-clock"></i> 10:00 PM</p>
+      <p><i class="pi pi-calendar"></i> {{ date }}</p>
+      <p><i class="pi pi-clock"></i> {{ time }}</p>
     </div>
 
     <div class="title">
@@ -23,19 +23,14 @@
               <div class="inputGroup">
                 <label for="zone">Tipo de espacio</label>
                 <!-- Si tienes un array `zones` en el componente, usa *ngFor y [value]="zone.idZona" -->
-                <select name="zone" id="zone" [(ngModel)]="selectedZone" required>
-                    <option value="" disabled selected>Selecciona...</option>
-                    <option value="vip">VIP</option>
-                    <option value="general">General</option>
-                    <option value="preferencial">Preferencial</option>
-                </select>
+                 <p-select id="zones" name="selectedZone" [options]="zones" optionLabel="name" [(ngModel)]="selectedZone" optionLabel="name" class="w-full md:w-56"></p-select>
             </div>
 
             <div class="inputGroup cantidad">
                 <label for="zone">Cantidad</label>
                 <div class="cantidad-input">
                     <button type="button" (click)="decrement()" [disabled]="cantidad <= 1">-</button>
-                    <input type="number" id="cantidad" [value]="cantidad" readonly>
+                    <input pInputText type="number" id="cantidad" [value]="cantidad" readonly>
                     <button type="button" (click)="increment()" [disabled]="cantidad >= 10">+</button>
                 </div>
             </div>
@@ -57,7 +52,7 @@
       <div class="summaryList">
         <div class="summaryInfo" *ngFor="let item of selected; let i = index">
           <i class="pi pi-times delete" (click)="clearSelection(i)"></i>
-          <p>Tipo de espacio: <span>{{ item.zona }}</span></p>
+          <p>Tipo de espacio: <span>{{ item.name }}</span></p>
           <p>Cantidad: <span>{{ item.cantidad }}</span></p>
           <p>Total: <span>${{ item.total | number:'1.2-2' }}</span></p>
         </div>
@@ -69,7 +64,7 @@
     </div>
     
         <div class="btnDetails" *ngIf="selected.length > 0">
-            <button class="btn2" >Continuar</button>
+            <button class="btn2" (click)="goToCheckout(idEvent)">Continuar</button>
         </div>
 </div>
 </div>

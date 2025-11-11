@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [style.backgroundImage]="wallpaper ? 'url(' + wallpaper + ')' : ''">
   <div class="sections">
     <p>Detalles del evento ></p> <p  class="selected">Espacios ></p> <p>Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
 </div>
@@ -6,28 +6,20 @@
 <div class="content">
   <div class="details">
     <div class="title">
-      <h1>Latino Gang</h1>
+      <h1>{{ name }}</h1>
     </div>
 
     <div class="date">
-      <p><i class="pi pi-calendar"></i> 15 de marzo</p>
-      <p><i class="pi pi-clock"></i> 10:00 PM</p>
+      <p><i class="pi pi-calendar"></i> {{ date }}</p>
+      <p><i class="pi pi-clock"></i> {{ time }}</p>
     </div>
 
     <div class="description">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-
-      </p>
+      <p [innerHTML]="description"></p>
     </div>
 
     <div class="btnDetails">
-      <button class="event" routerLink="/home/event/ticket">Reservar</button>
+      <button class="event" (click)="goToEventTicket(idEvents)">Reservar</button>
     </div>
   </div>
 </div>

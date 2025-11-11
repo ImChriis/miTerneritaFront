@@ -24,4 +24,9 @@ export class AuthService {
   register(body: Partial<User>){
     return this.http.post<User>(`${this.api}/auth/register`, body);
   }
+
+  logout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
 }

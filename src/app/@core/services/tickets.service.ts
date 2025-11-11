@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.developer';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs';
+import { Ticket } from '../models/ticket.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,27 +11,30 @@ export class TicketsService {
   private api: string = environment.api;
   private http = inject(HttpClient);
 
-  getAllTickets(){
-    return this.http.get(`${this.api}/tickets`).pipe(
-      map((res: any) => {
-        const items = res ?? [];
-
-        const sorted = items.sort((a: any, b: any) => (b.idDrinks - a.idDrinks));
-        return sorted.map((ticket: any) => ({ ...ticket }));
+  getTickets(){
+    return this.http.get<Ticket[]>(`${this.api}/ticket`).pipe(
+      map((tickets: Ticket[] = []) => {
+        return tickets.map(ticket => ({
+          ...ticket
+        }));
       }),
       catchError((error) => {
-        console.error('Error al obtener los tickets:', error);
+        console.error('Error al obtener las entradas:', error);
         return [];
       })
     )
   }
 
+  getTicktesByEvent(idEvents: number){
+    return this.http.get<Ticket[]>(`${this.api}/ticket/event/${idEvents}`);
+  }
+
   createTicket(data: any){
-    return this.http.post(`${this.api}/tickets`, data);
+    return this.http.post(`${this.api}/ticket`, data);
   }
 
   updateTicket(id: number, data: any){
-    return this.http.put(`${this.api}/tickets/${id}`, data);
+    return this.http.put(`${this.api}/ticket/${id}`, data);
   }
 
 }

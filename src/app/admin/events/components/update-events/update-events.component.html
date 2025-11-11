@@ -1,1 +1,115 @@
-<p>update-events works!</p>
+<div class="container">
+    <form [formGroup]="updateEventsForm" (ngSubmit)="onSubmit()">
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="name" type="text" />
+        </div>
+
+        <div class="formGroup2">
+            <div class="date">
+                <label for="date">Fecha</label>
+                <input pInputText id="date" formControlName="date" type="date" />
+            </div>
+
+            <div class="time">
+                <label for="time">Hora</label>
+                <input pInputText id="time" formControlName="time" type="time" />
+            </div>
+        </div>
+
+        <div class="formGroup2">
+            <div class="capacity">
+                <label for="capacity">Capacidad</label>
+                <input pInputText id="capacity" formControlName="capacity" type="number" />
+            </div>
+
+            <div class="room">
+                <label for="room">Salón</label>
+                <input pInputText id="room" formControlName="room" type="text" />
+            </div>
+        </div>
+
+        <div class="description">
+            <label for="Descripcion">Descripción</label>
+            <p-editor [style]="{ height: '320px' }" formControlName="description"></p-editor>
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" formControlName="status" appendTo="body"/>
+        </div>
+
+        <div class="imageTitle">
+            <p>Adjunta las fotos que tendrá el evento</p>
+        </div>
+        <div class="image">
+             <div class="item">
+                <div class="upload">
+                    <input type="file" accept="image/*" (change)="onFileSelect($event,'flyer')" #fileInputflyer hidden />
+                    <button type="button" class="custom-file-btn" (click)="fileInputflyer.click()">Flyer</button>
+                </div>
+
+                <!-- Preview -->
+                <div class="image-preview" *ngIf="getPreviewSrc('flyer'); else noFlyer">
+                    <img class="preview" [src]="getPreviewSrc('flyer')" alt="Vista previa flyer" />
+                    <i class="pi pi-times remove-btn" (click)="removeSelectedFile('flyer')" title="Quitar"></i>
+                </div>
+                <ng-template #noFlyer>
+                    <div class="no-image">No hay flyer</div>
+                </ng-template>
+            </div>
+
+            <div class="item">
+                <div class="upload">
+                    <input type="file" accept="image/*" (change)="onFileSelect($event,'image1')" #fileInputImage1 hidden />
+                    <button type="button" class="custom-file-btn" (click)="fileInputImage1.click()">Imagen 1</button>
+                </div>
+
+                <!-- Preview -->
+                <div class="image-preview" *ngIf="getPreviewSrc('image1'); else noImage1">
+                    <img class="preview" [src]="getPreviewSrc('image1')" alt="Vista previa imagen 1" />
+                    <i class="pi pi-times remove-btn" (click)="removeSelectedFile('image1')" title="Quitar"></i>
+                </div>
+                <ng-template #noImage1>
+                    <div class="no-image">No hay imagen 1</div>
+                </ng-template>
+            </div>
+
+            <div class="item">
+                <div class="upload">
+                    <input type="file" accept="image/*" (change)="onFileSelect($event,'image2')" #fileInputImage2 hidden />
+                    <button type="button" class="custom-file-btn" (click)="fileInputImage2.click()">Imagen 2</button>
+                </div>
+
+                <!-- Preview -->
+                <div class="image-preview" *ngIf="getPreviewSrc('image2'); else noImage2">
+                    <img class="preview" [src]="getPreviewSrc('image2')" alt="Vista previa imagen 2" />
+                    <i class="pi pi-times remove-btn" (click)="removeSelectedFile('image2')" title="Quitar"></i>
+                </div>
+                <ng-template #noImage2>
+                    <div class="no-image">No hay imagen 2</div>
+                </ng-template>
+            </div>
+
+            <div class="item">
+                <div class="upload">
+                    <input type="file" accept="image/*" (change)="onFileSelect($event,'image3')" #fileInputImage3 hidden />
+                    <button type="button" class="custom-file-btn" (click)="fileInputImage3.click()">Imagen 3</button>
+                </div>
+
+                <!-- Preview -->
+                <div class="image-preview" *ngIf="getPreviewSrc('image3'); else noImage3">
+                    <img class="preview" [src]="getPreviewSrc('image3')" alt="Vista previa imagen 3" />
+                    <i class="pi pi-times remove-btn" (click)="removeSelectedFile('image3')" title="Quitar"></i>
+                </div>
+                <ng-template #noImage3>
+                    <div class="no-image">No hay imagen 3</div>
+                </ng-template>
+            </div>
+        </div>
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Actualizar" [disabled]="updateEventsForm.invalid"></button>
+        </div>
+    </form>
+</div>

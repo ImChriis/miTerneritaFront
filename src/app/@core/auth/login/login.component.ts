@@ -23,7 +23,7 @@ export class LoginComponent {
 
   loginForm: FormGroup<LoginForm> = this.fb.group({
     email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
-    password: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    password: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.minLength(6), Validators.maxLength(16)]}),
   })
 
   getErrorMessage(field: string): string {

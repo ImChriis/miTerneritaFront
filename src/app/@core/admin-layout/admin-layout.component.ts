@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Renderer2 } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 interface RouteLayout {
   name: string;
@@ -19,7 +20,9 @@ interface RouteLayout {
   styleUrl: './admin-layout.component.scss'
 })
 export class AdminLayoutComponent {
+  private authService = inject(AuthService);
   private renderer2 = inject(Renderer2);
+  private router = inject(Router);
 
     routes: RouteLayout[] = [
     { 
@@ -47,21 +50,21 @@ export class AdminLayoutComponent {
       icon: "pi pi-plus",
       routerLink: "/admin/drinks",
     },
-    {
-      name: "Comidas",
-      icon: "pi pi-plus",
-      routerLink: "/admin/foods",
-    },
+    // {
+    //   name: "Comidas",
+    //   icon: "pi pi-plus",
+    //   routerLink: "/admin/foods",
+    // },
     {
       name: "Pagos",
       icon: "pi pi-money-bill",
       routerLink: "/admin/payments",
     },
-    {
-      name: "Usuarios",
-      icon: "pi pi-users",
-      routerLink: "/admin/users",
-    },
+    // {
+    //   name: "Usuarios",
+    //   icon: "pi pi-users",
+    //   routerLink: "/admin/users",
+    // },
   ]
 
   openSidebar(nav: HTMLElement) {
@@ -72,7 +75,8 @@ export class AdminLayoutComponent {
     this.renderer2.removeClass(nav, 'open');
   }
 
-  // logOut() {
-  //   this.authService.logOut();
-  // }
+  logOut() {
+    this.authService.logout()
+    this.router.navigateByUrl("/login");
+  }
 }

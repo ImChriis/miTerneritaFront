@@ -12,10 +12,7 @@
 
         <div class="formGroup">
             <label for="Estado">Estado</label>
-            <select name="status" id="status" formControlName="status">
-                <option [value]="1">Disponible</option>
-                <option [value]="0">No Disponible</option>
-            </select>
+            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" placeholder="Select a status" formControlName="status" appendTo="body"/>
         </div>
 
         <div class="image">
@@ -47,7 +44,7 @@
     </div>
 
     <div class="btnContainer">
-        <button class="btn" pButton type="submit" label="Actualizar bebida" [disabled]="updateDrinksForms.invalid"></button>
+        <button class="btn" pButton type="submit" label="Actualizar" [disabled]="updateDrinksForms.invalid"></button>
     </div>
     </form>
 </div>

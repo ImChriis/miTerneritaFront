@@ -73,6 +73,39 @@ input{
     color: white;
 }
 
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.passwrd-wrapper input{
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 3rem;
+}
+
+.password-wrapper .btn-Pass {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 2rem;
+  width: 2.2rem;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* opcional: ajustar tamaño del icono */
+.password-wrapper .btn-Pass .pi {
+  font-size: 1.1rem;
+  color: #555;
+}
+
 .btn{
     margin-bottom: 25px;
     width: 100%;
@@ -108,6 +141,10 @@ input{
 .links a{
   cursor: pointer;
   text-decoration: underline;
+}
+
+small{
+    color: red;
 }
 
 @media(max-width: 1440px){
