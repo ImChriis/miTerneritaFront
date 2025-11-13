@@ -120,11 +120,17 @@ select{
     border: none;
 }
 
+.btn{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .btn2 {
   background: transparent;
   color: white;
   border: 1px solid white;
-  padding: 10px 24px;
   border-radius: 50px;
   cursor: pointer;
   margin-top: 20px;

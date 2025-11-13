@@ -81,6 +81,11 @@ export const routes: Routes = [
         path: 'drinks',
         loadComponent: () => import('./admin/drinks/drinks.component').then(m => m.DrinksComponent),
         title: 'Drinks'
+    },
+    {
+        path: 'settings',
+        loadComponent: () => import('./admin/settings/settings.component').then(m => m.SettingsComponent),
+        title: 'Settings'
     }
   ]
 }

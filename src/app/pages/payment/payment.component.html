@@ -9,7 +9,7 @@
             <h1>Información de pago</h1>
         </div>
 
-        <form>
+        <form [formGroup]="paymentfForm" (ngSubmit)="onSubmit()">
             <div class="inputGroup">
                 <label for="cardNumber">Banco</label>
                 <select name="bank" id="bank" formControlName="banco">
@@ -55,26 +55,26 @@
                     type="text"
                     id="cardNumber"
                     name="cardNumber"
-                    formControlName="numeroReferencia"
+                    formControlName="referencia"
                 />
             </div>
 
             <div class="inputGroup">
                 <label for="fecha">Fecha de pago</label>
-                <input type="date" id="fecha" name="fecha" formControlName="fechaPago"/>
+                <input type="date" id="fecha" name="fecha" formControlName="fechaTransferencia"/>
             </div>
 
             <div class="inputGroup">
                 <label for="monto">Monto pagado</label>
-                <input type="text" id="monto" name="monto" formControlName="monto"/>
+                <input type="text" id="monto" name="monto" formControlName="totalGeneral"/>
             </div>
         </form>
 
         <div class="total"> 
-            <h3>Total a pagar: <span>$200.00</span></h3>
+            <h3>Total a pagar: <span>${{ total }} | {{ totalBs }}Bs</span></h3>
         </div>
 
-        <div class="btns">
+        <div class="btns" (click)="onSubmit()">
             <button class="btn2">Pagar</button>
         </div>
     </div>
@@ -97,7 +97,16 @@
 
         <div class="inputGroup file">
             <label for="monto">Adjuntar Comprobante de pago</label>
-            <button class="fileBtn">Subir archivo</button>
+            <div class="upload">
+                <input #fileInput type="file" (change)="onFileSelect($event)" accept="image/*" hidden />
+                <button type="button" class="custom-file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
+            </div>
+
+            <!-- Preview -->
+            <div class="image-preview" *ngIf="previewUrl">
+                <img class="preview" [src]="previewUrl" alt="Vista previa" />
+                <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
+            </div>
         </div>
     </div>
 </div>

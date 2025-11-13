@@ -11,7 +11,7 @@ export class PaymentService {
   private http = inject(HttpClient);
 
    getAllPayments(){
-    return this.http.get<any[]>(`${this.api}/payments`).pipe(
+    return this.http.get<any[]>(`${this.api}/payment`).pipe(
       map((res: any[] = []) => {
         const items = res ?? [];
         const sorted = items.slice().sort((a: any, b: any) => (b.idCabecera ?? 0) - (a.idCabecera ?? 0));
@@ -25,10 +25,10 @@ export class PaymentService {
   }
 
   createPayment(data: any){
-    return this.http.put(`${this.api}/payments`, data);
+    return this.http.post(`${this.api}/payment`, data);
   }
 
   updatePayment(id: number, data: any){
-    return this.http.put(`${this.api}/payments/${id}`, data);
+    return this.http.put(`${this.api}/payment/${id}`, data);
   }
 }
