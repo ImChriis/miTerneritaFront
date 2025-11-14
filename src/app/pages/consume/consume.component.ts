@@ -1,11 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
 import { DrinksService } from '../../@core/services/drinks.service';
 import { Observable, tap } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
 import { environment } from '../../../environments/environment.developer';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { EventsService } from '../../@core/services/events.service';
 
 @Component({
   selector: 'app-consume',
@@ -20,10 +21,25 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 })
 export class ConsumeComponent implements OnInit{
   private drinksService = inject(DrinksService);
-  drinks$!: Observable<any> | undefined;
-  apiImg: string = environment.apiImg
+  private route = inject(ActivatedRoute);
+  private eventsService = inject(EventsService);
+  idEvent!: number;
+  drinks$!: Observable<Drink[]>;
+  apiImg: string = environment.apiImg;
+  name!: string;
+
 
   ngOnInit(): void {
     this.drinks$ = this.drinksService.getAllDrinks();
+
+    this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
+
+    this.eventsService.getEventById(this.idEvent).pipe(
+      tap((event) => {
+        this.name = event.name;
+      })
+    ).subscribe();
+
+    console.log(this.drinks$);
   }
 }

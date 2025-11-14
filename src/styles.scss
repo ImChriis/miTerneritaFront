@@ -47,12 +47,13 @@ app-root {
 
 .p-tab{
     background-color: transparent !important;
-    color: white !important ;
+    color: white !important;
+    font-family: "AlteHaasGrotesk" !important;
 }
 
 .p-tablist-active-bar{
-    background-color: #1522D1 !important;
-    color: #1522D1 !important;
+    background-color: white !important;
+    color: white !important;
 }
 
 @media(max-width: 425px){
