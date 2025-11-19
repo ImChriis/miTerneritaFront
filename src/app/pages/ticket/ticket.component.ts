@@ -8,6 +8,7 @@ import { SelectModule } from 'primeng/select';
 import { TicketsService } from '../../@core/services/tickets.service';
 import { Ticket } from '../../@core/models/ticket.model';
 import { EventsService } from '../../@core/services/events.service';
+import { environment } from '../../../environments/environment.developer';
 
 @Component({
   selector: 'app-ticket',
@@ -35,6 +36,7 @@ export class TicketComponent implements OnInit {
   name!: string;
   date!: Date;
   time!: string;
+  wallpaper!: string;
 
   ngOnInit() {
     this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
@@ -51,9 +53,20 @@ export class TicketComponent implements OnInit {
         this.name = event.name;
         this.date = event.date;
         this.time = event.time;
+
+        const candidate = (event as any).image3 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
+        this.wallpaper = this.getFullUrl(candidate);
       }
     });
   }
+
+    private getFullUrl(path: string): string {
+      if (!path) return '';
+      // absolute URL
+      if (/^https?:\/\//i.test(path)) return path;
+      if (/^(assets\/|\/)/.test(path)) return path;
+      return `${environment.apiImg}/${path}`;
+    }
 
 increment() {
   if (this.cantidad < 10) {

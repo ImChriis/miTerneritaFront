@@ -1,13 +1,16 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { PaymentService } from '../../@core/services/payment.service';
+import { Observable } from 'rxjs';
+import { UpdatePaymentComponent } from './update-payment/update-payment.component';
+import { Payment } from '../../@core/models/payment.model';
 
 @Component({
   selector: 'app-payments',
@@ -20,18 +23,39 @@ import { PaymentService } from '../../@core/services/payment.service';
     BadgeModule,
     FormsModule,
     ReactiveFormsModule,
-    DynamicDialogModule,
     // AsyncPipe
   ],
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.scss'
 })
-export class PaymentsComponent {
+export class PaymentsComponent implements OnInit{
   private paymentsService = inject(PaymentService);
-  
+  private dialogService = inject(DialogService);
+  ref: DynamicDialogRef | undefined;
+  payments$!: Observable<any[]>;
   isModalOpen = false;
 
-  openCreateModal() {
+  ngOnInit(): void {
+    this.payments$ = this.paymentsService.getAllPayments();
+  }
 
+  openUpdateModal(payment: Payment) {
+    this.isModalOpen = true;
+    this.ref = this.dialogService.open(UpdatePaymentComponent, {
+      header: 'Actualizar pago',
+      width: '50vw',
+      // height: '65vh',
+      modal: true,
+      closable: true,
+      data: { payment },
+       breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      styleClass: 'custom-dialog'
+    });
+    this.ref.onClose.subscribe(() => {
+      this.isModalOpen = false;
+    });
   }
 }

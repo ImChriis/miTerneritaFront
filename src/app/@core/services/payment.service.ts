@@ -14,7 +14,7 @@ export class PaymentService {
     return this.http.get<any[]>(`${this.api}/payment`).pipe(
       map((res: any[] = []) => {
         const items = res ?? [];
-        const sorted = items.slice().sort((a: any, b: any) => (b.idCabecera ?? 0) - (a.idCabecera ?? 0));
+        const sorted = items.slice().sort((a: any, b: any) => (b.idPayment ?? 0) - (a.idPayment ?? 0));
         return sorted.map((payment: any) => ({ ...payment }));
       }),
       catchError((error) => {

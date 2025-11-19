@@ -8,7 +8,6 @@ import { MessageService } from 'primeng/api';
 import { FormPayment } from '../../@core/models/forms/form-payment';
 import { ActivatedRoute } from '@angular/router';
 import { SettingsService } from '../../@core/services/settings.service';
-import { Settings } from '../../@core/models/settings.model';
 
 @Component({
   selector: 'app-payment',
@@ -34,6 +33,8 @@ export class PaymentComponent implements OnInit {
   totalBs!: number;
   paymentData: any;
   tasaDolar!: number;
+  idTicket!: number;
+  cantidad!: number;
 
   paymentfForm: FormGroup<FormPayment> = this.fb.group({
     idUser: new FormControl<number | null>(null),
@@ -45,7 +46,11 @@ export class PaymentComponent implements OnInit {
     banco: new FormControl<string | null>(null),
     referencia: new FormControl<string | null>(null),
     fechaTransferencia: new FormControl<string | null>(null), // 'YYYY-MM-DD'
-    status: new FormControl<number | null>(1)
+    status: new FormControl<number | null>(1),
+
+    //extras
+    idTicket: new FormControl<number | null>(null),
+    cantidad: new FormControl<number | null>(null),
   })
 
   ngOnInit() {
@@ -61,11 +66,14 @@ export class PaymentComponent implements OnInit {
     console.log("paymentData", this.paymentData)
     if(this.paymentData){
       this.total = this.paymentData.total;
+      this.idTicket = this.paymentData.idTicket;
+      this.cantidad = this.paymentData.cantidad;
+      console.log('Total en payment:', this.total);
     }
     
     this.settingsService.getSettings().subscribe({
       next: (settings: any) => {
-        console.log('Settings obtenidos en payment:', settings);
+        console.log('Settings obtenidos:', settings);
         this.totalBs = this.total * settings.Dolar;
         this.tasaDolar = settings.Dolar;
       }
@@ -110,6 +118,8 @@ export class PaymentComponent implements OnInit {
     formValue.idEvents = this.idEvents;
     formValue.tasaDolar = this.tasaDolar;
     formValue.montoDolar = this.total;
+    formValue.idTicket = this.idTicket;
+    formValue.cantidad = this.cantidad;
 
     console.log("formValue to send:", formValue);
     

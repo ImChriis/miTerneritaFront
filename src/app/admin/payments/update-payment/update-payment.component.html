@@ -1,1 +1,49 @@
-<p>update-payment works!</p>
+<div class="container">
+    <form>
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="name" type="text" />
+        </div>
+
+        <div class="formGroup2">
+            <div class="date">
+                <label for="date">Fecha</label>
+                <input pInputText id="date" formControlName="date" type="date" />
+            </div>
+
+            <div class="time">
+                <label for="time">Hora</label>
+                <input pInputText id="time" formControlName="time" type="time" />
+            </div>
+        </div>
+
+        <div class="formGroup2">
+            <div class="capacity">
+                <label for="capacity">Capacidad</label>
+                <input pInputText id="capacity" formControlName="capacity" type="number" />
+            </div>
+
+            <div class="room">
+                <label for="room">Salón</label>
+                <input pInputText id="room" formControlName="room" type="text" />
+            </div>
+        </div>
+
+        <div class="description">
+            <label for="Descripcion">Descripción</label>
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" formControlName="status" appendTo="body"/>
+        </div>
+
+        <div class="imageTitle">
+        
+        </div>
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Actualizar" ></button>
+        </div>
+    </form>
+</div>

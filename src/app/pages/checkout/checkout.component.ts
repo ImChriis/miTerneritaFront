@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EventsService } from '../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment.developer';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class CheckoutComponent implements OnInit{
   name!: string;
   total!: number;
   event: any = {};
+  wallpaper!: string;
 
   userData = this.fb.group({
     name: [''],
@@ -46,6 +48,8 @@ export class CheckoutComponent implements OnInit{
       next: (event) => {
         this.name = event.name;
         this.event = event;
+        const candidate = (event as any).image1 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
+        this.wallpaper = this.getFullUrl(candidate);
       }
     });
 
@@ -61,6 +65,14 @@ export class CheckoutComponent implements OnInit{
       })
     }
   }
+
+   private getFullUrl(path: string): string {
+        if (!path) return '';
+        // absolute URL
+        if (/^https?:\/\//i.test(path)) return path;
+        if (/^(assets\/|\/)/.test(path)) return path;
+        return `${environment.apiImg}/${path}`;
+      }
 
   proceedToPayment(){
     const paymentData = {

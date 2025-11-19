@@ -27,6 +27,7 @@ export class ConsumeComponent implements OnInit{
   drinks$!: Observable<Drink[]>;
   apiImg: string = environment.apiImg;
   name!: string;
+  wallpaper!: string;
 
 
   ngOnInit(): void {
@@ -37,9 +38,17 @@ export class ConsumeComponent implements OnInit{
     this.eventsService.getEventById(this.idEvent).pipe(
       tap((event) => {
         this.name = event.name;
+        const candidate = (event as any).image1 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
+        this.wallpaper = this.getFullUrl(candidate);
       })
     ).subscribe();
-
-    console.log(this.drinks$);
   }
+
+    private getFullUrl(path: string): string {
+      if (!path) return '';
+      // absolute URL
+      if (/^https?:\/\//i.test(path)) return path;
+      if (/^(assets\/|\/)/.test(path)) return path;
+      return `${environment.apiImg}/${path}`;
+    }
 }
