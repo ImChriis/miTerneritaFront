@@ -92,6 +92,7 @@ agregarSeleccion() {
      
 
       const seleccionItem = {
+        id: this.selectedZone.idTicket,
         name: this.selectedZone.name,
         cantidad,
         total

@@ -35,11 +35,17 @@ form{
     color: white;
 }
 
-.formGroup input{
+.formGroup .formGroup2 input{
     width: 100%;
 }
 
 .formGroup .p-select{
+    width: 100%;
+}
+
+.formGroupItem{
+    display: flex;
+    flex-direction: column;
     width: 100%;
 }
 

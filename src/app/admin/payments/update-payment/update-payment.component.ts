@@ -25,6 +25,17 @@ export class UpdatePaymentComponent implements OnInit{
   private dialogConfig = inject(DynamicDialogConfig);
   payment = this.dialogConfig.data.payment;
   selectedStatus = this.payment.status;
+  name!: string;
+  lastName!: string;
+  cedula!: string;
+  event!: string;
+  date!: string;
+  idPaymentDetails!: string;
+  cantidad!: number;
+  total!: number;
+  banco!: string
+  referencia!: string;
+
    status = [
     { label: 'Disponible', value: 1 },
     { label: 'No Disponible', value: 0 }
@@ -32,5 +43,16 @@ export class UpdatePaymentComponent implements OnInit{
 
   ngOnInit(){
     console.log('Payment to update:', this.payment);
+
+    this.name = this.payment.idUser?.name;
+    this.lastName = this.payment.idUser?.lastName;
+    this.cedula = this.payment.idUser?.cedula;
+    this.event = this.payment.idEvents?.name;
+    this.date = this.payment.date;
+    this.idPaymentDetails = this.payment.idPaymentDetails;
+    this.cantidad = this.payment.cantidad;
+    this.total = this.payment.total;
+    this.banco = this.payment.banco;
+    this.referencia = this.payment.referencia;
   }
 }

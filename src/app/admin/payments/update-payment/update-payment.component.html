@@ -1,41 +1,66 @@
 <div class="container">
     <form>
-        <div class="formGroup">
-            <label for="Nombre">Nombre</label>
-            <input pInputText id="Nombre" formControlName="name" type="text" />
+        <div class="formGroup2">
+            <div class="formGroupItem">
+                <label for="Nombre">Nombre</label>
+                <input pInputText readonly id="Nombre" type="text" [value]="name" />
+            </div>
+
+            <div class="formGroupItem">
+                <label for="lastName">Apellido</label>
+                <input pInputText readonly id="lastName" type="text" [value]="lastName" />
+            </div>
+            
+            <div class="formGroupItem">
+                <label for="cedula">Cedula</label>
+                <input pInputText readonly id="cedula" type="text" [value]="cedula" />
+            </div>
         </div>
 
         <div class="formGroup2">
-            <div class="date">
+            <div class="formGroupItem">
+                <label for="event">Evento</label>
+                <input pInputText readonly id="event" type="text" [value]="event" />
+            </div>
+
+             <div class="formGroupItem">
                 <label for="date">Fecha</label>
-                <input pInputText id="date" formControlName="date" type="date" />
-            </div>
-
-            <div class="time">
-                <label for="time">Hora</label>
-                <input pInputText id="time" formControlName="time" type="time" />
+                <input pInputText readonly id="date" type="text" [value]="date | date:'shortDate'" />
             </div>
         </div>
 
         <div class="formGroup2">
-            <div class="capacity">
-                <label for="capacity">Capacidad</label>
-                <input pInputText id="capacity" formControlName="capacity" type="number" />
+            <div class="formGroupItem">
+                <label for="idPaymentDetails">No. Documento</label>
+                <input pInputText readonly id="idPaymentDetails" type="text" [value]="idPaymentDetails" />
             </div>
 
-            <div class="room">
-                <label for="room">Salón</label>
-                <input pInputText id="room" formControlName="room" type="text" />
+            <div class="formGroupItem">
+                <label for="cantidad">Cantidad de entradas</label>
+                <input pInputText readonly id="cantidad" type="text" [value]="cantidad" />
+            </div>
+
+            <div class="formGroupItem">
+                <label for="total">Total</label>
+                <input pInputText readonly id="total" type="text" [value]="total" />
             </div>
         </div>
 
-        <div class="description">
-            <label for="Descripcion">Descripción</label>
+        <div class="formGroup2">
+            <div class="formGroupItem">
+                <label for="banco">Banco</label>
+                <input pInputText readonly id="banco" type="text" [value]="banco" />
+            </div>
+
+            <div class="formGroupItem">
+                <label for="referencia">Referencia</label>
+                <input pInputText readonly id="referencia" type="text" [value]="referencia" />
+            </div>
         </div>
 
         <div class="formGroup">
             <label for="Estado">Estado</label>
-            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" formControlName="status" appendTo="body"/>
+            <p-select [options]="status"  optionLabel="label" optionValue="value"  appendTo="body"/>
         </div>
 
         <div class="imageTitle">

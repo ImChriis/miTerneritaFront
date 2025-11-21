@@ -8,6 +8,8 @@ import { MessageService } from 'primeng/api';
 import { FormPayment } from '../../@core/models/forms/form-payment';
 import { ActivatedRoute } from '@angular/router';
 import { SettingsService } from '../../@core/services/settings.service';
+import { TabsModule } from 'primeng/tabs';
+
 
 @Component({
   selector: 'app-payment',
@@ -15,7 +17,8 @@ import { SettingsService } from '../../@core/services/settings.service';
     CommonModule,
     InputTextModule,
     SelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TabsModule
   ],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss'
@@ -35,6 +38,7 @@ export class PaymentComponent implements OnInit {
   tasaDolar!: number;
   idTicket!: number;
   cantidad!: number;
+  zelle!: "Zelle";
 
   paymentfForm: FormGroup<FormPayment> = this.fb.group({
     idUser: new FormControl<number | null>(null),
@@ -66,9 +70,11 @@ export class PaymentComponent implements OnInit {
     console.log("paymentData", this.paymentData)
     if(this.paymentData){
       this.total = this.paymentData.total;
-      this.idTicket = this.paymentData.idTicket;
-      this.cantidad = this.paymentData.cantidad;
-      console.log('Total en payment:', this.total);
+      //arrays
+      this.idTicket = this.paymentData.ticket.map((t: any) => t.id).join(',');
+      this.cantidad = this.paymentData.ticket.map((t: any) => t.cantidad).join(',');
+      console.log("idTicket:", this.idTicket);
+      console.log("cantidad:", this.cantidad);
     }
     
     this.settingsService.getSettings().subscribe({
