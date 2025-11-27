@@ -54,7 +54,7 @@ export class PaymentComponent implements OnInit {
 
     //extras
     idTicket: new FormControl<number | null>(null),
-    cantidad: new FormControl<number | null>(null),
+    ticketNum: new FormControl<number | null>(null),
   })
 
   ngOnInit() {
@@ -125,7 +125,7 @@ export class PaymentComponent implements OnInit {
     formValue.tasaDolar = this.tasaDolar;
     formValue.montoDolar = this.total;
     formValue.idTicket = this.idTicket;
-    formValue.cantidad = this.cantidad;
+    formValue.ticketNum = this.cantidad;
 
     console.log("formValue to send:", formValue);
     

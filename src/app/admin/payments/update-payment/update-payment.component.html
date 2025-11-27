@@ -1,5 +1,5 @@
 <div class="container">
-    <form>
+    <form [formGroup]="updatePaymentForm" (ngSubmit)="onSubmit()">
         <div class="formGroup2">
             <div class="formGroupItem">
                 <label for="Nombre">Nombre</label>
@@ -32,7 +32,7 @@
         <div class="formGroup2">
             <div class="formGroupItem">
                 <label for="idPaymentDetails">No. Documento</label>
-                <input pInputText readonly id="idPaymentDetails" type="text" [value]="idPaymentDetails" />
+                <input pInputText readonly id="idPaymentDetails" type="text" [value]="noDocumento" />
             </div>
 
             <div class="formGroupItem">
@@ -42,7 +42,7 @@
 
             <div class="formGroupItem">
                 <label for="total">Total</label>
-                <input pInputText readonly id="total" type="text" [value]="total" />
+                <input pInputText readonly id="total" type="text" [value]="total + ' $' +' / ' + totalBs + ' Bs'" />
             </div>
         </div>
 
@@ -60,7 +60,7 @@
 
         <div class="formGroup">
             <label for="Estado">Estado</label>
-            <p-select [options]="status"  optionLabel="label" optionValue="value"  appendTo="body"/>
+            <p-select [options]="status"  optionLabel="label" optionValue="value" formControlName="status"  appendTo="body"/>
         </div>
 
         <div class="imageTitle">

@@ -28,7 +28,7 @@ export class PaymentService {
     return this.http.post(`${this.api}/payment`, data);
   }
 
-  updatePayment(id: number, data: any){
-    return this.http.put(`${this.api}/payment/${id}`, data);
+  updatePayment(id: number, body: any){
+    return this.http.put(`${this.api}/payment/${id}/status`, body);
   }
 }

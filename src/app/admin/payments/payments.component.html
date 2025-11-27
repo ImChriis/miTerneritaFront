@@ -77,10 +77,12 @@
                   {{ payment.idEvents?.name }}
                 </td>
                 <td>
-                  @if (payment.status === 1) {
+                  @if (payment.status === "Aprobado") {
                     <p class="disponible">Aprobado</p>
-                  }  @else {
-                    <p class="noDisponible">Rechazado</p>
+                  }  @else if(payment.status === "Pendiente") {
+                    <p class="pendiente">Pendiente</p>
+                  } @else {
+                    <p class="noDisponible">Rechazado</p> 
                   }
                 </td>
                 <td class="text-center column-table-right">

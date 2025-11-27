@@ -26,5 +26,5 @@ export interface FormPayment {
 
   //extras
   idTicket: FormControl<number | null>;
-  cantidad: FormControl<number | null>;
+  ticketNum: FormControl<number | null>;
 }
