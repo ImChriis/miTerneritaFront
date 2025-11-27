@@ -25,7 +25,7 @@ export class PaymentService {
   }
 
   createPayment(data: any){
-    return this.http.post(`${this.api}/payment`, data);
+    return this.http.post(`${this.api}/payment`, data );
   }
 
   updatePayment(id: number, body: any){

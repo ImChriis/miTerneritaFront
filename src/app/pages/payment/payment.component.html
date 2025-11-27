@@ -75,16 +75,20 @@
 
                 <div class="inputGroup">
                     <label for="monto">Monto pagado</label>
-                    <input type="text" id="monto" name="monto" formControlName="totalGeneral"/>
+                    <input type="number" id="totalGeneral" name="totalGeneral" formControlName="totalGeneral"/>
+                </div>
+                
+                <div *ngIf="paymentfForm.get('totalGeneral')?.value !== totalBs" class="warning">
+                    <p style="color: red;">El total pagado no coincide con el total a pagar.</p>
                 </div>
             </form>
-
+            
             <div class="total"> 
                 <h3>Total a pagar: <span>{{ totalBs }}Bs</span></h3>
             </div>
 
             <div class="btns" (click)="onSubmit()">
-                <button class="btn2">Pagar</button>
+                <button pButton class="btn2" [disabled]="!paymentfForm.valid || paymentfForm.get('totalGeneral')?.value !== totalBs">Pagar</button>
             </div>
         </div>
 
@@ -156,7 +160,11 @@
 
                 <div class="inputGroup">
                     <label for="monto">Monto pagado</label>
-                    <input type="text" id="monto" name="monto" formControlName="totalGeneral"/>
+                    <input type="number" id="monto" name="monto" formControlName="totalGeneral"/>
+                </div>
+
+                <div *ngIf="paymentfForm.get('totalGeneral')?.value !== total" class="warning">
+                    <p style="color: red;">El total pagado no coincide con el total a pagar.</p>
                 </div>
             </form>
 
@@ -165,7 +173,7 @@
             </div>
 
             <div class="btns" (click)="onSubmit()">
-                <button class="btn2">Pagar</button>
+                <button pButton class="btn2" [disabled]="!paymentfForm.valid || paymentfForm.get('totalGeneral')?.value !== total">Pagar</button>
             </div>
         </div>
 

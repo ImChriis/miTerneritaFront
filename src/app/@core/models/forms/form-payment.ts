@@ -22,7 +22,7 @@ export interface FormPayment {
   banco: FormControl<string | null>;
   referencia: FormControl<string | null>;
   fechaTransferencia: FormControl<string | null>; // 'YYYY-MM-DD'
-  status: FormControl<number | null>;
+  // status: FormControl<number | null>;
 
   //extras
   idTicket: FormControl<number | null>;

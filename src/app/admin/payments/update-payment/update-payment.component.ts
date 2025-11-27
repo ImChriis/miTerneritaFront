@@ -42,6 +42,7 @@ export class UpdatePaymentComponent implements OnInit{
   idPayment!: number;
 
    status = [
+     { label: 'Pendiente', value: "Pendiente" },
     { label: 'Aprobado', value: "Aprobado" },
     { label: 'Rechazado', value: "Rechazado" }
   ];
@@ -60,12 +61,14 @@ export class UpdatePaymentComponent implements OnInit{
     this.date = this.payment.date;
     this.idPaymentDetails = this.payment.idPaymentDetails;
     this.cantidad = this.payment.cantidad;
-    this.total = parseFloat(this.payment.totalGeneral);
-    this.totalBs = parseFloat(this.payment.totalGeneral) * parseFloat(this.payment.tasaDolar);
+    this.total = this.payment.montoDolar;
+    this.totalBs = parseFloat(this.payment.totalGeneral);
     this.banco = this.payment.banco;
     this.referencia = this.payment.referencia;
     this.noDocumento = this.payment.noDocumento;
     this.idPayment = this.payment.idPayment;
+
+    this.updatePaymentForm.patchValue(this.payment);
   }
 
   onSubmit() {
