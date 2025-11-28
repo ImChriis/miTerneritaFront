@@ -4,8 +4,10 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { PaymentService } from '../../../@core/services/payment.service';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
+import { MessageService } from 'primeng/api';
+import { environment } from '../../../../environments/environment.developer';
 
 @Component({
   selector: 'app-update-payment',
@@ -23,7 +25,10 @@ import { Select } from 'primeng/select';
 export class UpdatePaymentComponent implements OnInit{
   private paymentService = inject(PaymentService);
   private dialogConfig = inject(DynamicDialogConfig);
+  private messageService = inject(MessageService);
+  private dialogRef = inject(DynamicDialogRef);
   private fb = inject(FormBuilder);
+  apiImg: string = environment.apiImg;
   payment = this.dialogConfig.data.payment;
   selectedStatus = this.payment.status;
   name!: string;
@@ -40,6 +45,7 @@ export class UpdatePaymentComponent implements OnInit{
   tasaDolar!: number
   noDocumento!: string;
   idPayment!: number;
+  
 
    status = [
      { label: 'Pendiente', value: "Pendiente" },
@@ -72,15 +78,16 @@ export class UpdatePaymentComponent implements OnInit{
   }
 
   onSubmit() {
-
     this.paymentService.updatePayment(this.idPayment, this.updatePaymentForm.value).subscribe({
       next: (response) => {
         console.log('Payment updated successfully:', response);
-        // You can add additional logic here, such as closing the dialog or showing a success message
+        this.messageService.add({severity:'success', summary: 'Success', detail: 'Payment updated successfully'});
+        this.dialogRef.close();
+        window.location.reload();
       },
       error: (error) => {
         console.error('Error updating payment:', error);
-        // Handle error scenarios here
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'Failed to update payment'});
       }
     });
   }

@@ -63,8 +63,11 @@
             <p-select [options]="status"  optionLabel="label" optionValue="value" formControlName="status"  appendTo="body"/>
         </div>
 
-        <div class="imageTitle">
-        
+        <div class="image">
+            <img
+                [src]=" (apiImg + '/img/' + (payment.comprobante || payment.imagen))"
+                alt="Vista previa"
+                class="preview" />
         </div>
 
         <div class="btnContainer">

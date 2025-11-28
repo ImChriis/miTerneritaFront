@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 
 @Component({
@@ -14,7 +15,15 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-    showMobileMenu = false;
+  private ruoter = inject(Router);
+  showMobileMenu = false;
+  authService = inject(AuthService);
 
+  get user(){
+    return this.authService.getUser();
+  }
 
+  goToEvents(){
+    this.ruoter.navigate(['/'], { fragment: 'events-section' });
+  }
 }

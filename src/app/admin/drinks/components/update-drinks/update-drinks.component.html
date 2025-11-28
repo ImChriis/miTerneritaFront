@@ -28,13 +28,13 @@
         
       <!-- Preview -->
      <div class="image-preview" *ngIf="previewUrl || drinks?.image || drinks?.imagen">
-  <img
-    [src]="previewUrl ? previewUrl : (apiImg + '/' + (drinks.image || drinks.imagen))"
-    alt="Vista previa"
-    class="preview"
-    (error)="previewUrl = null" />
-  <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
-</div>
+        <img
+            [src]="previewUrl ? previewUrl : (apiImg + '/' + (drinks.image || drinks.imagen))"
+            alt="Vista previa"
+            class="preview"
+            (error)="previewUrl = null" />
+        <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
+    </div>
 
 <!-- placeholder si no hay ninguna -->
 <div class="image-preview placeholder" *ngIf="!(previewUrl || drinks?.image || drinks?.imagen)">

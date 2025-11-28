@@ -1,13 +1,39 @@
-import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
 import { LayoutComponent } from './@core/layout/layout.component';
 import { AdminLayoutComponent } from './@core/admin-layout/admin-layout.component';
+import { AuthGuard } from './@core/guards/auth.guard';
 
 export const routes: Routes = [
     {
+        path: '',
+        component: LayoutComponent,
+        children: [
+        {
+            path: '',
+            loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
+            title: 'Home'
+        },
+        {
+            path: 'login',
+            loadComponent: () => import('./@core/auth/login/login.component').then(m => m.LoginComponent),
+            title: 'Login'
+        },
+        {
+            path: 'register',
+            loadComponent: () => import('./@core/auth/register/register.component').then(m => m.RegisterComponent),
+            title: 'Register'
+        },
+        {
+            path: 'home/event/:id',
+            loadComponent: () => import('./pages/event/event.component').then(m => m.EventComponent),
+            title: 'Event'
+        },
+        ]
+    },
+    {
     path: '',
     component: LayoutComponent,
+    canActivate: [AuthGuard],
     children: [
         {
             path: '',
@@ -56,6 +82,7 @@ export const routes: Routes = [
 {
   path: 'admin',
   component: AdminLayoutComponent,
+  canActivate: [AuthGuard],
   children:[
     {
       path:'dashboard',

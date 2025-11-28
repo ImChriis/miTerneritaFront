@@ -2,8 +2,8 @@
     <nav>  
         <div class="items">
             <a href="#">Inicio</a>
-            <a href="#">Eventos</a>
-            <a routerLink="/admin/dashboard">Dashboard</a>
+            <a (click)="goToEvents()">Eventos</a>
+            <a routerLink="/admin/dashboard" *ngIf="authService.isAuthenticated() && user?.role === 'admin'">Dashboard</a>
         </div>
         
         <div class="navLogo">
@@ -13,10 +13,10 @@
         
         <div class="auth">
             <a href="#">Contacto</a>
-            <button class="login">Login</button>
-            <div class="user">
+            <button *ngIf="!authService.isAuthenticated()" routerLink="/login" class="login">Login</button>
+            <div class="user" *ngIf="authService.isAuthenticated()">
                 <i class="pi pi-user"></i>
-                <a>Christopher Medina</a>
+                <a>{{ user?.name }}  {{ user?.lastName }}</a>
             </div>
         </div>
         
