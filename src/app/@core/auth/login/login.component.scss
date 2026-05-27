@@ -32,6 +32,10 @@ form{
     margin-bottom: 5vh;
 }
 
+.logo h1{
+  color: white;
+}
+
 .loginImg{
     width: 40%;
 }
@@ -138,9 +142,14 @@ input{
     margin-bottom: 5vh;
 }
 
+.links p{
+  color: white;
+}
+
 .links a{
   cursor: pointer;
   text-decoration: underline;
+  color: white;
 }
 
 small{

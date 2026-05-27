@@ -31,9 +31,9 @@ export const routes: Routes = [
         ]
     },
     {
-    path: '',
+    path: 'home',
     component: LayoutComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
         {
             path: '',
@@ -82,7 +82,7 @@ export const routes: Routes = [
 {
   path: 'admin',
   component: AdminLayoutComponent,
-  canActivate: [AuthGuard],
+//   canActivate: [AuthGuard],
   children:[
     {
       path:'dashboard',

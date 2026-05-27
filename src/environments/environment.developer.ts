@@ -2,8 +2,8 @@ export const environment = {
     prod: false,
 
     //Development
-    api: 'https://mmxg65z7-3000.use2.devtunnels.ms',
-    apiImg: 'https://mmxg65z7-3000.use2.devtunnels.ms/assets'
+    api: 'https://4166zxqp-8000.use2.devtunnels.ms',
+    apiImg: 'https://4166zxqp-8000.use2.devtunnels.ms/assets/img'
 
     //Production
 }

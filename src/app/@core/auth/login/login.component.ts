@@ -70,11 +70,13 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
 
+        console.log(res);
+
         this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Inicio de sesión exitoso'});
         
-        const userRole = res.Rol;
+        const role = res.role;
 
-        if(userRole !== 'User') {
+        if(role !== 'user') {
           this.router.navigateByUrl('/admin/dashboard');
         } else {
           this.router.navigateByUrl('/home');

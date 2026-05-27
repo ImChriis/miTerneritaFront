@@ -6,7 +6,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { RegisterForm } from '../../models/forms/form-register';
 import { CommonModule } from '@angular/common';
 import { tap } from 'rxjs';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -23,6 +23,7 @@ export class RegisterComponent implements OnInit{
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
   private dialogService = inject(DialogService);
+  private router = inject(Router);
 
     private passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
       const password = group.get('password')?.value;
@@ -138,6 +139,7 @@ export class RegisterComponent implements OnInit{
       this.authService.register(formData).subscribe({
         next: (response) => {
           this.messageService.add({severity:'success', summary: 'Registro Exitoso', detail: 'Usuario registrado correctamente'});
+          this.router.navigateByUrl('/login');
         },
         error: (err) => {
           this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});

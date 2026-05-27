@@ -35,6 +35,10 @@ form{
     width: 40%;
 }
 
+.logo h1{
+  color: white;
+}
+
 .group{
     width: 60%;
     display: flex;
@@ -182,8 +186,13 @@ select{
     margin-bottom: 5vh;
 }
 
+.links p{
+  color: white;
+}
+
 .links a{
   text-decoration: underline;
+  color: white;
 }
 
 small{
