@@ -120,7 +120,7 @@ img{
 footer{
     flex-shrink: 0;
     background-color: #2E2E2E;
-    height: 10vh;
+    height: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -169,15 +169,27 @@ footer{
     display: none;
 }
 
-@media(min-width: 1366px){
-    footer{
-        height: 15vh;
+// @media(min-width: 1366px){
+//     footer{
+//         height: 15vh;
+//     }
+
+// }
+
+@media(max-width: 1349px){
+    .navLogo{
+        width: 30%;
     }
 }
 
 @media(max-width: 1024px){
+
     .navLogo{
         width: 30%;
+    }
+
+    .info{
+        width: 60%;
     }
 }
 
@@ -226,6 +238,7 @@ footer{
         cursor: pointer;
         color: white; 
         outline: none;
+        margin-right: 20px;
     }
 
     .mobile-menu {

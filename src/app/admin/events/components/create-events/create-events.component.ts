@@ -38,8 +38,8 @@ export class CreateEventsComponent {
   eventsForm: FormGroup<FormEvent> = this.fb.group({
     name: new FormControl<string>('', { nonNullable: true }),
     description: new FormControl('', { nonNullable: true }),
-    date: new FormControl('', { nonNullable: true }),
-    time: new FormControl('', { nonNullable: true }),
+    date: new FormControl<string>('', { nonNullable: true }),
+    time: new FormControl<string>('', { nonNullable: true }),
     room: new FormControl('', { nonNullable: true }),
     capacity: new FormControl<number | null>(null),
     flyer: new FormControl<File | null>(null),
@@ -84,58 +84,81 @@ export class CreateEventsComponent {
   }
 
 
-  onSubmit(){
-    const fv = this.eventsForm.value;
-    const fd = new FormData();
+onSubmit() {
+  const fv = { ...this.eventsForm.value };
+  const fd = new FormData();
 
-    Object.entries(fv).forEach(([k, v]) => {
-      // archivos
-      if (v instanceof File) {
-        fd.append(k, v);
-        return;
-      }
+  // --- ARREGLO PARA 'DATE' Y 'TIME' (ISO 8601 ESTRICTO) ---
+  
+  // 1. Validar y formatear 'date'
+  if (fv.date) {
+    let fechaObjeto: Date;
+    if (Object.prototype.toString.call(fv.date) === '[object Date]') {
+      // fv.date may be typed as string in FormEvent; cast to Date when runtime check passes
+      fechaObjeto = (fv.date as unknown) as Date;
+    } else {
+      // Si viene como string "YYYY-MM-DD", forzamos la creación del objeto
+      fechaObjeto = new Date(`${fv.date}T00:00:00`);
+    }
+    // Reemplazamos por el string ISO 8601 completo que pide el backend
+    fv.date = fechaObjeto.toISOString(); 
+  }
 
-      // strings no vacíos
-      if (typeof v === 'string') {
-        if (v.trim() !== '') fd.append(k, v);
-        return;
-      }
+  // 2. Validar y formatear 'time'
+  if (fv.time && typeof fv.time === 'string') {
+    // Si viene solo la hora "HH:MM", le pegamos una fecha comodín para poder crear un ISO 8601 válido
+    const fechaHoy = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+    const horaObjeto = new Date(`${fechaHoy}T${fv.time}:00`);
+    
+    // Reemplazamos por el string ISO 8601 completo
+    fv.time = horaObjeto.toISOString();
+  }
+  // ---------------------------------------------------------
 
-      // números (incluye 0)
-      if (typeof v === 'number') {
-        fd.append(k, String(v));
-        return;
-      }
-
-      // fechas
-      if (Object.prototype.toString.call(v) === '[object Date]') {
-        fd.append(k, (v as unknown as Date).toISOString().split('T')[0]);
-        return;
-      }
-
-      // otros
-      if (v !== null && v !== undefined) {
-        fd.append(k, String(v));
-      }
-    });
-
-    // debug (opcional)
-    for (const pair of fd.entries()) {
-      console.log(pair[0], pair[1]);
+  // Tu bucle de mapeo al FormData se queda igual
+  Object.entries(fv).forEach(([k, v]) => {
+    if (v instanceof File) {
+      fd.append(k, v);
+      return;
     }
 
-    this.eventsService.createEvent(fd).subscribe({
-      next: (res: any) => {
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento creado correctamente.' });
-        // limpiar previews revocando blobs
-        Object.values(this.previewUrls).forEach(url => { if (url && url.startsWith('blob:')) URL.revokeObjectURL(url); });
-        this.dialogRef.close(true);
-        window.location.reload();
-      },
-      error: (err: any) => {
-        console.error('Error al crear evento:', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el evento.' });
-      }
-    });
+    // Ahora date y time caerán aquí como strings ISO completos e impecables
+    if (typeof v === 'string') {
+      fd.append(k, v); 
+      return;
+    }
+
+    if (typeof v === 'number') {
+      fd.append(k, v.toString());
+      return;
+    }
+
+    if (Object.prototype.toString.call(v) === '[object Date]') {
+      fd.append(k, (v as unknown as Date).toISOString());
+      return;
+    }
+
+    if (v !== null && v !== undefined) {
+      fd.append(k, String(v));
+    }
+  });
+
+  // Debug (Revisa en la consola que 'date' y 'time' luzcan como "2026-05-28T...")
+  for (const pair of fd.entries()) {
+    console.log(pair[0], pair[1]);
   }
+
+  this.eventsService.createEvent(fd).subscribe({
+    next: (res: any) => {
+      this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento creado correctamente.' });
+      Object.values(this.previewUrls).forEach(url => { if (url && url.startsWith('blob:')) URL.revokeObjectURL(url); });
+      this.dialogRef.close(true);
+      window.location.reload();
+    },
+    error: (err: any) => {
+      console.error('Error al crear evento:', err);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el evento.' });
+    }
+  });
+}
 }

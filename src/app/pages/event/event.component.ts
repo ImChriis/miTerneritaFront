@@ -48,6 +48,7 @@ export class EventComponent implements OnInit{
   }
 
   goToEventTicket(idEvents: number){
+    console.log("click")
     this.router.navigate(['/home/event/' + idEvents + '/ticket']);
   }
 }

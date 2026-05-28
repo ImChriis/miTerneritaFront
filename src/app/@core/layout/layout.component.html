@@ -14,6 +14,7 @@
         <div class="auth">
             <a href="#">Contacto</a>
             <button *ngIf="!authService.isAuthenticated()" routerLink="/login" class="login">Login</button>
+
             <div class="user" *ngIf="authService.isAuthenticated()">
                 <i class="pi pi-user"></i>
                 <a>{{ user?.name }}  {{ user?.lastName }}</a>
