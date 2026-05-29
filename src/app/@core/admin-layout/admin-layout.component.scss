@@ -206,4 +206,10 @@ footer{
     color: white;
 }
 
+::ng-deep{
+  body {
+    background-color: #141414; //cambiar colores
+  }
+}
+
 

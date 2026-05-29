@@ -1,14 +1,14 @@
 <body class="container">
     <div  [class.blurred-background]="isModalOpen">
       @if(
-        drinks$ | async
-        ; as state) {
+          drinks$ | async
+          ; as state) {
 
-        <div class="title">
-          <h1>Bebidas</h1>
-        </div>
+          <div class="title">
+            <h1>Bebidas</h1>
+          </div>
 
-        <p-table
+          <p-table
           #dt1
           [value]="state"
           dataKey="id"
