@@ -110,6 +110,11 @@ export const routes: Routes = [
         title: 'Drinks'
     },
     {
+        path: 'foods',
+        loadComponent: () => import('./admin/foods/foods.component').then(m => m.FoodsComponent),
+        title: 'Foods'
+    },
+    {
         path: 'settings',
         loadComponent: () => import('./admin/settings/settings.component').then(m => m.SettingsComponent),
         title: 'Settings'

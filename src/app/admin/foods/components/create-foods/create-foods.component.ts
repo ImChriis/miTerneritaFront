@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { DrinksService } from '../../../../@core/services/drinks.service';
+import { FoodsService } from '../../../../@core/services/foods.service';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FormDrink } from '../../../../@core/models/forms/form-drink';
+import { FormFood } from '../../../../@core/models/forms/form-foods';
 
 @Component({
-  selector: 'app-create-drinks',
+  selector: 'app-create-foods',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -19,26 +19,26 @@ import { FormDrink } from '../../../../@core/models/forms/form-drink';
     SelectModule,
     FormsModule
   ],
-  templateUrl: './create-drinks.component.html',
-  styleUrl: './create-drinks.component.scss'
+  templateUrl: './create-foods.component.html',
+  styleUrl: './create-foods.component.scss'
 })
-export class CreateDrinksComponent implements OnDestroy{
-  private drinksService = inject(DrinksService);
+export class CreateFoodsComponent {
+  private foodsService = inject(FoodsService);
   private messageService = inject(MessageService);
   private dialogRef = inject(DynamicDialogRef);
   private fb = inject(FormBuilder);
   previewUrl: string | null = null;
-  
-  drinksForm: FormGroup<FormDrink> = this.fb.group({
+
+  foodsForm: FormGroup<FormFood> = this.fb.group({
     description: new FormControl<string>('', { nonNullable: true }),
     price: new FormControl<number | null>(null),
     status: new FormControl<number | null>(1, { nonNullable: true }),
     image: new FormControl<File | null>(null)
   })
 
-  onFileSelect(event: any) {
+   onFileSelect(event: any) {
   const file = event.target.files && event.target.files.length > 0 ? event.target.files[0] : null;
-  this.drinksForm.get('image')?.setValue(file);
+  this.foodsForm.get('image')?.setValue(file);
 
   // limpiar preview anterior
     if (this.previewUrl) {
@@ -50,11 +50,11 @@ export class CreateDrinksComponent implements OnDestroy{
       // Crear URL temporal para preview
       this.previewUrl = URL.createObjectURL(file);
     }
-}
-
+  }
+  
   removeSelectedFile() {
     // limpiar control y preview
-    this.drinksForm.get('image')?.setValue(null);
+    this.foodsForm.get('image')?.setValue(null);
     if (this.previewUrl) {
       URL.revokeObjectURL(this.previewUrl);
       this.previewUrl = null;
@@ -68,14 +68,14 @@ export class CreateDrinksComponent implements OnDestroy{
     }
   }
 
-onSubmit() {
-  const fv = { ...this.drinksForm.value };
+  onSubmit() {
+  const fv = { ...this.foodsForm.value };
   const fd = new FormData();
 
   Object.entries(fv).forEach(([k, v]) => {
     if (v instanceof File) {
       fd.append(k, v);
-      return; 
+      return;
     }
 
     if (typeof v === 'string') {
@@ -104,12 +104,12 @@ onSubmit() {
     console.log(pair[0], pair[1]);
   }
 
-  this.drinksService.createDrink(fd).subscribe({
+  this.foodsService.createFood(fd).subscribe({
     next: () => {
       this.messageService.add({
         severity: 'success',
         summary: 'Éxito',
-        detail: 'Bebida creada correctamente'
+        detail: 'Comida creada correctamente'
       });
       this.dialogRef.close(true);
     },
@@ -117,9 +117,9 @@ onSubmit() {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Hubo un problema al crear la bebida'
+        detail: 'Hubo un problema al crear la comida'
       });
-      console.error('Error al crear la bebida:', error);
+      console.error('Error al crear la comida:', error);
     }
   });
 }

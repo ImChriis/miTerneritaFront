@@ -1,0 +1,50 @@
+<div class="container">
+    <form [formGroup]="updateFoodsForms" (ngSubmit)="onSubmit()">
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="description" type="text" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Precio">Precio</label>
+            <input pInputText id="Precio" formControlName="price" type="number" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" placeholder="Select a status" formControlName="status" appendTo="body"/>
+        </div>
+
+        <div class="image">
+        <div class="imageTitle">
+            <p>Adjunta la foto que tendrá la comida</p>
+        </div>
+
+        <div class="upload">
+            <input #fileInput type="file" (change)="onFileSelect($event)" accept="image/*" hidden />
+            <button type="button" class="custom-file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
+        </div>
+
+        
+      <!-- Preview -->
+     <div class="image-preview" *ngIf="previewUrl || foods?.image || foods?.imagen">
+        <img
+            [src]="previewUrl ? previewUrl : (apiImg + '/' + (foods.image || foods.imagen))"
+            alt="Vista previa"
+            class="preview"
+            (error)="previewUrl = null" />
+        <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
+    </div>
+
+<!-- placeholder si no hay ninguna -->
+<div class="image-preview placeholder" *ngIf="!(previewUrl || foods?.image || foods?.imagen)">
+  <img src="/assets/images/placeholder.png" alt="Sin imagen" class="preview" />
+</div>
+      
+    </div>
+
+    <div class="btnContainer">
+        <button class="btn" pButton type="submit" label="Actualizar" [disabled]="updateFoodsForms.invalid"></button>
+    </div>
+    </form>
+</div>

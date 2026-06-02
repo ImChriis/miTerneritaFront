@@ -1,0 +1,91 @@
+.container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formGroup{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+}
+
+.formGroup label{
+    color: white;
+}
+
+.formGroup input{
+    width: 100%;
+}
+
+.imageTitle{
+    text-align: center;
+}
+
+.upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-file-btn {
+  background-color: transparent;
+  border: 1px solid white !important;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.custom-file-btn:hover {
+    opacity: 0.8;
+}
+
+.btn{
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 50px;
+}
+
+.btn:hover{
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    opacity: 0.9;
+}
+
+.image-preview {
+    width: 100%;
+    position: relative;
+    margin-top: 10px;
+}
+
+.preview{
+    width: 100%;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+}

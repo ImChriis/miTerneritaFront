@@ -50,6 +50,11 @@ export class AdminLayoutComponent {
       icon: "pi pi-plus",
       routerLink: "/admin/drinks",
     },
+    {
+      name: "Comidas",
+      icon: "pi pi-plus",
+      routerLink: "/admin/foods",
+    },
     // {
     //   name: "Comidas",
     //   icon: "pi pi-plus",

@@ -10,7 +10,7 @@ import { TableModule } from 'primeng/table';
 import { DrinksService } from '../../@core/services/drinks.service';
 import { MessageService } from 'primeng/api';
 import { CreateDrinksComponent } from './components/create-drinks/create-drinks.component';
-import { map, Observable } from 'rxjs';
+import { map, Observable, startWith, switchMap } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
 import { UpdateDrinksComponent } from './components/update-drinks/update-drinks.component';
 
@@ -41,7 +41,12 @@ export class DrinksComponent implements OnInit{
   drinks$!: Observable<Drink[]>;
 
   ngOnInit(): void {
-    this.drinks$ = this.drinksService.getAllDrinks();
+    this.drinks$ = this.drinksService.refreshDrinksObservable$.pipe(
+      startWith(null),
+      switchMap(() => {
+        return this.drinksService.getAllDrinks();
+      })
+    )
   }
 
   openCreateModal(){
@@ -82,3 +87,5 @@ export class DrinksComponent implements OnInit{
     });
   }
 }
+
+

@@ -1,0 +1,39 @@
+<div class="container">
+    <form [formGroup]="foodsForm" (ngSubmit)="onSubmit()">
+        <div class="formGroup">
+            <label for="Nombre">Nombre</label>
+            <input pInputText id="Nombre" formControlName="description" type="text" />
+        </div>
+
+        <div class="formGroup">
+            <label for="Precio">Precio</label>
+            <input pInputText id="Precio" formControlName="price" type="number" />
+        </div>
+
+        <!-- <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <input pInputText id="Estado" formControlName="status" type="number" />
+        </div> -->
+
+        <div class="image">
+            <div class="imageTitle">
+                <p>Adjunta la foto que tendrá la comida</p>
+            </div>
+
+            <div class="upload">
+                <input #fileInput type="file" (change)="onFileSelect($event)" accept="image/*" hidden />
+                <button type="button" class="custom-file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
+            </div>
+
+            <!-- Preview -->
+            <div class="image-preview" *ngIf="previewUrl">
+                <img class="preview" [src]="previewUrl" alt="Vista previa" />
+                <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
+            </div>
+        </div>
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Crear" [disabled]="foodsForm.invalid"></button>
+        </div>
+    </form>
+</div>
