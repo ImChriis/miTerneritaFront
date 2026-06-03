@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { TicketsService } from '../../@core/services/tickets.service';
-import { Observable } from 'rxjs';
+import { Observable, startWith, switchMap, tap } from 'rxjs';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { Ticket } from '../../@core/models/ticket.model';
@@ -31,7 +31,12 @@ export class TicketsComponent implements OnInit{
   tickets$!: Observable<Ticket[]>;
 
   ngOnInit() {
-    this.tickets$ = this.ticketsService.getTickets();
+    this.tickets$ = this.ticketsService.refreshTicketsObservable$.pipe(
+      startWith(null),
+      switchMap(() => {
+        return this.ticketsService.getTickets();
+      })
+    )
   }
 
   openCreateModal(){

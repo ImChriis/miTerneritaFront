@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.developer';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs';
+import { catchError, map, Subject, tap } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 
 @Injectable({
@@ -10,6 +10,8 @@ import { Ticket } from '../models/ticket.model';
 export class TicketsService {
   private api: string = environment.api;
   private http = inject(HttpClient);
+  private refreshTickets$ = new Subject<void>();
+  public refreshTicketsObservable$ = this.refreshTickets$.asObservable();
 
   getTickets(){
     return this.http.get<Ticket[]>(`${this.api}/ticket`).pipe(
@@ -30,11 +32,15 @@ export class TicketsService {
   }
 
   createTicket(data: any){
-    return this.http.post(`${this.api}/ticket`, data);
+    return this.http.post(`${this.api}/ticket`, data).pipe(
+      tap(() => this.refreshTickets$.next())
+    )
   }
 
   updateTicket(id: number, data: any){
-    return this.http.put(`${this.api}/ticket/${id}`, data);
+    return this.http.put(`${this.api}/ticket/${id}`, data).pipe(
+      tap(() => this.refreshTickets$.next())
+    );
   }
 
 }

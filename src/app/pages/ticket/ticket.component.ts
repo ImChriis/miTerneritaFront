@@ -16,7 +16,7 @@ import { environment } from '../../../environments/environment.developer';
     CommonModule,
     FormsModule,
     InputText,
-    SelectModule
+    SelectModule,
 ],
   templateUrl: './ticket.component.html',
   styleUrl: './ticket.component.scss'

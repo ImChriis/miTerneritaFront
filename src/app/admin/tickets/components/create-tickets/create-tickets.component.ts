@@ -26,7 +26,7 @@ import { Event } from '../../../../@core/models/event.model';
 })
 export class CreateTicketsComponent implements OnInit{
   private ticketsService = inject(TicketsService);
-  private dialogService = inject(DialogService);
+  private dialogRef = inject(DynamicDialogRef);
   private messageService = inject(MessageService);
   private eventsService = inject(EventsService);
   private fb = inject(FormBuilder);
@@ -49,11 +49,13 @@ export class CreateTicketsComponent implements OnInit{
   });
 
   onSubmit(){
-    this.ticketsService.createTicket(this.ticketForm.value).subscribe({
+    const formData = this.ticketForm.value;
+    formData.price = Number(formData.price);
+
+    this.ticketsService.createTicket(formData).subscribe({
       next: (response) => {
         this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Entrada creada correctamente'});
-        this.ref?.close();
-        window.location.reload();
+        this.dialogRef.close();
       },
       error: (err) => {
         this.messageService.add({severity:'error', summary: 'Error', detail: 'Hubo un problema al crear la entrada'});

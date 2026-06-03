@@ -35,11 +35,11 @@ export class UpdateTicketsComponent implements OnInit{
   ticket: any = this.dialogConfig.data.ticket;
   events!: Event[];
   selectedEvent = this.ticket.event?.idEvents;
+  selectedStatus = this.ticket.status;
   status = [
     { label: 'Disponible', value: 1 },
     { label: 'No Disponible', value: 0 }
   ];
-  selectedStatus = this.ticket.status;
 
   updateTicketForm: FormGroup<FormTicket> = this.fb.group({
     name: this.fb.control<string>('', { nonNullable: true }),
@@ -49,7 +49,10 @@ export class UpdateTicketsComponent implements OnInit{
   });
 
   ngOnInit(): void {
-    this.updateTicketForm.patchValue(this.ticket);
+    this.updateTicketForm.patchValue({
+      ...this.ticket,
+      idEvents: this.ticket.event?.idEvents || null
+    });
     
     this.eventsService.getEvents().subscribe((events) => {
       this.events = events;
@@ -57,11 +60,15 @@ export class UpdateTicketsComponent implements OnInit{
   }
 
   onSubmit(){
-    this.ticketsService.updateTicket(this.ticket.idTicket, this.updateTicketForm.value).subscribe({
+    const formData = this.updateTicketForm.value;
+    formData.price = Number(formData.price);
+
+    console.log(formData);
+
+    this.ticketsService.updateTicket(this.ticket.idTicket, formData).subscribe({
       next: (response) => {
         this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Entrada actualizada correctamente'});
         this.dialogRef.close();
-        window.location.reload();
       },
       error: (err) => {
         this.messageService.add({severity:'error', summary: 'Error', detail: 'Hubo un problema al actualizar la entrada'});
