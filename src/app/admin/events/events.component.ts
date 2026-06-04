@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { EventsService } from '../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { Observable } from 'rxjs';
+import { Observable, startWith, switchMap } from 'rxjs';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CreateEventsComponent } from './components/create-events/create-events.component';
 import { UpdateEventsComponent } from './components/update-events/update-events.component';
@@ -27,7 +27,12 @@ export class EventsComponent implements OnInit{
   events$!: Observable<Event[]>;
 
   ngOnInit(): void {
-    this.events$ = this.eventsService.getEvents();
+    this.events$ = this.eventsService.refreshEventsObservable$.pipe(
+      startWith(null),
+      switchMap(() => {
+        return this.eventsService.getEvents();
+      })
+    )
   }
 
   openCreateModal(){
@@ -52,7 +57,7 @@ export class EventsComponent implements OnInit{
   openEditModal(event: any){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(UpdateEventsComponent, {
-      header: 'Agregar Evento',
+      header: 'Editar Evento',
       width: '50vw',
       // height: '65vh',
       modal: true,

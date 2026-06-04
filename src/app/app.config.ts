@@ -12,7 +12,7 @@ import { tokenInterceptor } from './@core/interceptor/token.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withViewTransitions()),
+    provideRouter(routes),
     provideHttpClient(withInterceptors([tokenInterceptor])),
     provideAnimationsAsync(),
     MessageService,

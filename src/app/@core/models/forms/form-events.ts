@@ -12,4 +12,5 @@ export interface FormEvent {
     image2: FormControl<File | null>;
     image3: FormControl<File | null>;
     status: FormControl<number | null>;
+    consumo: FormControl<number | null>;
 }

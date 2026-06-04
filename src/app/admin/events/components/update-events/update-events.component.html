@@ -29,6 +29,11 @@
             </div>
         </div>
 
+        <div class="formGroup">
+                <label for="consumo">Consumo</label>
+                <p-select [options]="consumo" optionLabel="label" optionValue="value" [(ngModel)]="selectedConsumo" formControlName="consumo" appendTo="body"/>
+        </div>
+
         <div class="description">
             <label for="Descripcion">Descripción</label>
             <p-editor [style]="{ height: '320px' }" formControlName="description"></p-editor>

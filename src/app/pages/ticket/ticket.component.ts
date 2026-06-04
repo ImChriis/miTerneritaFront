@@ -39,7 +39,9 @@ export class TicketComponent implements OnInit {
   wallpaper!: string;
 
   ngOnInit() {
+    console.log("Asdsadsa")
     this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
+    console.log('ID del evento:', this.idEvent);
 
     this.ticketService.getTicktesByEvent(this.idEvent).subscribe({
       next: (tickets) => {

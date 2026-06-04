@@ -35,9 +35,16 @@ export class UpdateEventsComponent implements OnInit{
   event = this.dialogConfig.data.event;
   apiImg = environment.apiImg;
   selectedStatus = this.event.status;
+  selectedConsumo = this.event.consumo;
+
    status = [
     { label: 'Disponible', value: 1 },
     { label: 'No Disponible', value: 0 }
+  ];
+
+  consumo = [
+    { label: 'Sí', value: 1 },
+    { label: 'No', value: 0 }
   ];
 
   previewUrls: Record<'flyer' | 'image1' | 'image2' | 'image3', string | null> = {
@@ -65,7 +72,8 @@ export class UpdateEventsComponent implements OnInit{
     image1: new FormControl<File | null>(null),
     image2: new FormControl<File | null>(null),
     image3: new FormControl<File | null>(null),
-    status: new FormControl<number | null>(1, { nonNullable: true })
+    status: new FormControl<number | null>(1, { nonNullable: true }),
+    consumo: new FormControl<number | null>(null)
   });
 
   ngOnInit() {
@@ -132,58 +140,99 @@ export class UpdateEventsComponent implements OnInit{
     });
   }
 
-  onSubmit(){
-    const fv = this.updateEventsForm.value;
-    const fd = new FormData();
+onSubmit() {
+  if (this.updateEventsForm.invalid) return;
 
-    Object.entries(fv).forEach(([k, v]) => {
-      // archivos
-      if (v instanceof File) {
-        fd.append(k, v);
+  const formValue = { ...this.updateEventsForm.value };
+  const fileControls = ['flyer', 'image1', 'image2', 'image3'] as const;
+  const hasFiles = fileControls.some((key) => formValue[key] instanceof File);
+
+  const toIsoDate = (value: string | null | undefined) => {
+    if (!value) return null;
+    const date = new Date(`${value}T00:00:00`);
+    return isNaN(date.getTime()) ? null : date.toISOString();
+  };
+
+  const toIsoTime = (dateValue: string | null | undefined, timeValue: string | null | undefined) => {
+    if (!timeValue) return null;
+    const baseDate = dateValue || new Date().toISOString().split('T')[0];
+    const date = new Date(`${baseDate}T${timeValue}:00`);
+    return isNaN(date.getTime()) ? null : date.toISOString();
+  };
+
+  formValue.date = toIsoDate(formValue.date) as any;
+  formValue.time = toIsoTime(formValue.date, formValue.time) as any;
+
+  if (hasFiles) {
+    const formData = new FormData();
+
+    Object.entries(formValue).forEach(([key, value]) => {
+      if (value instanceof File) {
+        formData.append(key, value);
+      } else if (value === null || value === undefined || value === '') {
         return;
-      }
-
-      // strings no vacíos
-      if (typeof v === 'string') {
-        if (v.trim() !== '') fd.append(k, v);
-        return;
-      }
-
-      // números (incluye 0)
-      if (typeof v === 'number') {
-        fd.append(k, String(v));
-        return;
-      }
-
-      // fechas
-      if (Object.prototype.toString.call(v) === '[object Date]') {
-        fd.append(k, (v as unknown as Date).toISOString().split('T')[0]);
-        return;
-      }
-
-      // otros
-      if (v !== null && v !== undefined) {
-        fd.append(k, String(v));
+      } else {
+        formData.append(key, String(value));
       }
     });
 
-    // debug (opcional)
-    for (const pair of fd.entries()) {
-      console.log(pair[0], pair[1]);
+    for (const pair of formData.entries()) {
+      console.log('FormData', pair[0], pair[1]);
     }
 
-    this.eventsService.updateEvent(this.event.idEvents, fd).subscribe({
-      next: (res: any) => {
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento creado correctamente.' });
-        // limpiar previews revocando blobs
-        Object.values(this.previewUrls).forEach(url => { if (url && url.startsWith('blob:')) URL.revokeObjectURL(url); });
+    this.eventsService.updateEvent(this.event.idEvents, formData).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Evento actualizado correctamente'
+        });
         this.dialogRef.close(true);
-        window.location.reload();
       },
-      error: (err: any) => {
-        console.error('Error al crear evento:', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el evento.' });
+      error: (error) => {
+        console.error('Error al actualizar el evento:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar el evento'
+        });
+      }
+    });
+  } else {
+    const jsonBody: any = {
+      ...formValue,
+      flyer: this.initialServerUrls.flyer,
+      image1: this.initialServerUrls.image1,
+      image2: this.initialServerUrls.image2,
+      image3: this.initialServerUrls.image3
+    };
+
+    Object.keys(jsonBody).forEach((key) => {
+      if (jsonBody[key] === null || jsonBody[key] === undefined || jsonBody[key] === '') {
+        delete jsonBody[key];
+      }
+    });
+
+    console.log('JSON body', jsonBody);
+
+    this.eventsService.updateEventJson(this.event.idEvents, jsonBody).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Evento actualizado correctamente'
+        });
+        this.dialogRef.close(true);
+      },
+      error: (error) => {
+        console.error('Error al actualizar el evento (json):', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar el evento'
+        });
       }
     });
   }
+}
 }

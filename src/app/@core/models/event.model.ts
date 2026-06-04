@@ -11,4 +11,5 @@ export interface Event{
     name: string;
     room: string;
     status: number;
+    consumo: number;
 }

@@ -2,13 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
+import { LoaderComponent } from './@core/components/loader/loader.component';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     CommonModule,
-    ToastModule
+    ToastModule,
+    LoaderComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FormEvent } from '../../../../@core/models/forms/form-events';
 import { EditorModule } from 'primeng/editor';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-create-events',
@@ -16,7 +17,8 @@ import { EditorModule } from 'primeng/editor';
     InputText,
     ButtonModule,
     ReactiveFormsModule,
-    EditorModule
+    EditorModule,
+    SelectModule
   ],
   templateUrl: './create-events.component.html',
   styleUrl: './create-events.component.scss'
@@ -27,6 +29,11 @@ export class CreateEventsComponent {
   private fb = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
   previewUrlL: string | null = null;
+
+  consumo = [
+    { label: 'Sí', value: 1 },
+    { label: 'No', value: 0 }
+  ]
 
   previewUrls: Record<'flyer' | 'image1' | 'image2' | 'image3', string | null> = {
     flyer: null,
@@ -46,7 +53,8 @@ export class CreateEventsComponent {
     image1: new FormControl<File | null>(null),
     image2: new FormControl<File | null>(null),
     image3: new FormControl<File | null>(null),
-    status: new FormControl<number | null>(1, { nonNullable: true })
+    status: new FormControl<number | null>(1, { nonNullable: true }),
+    consumo: new FormControl<number | null>(null)
   });
 
   onFileSelect(event: any, controlName: 'flyer'|'image1'|'image2'|'image3') {
@@ -153,7 +161,6 @@ onSubmit() {
       this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento creado correctamente.' });
       Object.values(this.previewUrls).forEach(url => { if (url && url.startsWith('blob:')) URL.revokeObjectURL(url); });
       this.dialogRef.close(true);
-      window.location.reload();
     },
     error: (err: any) => {
       console.error('Error al crear evento:', err);

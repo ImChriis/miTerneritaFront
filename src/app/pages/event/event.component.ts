@@ -22,6 +22,7 @@ export class EventComponent implements OnInit{
   idEvents!: number;
 
   ngOnInit(){
+    console.log("asdsada")
     this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
 
     this.eventsService.getEventById(this.idEvent).subscribe({

@@ -28,7 +28,7 @@ export class TicketsService {
   }
 
   getTicktesByEvent(idEvents: number){
-    return this.http.get<Ticket[]>(`${this.api}/ticket/event/${idEvents}`);
+    return this.http.get<Ticket[]>(`${this.api}/ticket/events/${idEvents}`);
   }
 
   createTicket(data: any){

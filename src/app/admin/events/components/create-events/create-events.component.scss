@@ -39,6 +39,10 @@ form{
     width: 100%;
 }
 
+.formGroup .p-select{
+    width: 100% !important;
+}
+
 .date, .time, .room, .capacity{
     display: flex;
     flex-direction: column;
