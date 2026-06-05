@@ -51,15 +51,27 @@ export class TicketComponent implements OnInit {
     });
 
     this.eventsService.getEventById(this.idEvent).subscribe({
-      next: (event) => {
-        this.name = event.name;
-        this.date = event.date;
-        this.time = event.time;
+    next: (event) => {
+      this.name = event.name;
+      this.date = event.date;
+      this.time = event.time;
 
-        const candidate = (event as any).image3 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
-        this.wallpaper = this.getFullUrl(candidate);
-      }
-    });
+      const candidate = (event as any).image3 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
+      this.wallpaper = this.getFullUrl(candidate);
+
+      document.body.style.backgroundImage = `url(${this.wallpaper})`;
+      document.body.style.backgroundPosition = 'center';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundSize = 'cover';
+    }
+  });
+  }
+
+  ngOnDestroy() {
+    document.body.style.backgroundImage = '';
+    document.body.style.backgroundPosition = '';
+    document.body.style.backgroundRepeat = '';
+    document.body.style.backgroundSize = '';
   }
 
     private getFullUrl(path: string): string {

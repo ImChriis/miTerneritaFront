@@ -13,11 +13,23 @@
     align-items: center;
     gap: 10px;
     margin-left: 5%;
-    margin-bottom: 20px;
+    color: white;
 }
 
 .selected{
     color: #1522D1;
+}
+
+::ng-deep{
+    .p-tablist{
+        width: 90%;
+        margin-left: 5%;
+    }
+
+    .p-tablist-active-bar{
+        color: #1522D1 !important;
+        background-color: #1522D1 !important;
+    }
 }
 
 .content{
@@ -25,9 +37,7 @@
     justify-content: center;
     align-items: start;
     height: auto;
-    margin-top: 25px;
     flex-direction: row;
-    padding-bottom: 150px;
 }
 
 .payment{
@@ -42,7 +52,10 @@
 
 .payment .title h1{
     font-weight: 600;
-    font-size: 80px;
+    font-size: 40px;
+    color: white;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .inputGroup{
@@ -87,10 +100,17 @@ select{
     color: white;
 }
 
+.warning p{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 .total h3{
     color: #FFFFFF;
     font-size: 25px;
     font-weight: 400;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .total span{
@@ -123,7 +143,6 @@ select{
   border-radius: 50px;
   cursor: pointer;
   width: 15%;
-  height: 3.5vh;
   font-weight: bold;
   margin-bottom: 10px;
 }
@@ -152,10 +171,19 @@ select{
 
 .bank .title h2{
     font-weight: 600;
+    color: white;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .bank .info{
-    font-size: 21px;
+    font-size: 20px;
+    color: white
+}
+
+.bank .info p{
+    margin-bottom: 2px;
+    margin-top: 0px;
 }
 
 .upload {

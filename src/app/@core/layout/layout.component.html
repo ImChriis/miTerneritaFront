@@ -3,7 +3,7 @@
         <div class="items">
             <a href="#">Inicio</a>
             <a (click)="goToEvents()">Eventos</a>
-            <a routerLink="/admin/dashboard" *ngIf="authService.isAuthenticated() && user?.role === 'admin'">Dashboard</a>
+            <a href="#">Contacto</a>
         </div>
         
         <div class="navLogo">
@@ -12,7 +12,9 @@
         </div>
         
         <div class="auth">
-            <a href="#">Contacto</a>
+
+        <a routerLink="/admin/dashboard" *ngIf="authService.isAuthenticated() && user?.role === 'admin'">Dashboard</a>
+            <a href="#" *ngIf="authService.isAuthenticated()">Mis Compras</a>
             <button *ngIf="!authService.isAuthenticated()" routerLink="/login" class="login">Login</button>
 
             <div class="user" *ngIf="authService.isAuthenticated()">

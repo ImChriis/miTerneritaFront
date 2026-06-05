@@ -36,34 +36,50 @@ export class CheckoutComponent implements OnInit{
   })
 
   
-
-  ngOnInit() {
+ngOnInit() {
     this.idEvents = Number(this.route.snapshot.paramMap.get('id'));
-
     this.selected = history.state.selected;
-
     this.total = this.selected.reduce((acc, item) => acc + item.total, 0);
 
     this.eventsService.getEventById(this.idEvents).subscribe({
       next: (event) => {
         this.name = event.name;
         this.event = event;
-        const candidate = (event as any).image1 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
+
+        const candidate =
+          (event as any).image1 ??
+          (event as any).flyer ??
+          (event as any).image ??
+          (event as any).imagen ??
+          '';
+
         this.wallpaper = this.getFullUrl(candidate);
+
+        document.body.style.backgroundImage = `url(${this.wallpaper})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
       }
     });
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if(user){
+
+    if (user) {
       this.userData.patchValue({
         name: user.name,
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
         identification: user.cedula
-      })
+      });
     }
+  }
+
+    ngOnDestroy() {
+    document.body.style.backgroundImage = '';
+    document.body.style.backgroundSize = '';
+    document.body.style.backgroundPosition = '';
+    document.body.style.backgroundRepeat = '';
   }
 
    private getFullUrl(path: string): string {

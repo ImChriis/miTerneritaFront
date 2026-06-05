@@ -1,4 +1,4 @@
-<div class="container" [style.backgroundImage]="wallpaper ? 'url(' + wallpaper + ')' : ''">
+<div class="container">
     <div class="sections">
     <p>Detalles del evento ></p> <p  class="selected">Espacios ></p> <p>Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
 </div>
@@ -30,7 +30,7 @@
                 <label for="zone">Cantidad</label>
                 <div class="cantidad-input">
                     <button type="button" (click)="decrement()" [disabled]="cantidad <= 1">-</button>
-                    <input pInputText type="number" id="cantidad" [value]="cantidad" readonly>
+                    <input pInputText type="text" id="cantidad" [value]="cantidad" readonly>
                     <button type="button" (click)="increment()" [disabled]="cantidad >= 10">+</button>
                 </div>
             </div>
@@ -42,25 +42,23 @@
         </div>
      </form>
 
-     <div class="summary" *ngIf="selected.length > 0">
+    <div class="summary" *ngIf="selected.length > 0">
+      <div class="summary" [class.empty]="selected.length === 0">
+          <!-- <div class="summaryTitle">
+            <h3>Seleccion actual</h3>
+          </div> -->
 
-        <div class="summary" [class.empty]="selected.length === 0">
-      <div class="summaryTitle">
-        <h3>Seleccion actual</h3>
+          <div class="summaryList">
+            <div class="summaryInfo" *ngFor="let item of selected; let i = index">
+              <i class="pi pi-times delete" (click)="clearSelection(i)"></i>
+              <p><span>{{ item.name }} x{{ item.cantidad }}</span></p>
+              <p>Total: <span>${{ item.total | number:'1.2-2' }}</span></p>
+          </div>
+
+            <!-- placeholder para reservar espacio cuando no hay items -->
+            <div class="summaryPlaceholder" *ngIf="selected.length === 0"></div>
+          </div>
       </div>
-
-      <div class="summaryList">
-        <div class="summaryInfo" *ngFor="let item of selected; let i = index">
-          <i class="pi pi-times delete" (click)="clearSelection(i)"></i>
-          <p>Tipo de espacio: <span>{{ item.name }}</span></p>
-          <p>Cantidad: <span>{{ item.cantidad }}</span></p>
-          <p>Total: <span>${{ item.total | number:'1.2-2' }}</span></p>
-        </div>
-
-        <!-- placeholder para reservar espacio cuando no hay items -->
-        <div class="summaryPlaceholder" *ngIf="selected.length === 0"></div>
-      </div>
-    </div>
     </div>
     
         <div class="btnDetails" *ngIf="selected.length > 0">

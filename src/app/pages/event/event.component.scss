@@ -1,11 +1,24 @@
 .container{
   width: 100%;
-  min-height: 83vh; /* garantiza que el fondo ocupe al menos la altura visual */
-  background-image: none;
+  min-height: auto;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover; /* cubrir siempre el contenedor */
+  background-size: cover;
   background-color: transparent;
+  overflow: hidden; // evita scroll por desbordes visuales
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.container > * {
+  position: relative;
+  z-index: 1;
 }
 
 .sections{
@@ -15,6 +28,7 @@
     gap: 10px;
     margin-left: 5%;
     margin-bottom: 20px;
+    color: white;
 }
 
 .selected{
@@ -26,7 +40,7 @@
     justify-content: end;
     align-items: start;
     height: 100%;
-    padding-bottom: 330px;
+    padding-bottom: 0px;
     margin-top: 25px;
     flex-direction: row-reverse;
 }
@@ -38,7 +52,7 @@
     justify-content: start;
     align-items: center;
     flex-direction: column;
-    padding-top: 100px;
+    padding-top: 24px;
 }
 
 .title{

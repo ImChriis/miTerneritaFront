@@ -1,6 +1,9 @@
 <div class="container">
     <div class="sections">
-        <p>Detalles del evento ></p> <p  class="selected">Espacios ></p> <p>Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
+        <p>Detalles del evento ></p> 
+        <p>Espacios ></p> 
+        <p>Consumo ></p> <p>Confirmar datos ></p> 
+        <p class="selected">Pagar</p>
     </div>
 
     <p-tabs value=0>
@@ -93,9 +96,9 @@
         </div>
 
         <div class="bank">
-            <div class="img">
+            <!-- <div class="img">
                 <img class="bankImg" src="../../../assets/img/logo.png" alt="">
-            </div>
+            </div> -->
 
             <div class="title">
                 <h2>Datos Bancarios</h2>
@@ -178,9 +181,9 @@
         </div>
 
         <div class="bank">
-            <div class="img">
+            <!-- <div class="img">
                 <img class="bankImg" src="../../../assets/img/logo.png" alt="">
-            </div>
+            </div> -->
 
             <div class="title">
                 <h2>Datos Bancarios</h2>
@@ -282,14 +285,14 @@
             </div>
 
             <div class="btns" (click)="onSubmit()">
-                <button class="btn2">Pagar</button>
+                <button pButton class="btn2" [disabled]="!paymentfForm.valid || paymentfForm.get('totalGeneral')?.value !== total">Pagar</button>
             </div>
         </div>
 
         <div class="bank">
-            <div class="img">
+            <!-- <div class="img">
                 <img class="bankImg" src="../../../assets/img/logo.png" alt="">
-            </div>
+            </div> -->
 
             <div class="title">
                 <h2>Datos Bancarios</h2>

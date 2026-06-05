@@ -21,21 +21,24 @@ export class EventComponent implements OnInit{
   name!: string;
   idEvents!: number;
 
-  ngOnInit(){
-    console.log("asdsada")
+  ngOnInit() {
     this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
+
+    document.body.style.backgroundImage = `url(${this.wallpaper})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
 
     this.eventsService.getEventById(this.idEvent).subscribe({
       next: (event) => {
-        console.log('Evento obtenido:', event);
         this.description = event.description;
         this.date = event.date;
         this.time = event.time;
         this.name = event.name;
         this.idEvents = event.idEvents;
-        // Prefer image1 from backend; fall back to flyer or other properties
         const candidate = (event as any).image1 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
         this.wallpaper = this.getFullUrl(candidate);
+        document.body.style.backgroundImage = `url(${this.wallpaper})`;
       }
     });
   }

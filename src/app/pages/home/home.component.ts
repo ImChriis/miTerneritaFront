@@ -19,9 +19,9 @@ import { environment } from '../../../environments/environment.developer';
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private router = inject(Router);
   private eventService = inject(EventsService);
-  events$!: Observable<Event[]>
-  slideIndex = signal(0);
   private intervalId: any;
+  events$!: Observable<Event[]>;
+  slideIndex = signal(0);
   selectedIndex = 0;
   apiImg = environment.apiImg;
   eventsLoaded: Event[] = [];
@@ -103,22 +103,23 @@ ngOnDestroy() {
 }
 
   testEvents = [
-  {
-    nombre: 'Evento 1',
-    descripcion: 'Descripción del evento 1',
-    imagen: '../../../assets/img/zona1.jpg'
-  },
-  {
-    nombre: 'Evento 2',
-    descripcion: 'Descripción del evento 2',
-    imagen: '../../../assets/img/zona2.jpg'
-  },
-  {
-    nombre: 'Evento 3',
-    descripcion: 'Descripción del evento 3',
-    imagen: '../../../assets/img/zona3.jpg'
-  }
-];
+    {
+      nombre: 'Evento 1',
+      descripcion: 'Descripción del evento 1',
+      imagen: '../../../assets/img/zona1.jpg'
+    },
+    {
+      nombre: 'Evento 2',
+      descripcion: 'Descripción del evento 2',
+      imagen: '../../../assets/img/zona2.jpg'
+    },
+    {
+      nombre: 'Evento 3',
+      descripcion: 'Descripción del evento 3',
+      imagen: '../../../assets/img/zona3.jpg'
+    }
+  ];
+
 
   nextSlide() {
     this.slideIndex.update(i => (i + 1 + this.testEvents.length) % this.testEvents.length);

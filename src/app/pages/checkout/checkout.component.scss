@@ -1,12 +1,25 @@
 .container{
   width: 100%;
-  min-height: 83vh; /* garantiza que el fondo ocupe al menos la altura visual */
-  background-image: none;
+  height: auto;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover; /* cubrir siempre el contenedor */
+  background-size: cover;
   background-color: transparent;
+  overflow: hidden; // evita scroll por desbordes visuales
 }
+
+// .container::before {
+//   content: "";
+//   position: absolute;
+//   inset: 0;
+//   background: rgba(0, 0, 0, 0.35);
+//   pointer-events: none;
+// }
+
+// .container > * {
+//   position: relative;
+//   z-index: 1;
+// }
 
 .sections{
     display: flex;
@@ -15,8 +28,8 @@
     gap: 10px;
     margin-left: 5%;
     margin-bottom: 20px;
+    color: white;
 }
-
 .selected{
     color: #1522D1;
 }
@@ -28,7 +41,8 @@
     height: auto;
     margin-top: 25px;
     flex-direction: row;
-    padding-bottom: 99px;
+    padding-bottom: 0px;
+    margin-top: 25px;
 }
 
 .details{
@@ -53,6 +67,13 @@
     color: white;
     font-size: 80px;
     font-weight: 900;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.title h3{
+    color: white;
+    margin-top: 0px;
 }
 
 .date{
@@ -160,10 +181,12 @@ select{
 
 .ticketInfo p{
     font-weight: 400;
+    color: white;
 }
 
 .ticketInfo span{
     font-weight: 600;
+    color: white;
 }
 
 .total h3{
@@ -173,6 +196,7 @@ select{
 
 .total span{
     font-weight: 600;
+    color: white;
 }
 
 .eventImg{
