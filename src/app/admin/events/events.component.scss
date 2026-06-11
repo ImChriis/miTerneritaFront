@@ -10,8 +10,20 @@
     height: 10vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     justify-content: center;
+  }
+
+  .title h1{
+    margin-bottom: 0px;
+    color: white;
+    font-size: 42px;
+  }
+
+  .title p{
+    margin-top: 0px;
+    color: white;
+    font-size: 18px;
   }
 
   .content{
@@ -23,10 +35,20 @@
     height: auto;
   }
   
-  h1, span {
-    font-weight: bold;
+  .toolbar{
+    display: flex;
+    gap: 20px;
   }
-  
+
+  .searchBar{
+    border: 1px solid white;
+  }
+
+  .searchBar::placeholder{
+    color: white;
+    opacity: 0.8;
+  }
+
   td,
   th {
     color: white;

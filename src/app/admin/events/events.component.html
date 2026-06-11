@@ -6,6 +6,7 @@
 
         <div class="title">
           <h1>Eventos</h1>
+          <p>Crea los eventos que se veran refrejados en la pagina</p>
         </div>
 
         <p-table
@@ -14,18 +15,18 @@
           dataKey="id"
           [rows]="10"
           [paginator]="true"
-          [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']"
-          styleClass="ml-3 mr-3"
+          [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']" 
           >
           <ng-template pTemplate="caption">
             <div class="flex-row">
-              <div class="p-toolbar-group-end">
+              <div class="p-toolbar-group-end toolbar">
                 <span class="p-input-icon-left ml-auto">
                   <i class=""></i>
                   <input
                     pInputText
                     type="text"
                     placeholder="Buscar"
+                    class="searchBar"
                     />
                   </span>
                 </div>
@@ -38,8 +39,8 @@
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
-                <th style="min-width: 10rem" class="border">
-                  <div class="flex thstyles">ID</div>
+                <th style="min-width: 1rem" class="border">
+                  <div class="flex thstyles"><p-checkbox /></div>
                 </th>
                 <th style="min-width: 10rem">
                   <div class="flex thstyles">Nombre</div>
@@ -53,10 +54,10 @@
                 <th style="min-width: 10rem">
                   <div class="flex thstyles">Capacidad</div>
                 </th>
-                <th style="min-width: 10rem">
+                <th style="min-width: 1rem">
                   <div class="flex thstyles">Estado</div>
                 </th>
-                <th class="text-center" style="min-width: 10rem" class="border2">
+                <th class="text-center" style="min-width: 1rem" class="border2">
                   <div class="flex thstyles option">Opciones</div>
                 </th>
               </tr>
@@ -64,7 +65,7 @@
             <ng-template pTemplate="body" let-event class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                  {{ event.idEvents }}
+                   <p-checkbox />
                 </td>
                 <td>
                   {{ event.name }}
@@ -88,7 +89,7 @@
                 <td class="text-center column-table-right">
                   <div class="option">
                     <i class="pi pi-pencil btnEdit" (click)="openEditModal(event)" ></i>
-                    <i class="pi pi-times btnDelete" ></i>
+                    <i class="pi pi-trash btnDelete" ></i>
                   </div>
                 </td>
               </tr>

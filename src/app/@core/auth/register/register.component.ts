@@ -59,7 +59,8 @@ export class RegisterComponent implements OnInit{
     }
   
     if (control.errors['required']) {
-      return `El campo ${field} es obligatorio.`;
+      // return `El campo ${field} es obligatorio.`;
+      return `El campo es obligatorio.`;
     }
     if (control.errors['minlength']) {
       return `El campo ${field} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;

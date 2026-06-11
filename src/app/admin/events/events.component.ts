@@ -8,13 +8,15 @@ import { CreateEventsComponent } from './components/create-events/create-events.
 import { UpdateEventsComponent } from './components/update-events/update-events.component';
 import { Event } from '../../@core/models/event.model';
 import { InputText } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-events',
   imports: [
     CommonModule,
     TableModule,
-    InputText
+    InputText,
+    CheckboxModule
   ],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'

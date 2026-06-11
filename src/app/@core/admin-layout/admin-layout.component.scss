@@ -57,7 +57,7 @@ nav{
 .logo .menu-icon-close{
   color: white;
   font-size: 28px;
-  margin-left: 15px;
+  margin-left: 7px;
   margin-top: 15px;
   cursor: pointer;
 }
@@ -102,7 +102,7 @@ nav.open .sidebar{
 
 .sidebar .sidebar-content{
   display: flex;
-  height: 83%;
+  height: 80%;
   flex-direction: column;
   justify-content: space-between;
   padding: 30px 16px;
@@ -169,7 +169,7 @@ nav.open ~ .overlay{
 footer{
     flex-shrink: 0;
     background-color: #2E2E2E;
-    height: 10vh;
+    // height: 10vh;
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     height: auto;
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 
 form{
@@ -20,6 +20,7 @@ form{
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 2vh;
 }
 
 .logo{
@@ -41,7 +42,7 @@ form{
 }
 
 .inputGroup{
-    width: 50%;
+    width: 70% !important;
     height: 10%;
     display: flex;
     justify-content: center;
@@ -75,6 +76,7 @@ input{
     border: none;
     background-color: #2b2b2b;
     color: white;
+    outline: none;
 }
 
 .password-wrapper {
