@@ -1,9 +1,17 @@
 ::ng-deep{
     body::-webkit-scrollbar {
-      width: 0px;
       background: transparent;
     }
   }
+
+  .container{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+}
 
   .title{
     width: 100%;
@@ -12,6 +20,7 @@
     flex-direction: column;
     align-items: start;
     justify-content: center;
+    margin-bottom: 1vh;
   }
 
   .title h1{
@@ -26,22 +35,57 @@
     font-size: 18px;
   }
 
-  .content{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 50px;
-    height: auto;
+  .table{
+    margin-top: 2vh;
+    padding: 20px;
+    background-color: #1E293B;
+    border-radius: 20px;
+  }
+
+  ::ng-deep{
+     .p-toolbar {
+      background-color: #1E293B !important;
+      border-color: #1E293B !important;
+    }
+  
+    .p-datatable-header {
+      background-color: #1E293B !important;
+      border-color: #1E293B !important;
+      color: white !important;
+    }
+  
+    .p-paginator {
+      background-color: #334155 !important;
+      border-color: #1E293B !important;
+    }
+  
+    .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+      background: #EEFB07 !important;
+      border-color: #EEFB07 !important;
+    }
+
+    .p-paginator-page.p-paginator-page-selected{
+      background: #1E293B !important;
+      color: white !important;
+    }
+
+    .p-paginator-first, .p-paginator-prev, .p-paginator-next, .p-paginator-last {
+      background-color: transparent !important;
+      border-color: transparent !important;
+      color: white !important;
+    }
   }
   
   .toolbar{
     display: flex;
     gap: 20px;
+    background-color: transparent !important;
   }
 
   .searchBar{
+    background-color: transparent !important;
     border: 1px solid white;
+    color: white;
   }
 
   .searchBar::placeholder{
@@ -51,32 +95,37 @@
 
   td,
   th {
-    color: white;
+    color: #FFFFFF !important;
     font-size: 15px;
     border: transparent;
     text-align: center;
   }
-  
-  .blurred-background {
-    filter: blur(4px);
-    transition: filter 0.3s ease;
+
+  td{
+    text-align: center !important;
+     border-bottom: 1px solid #475569 !important;
+  }
+
+  .name{
+    text-align: left !important;
   }
   
   th {
-    background-color : #3b3d47 !important;
+    background-color: #334155 !important;
     border: transparent;
     font-weight: normal;
     padding: 0;
     height: 45px !important;
+    text-align: center !important;
+     border-bottom: 1px solid #475569 !important;
   }
   
   :host ::ng-deep p-table tr:nth-child(odd) {
-    background-color: #21232D !important;
+    background-color: #1E293B !important;
   }
   
-  
   :host ::ng-deep p-table tr:nth-child(even) {
-    background-color: rgb(25, 28, 36) !important;
+    background-color: #1E293B !important;
   }
   
   .check-estado{
@@ -88,17 +137,7 @@
   input:focus {
     box-shadow: none;
   }
-  
-  .border {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-  
-  .border2 {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-  
+
   .p-toolbar-group-start {
     display: flex;
     flex-direction: column;
@@ -170,33 +209,6 @@
       transform: translateY(-50%);
     }
   
-    .p-toolbar {
-      background-color: #22242e !important;
-      border-color: #21232d !important;
-    }
-  
-    .p-datatable-header {
-      background-color: #22242e !important;
-      border-color: #22242e !important;
-    }
-  
-    .p-paginator {
-      background-color: #22242e !important;
-      border-color: #22242e !important;
-    }
-  
-    .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-      background: #EEFB07 !important;
-      border-color: #EEFB07 !important;
-    }
-  
-    .p-badge-warning {
-      margin-left: 0px;
-      background-color: transparent !important;
-      color: rgb(235, 165, 59) !important;
-      font-size: 17px;
-    }
-  
     .p-dialog-content {
       background-color: #1a1b20;
       color: white;
@@ -206,11 +218,6 @@
       background-color: #1a1b20;
       color: white;
     }
-  
-    // .p-button {
-    //   background-color: #3b3d47 ;
-    //   border-color: transparent;
-    // }
   }
   
   .flex-row {
@@ -219,7 +226,6 @@
     align-items: center;
     width: 100%;
     margin-bottom: -5px;
-    background-color: #22242e !important;
   }
   
   .toobar {
@@ -242,44 +248,20 @@
   }
   
   .btn {
-    background-color: transparent !important;
-    border-radius: 50px;
+    background-color: #2563EB !important;
+    border-radius: 10px;
     height: 45px;
     width: 250px;
     color: white;
-    border: 1px solid white !important;
+    border: 1px solid #475569 !important;
     font-family: poppins;
     &:hover {
      background-color: transparent !important;
      color: white;
-     opacity: 0.9;
+    //  opacity: 0.9;
+     background-color: #1D4ED8 !important;
      cursor: pointer;
     }
-  }
-  
-  .column-table-left {
-    border-radius: 10px 0px 0px 10px;
-  }
-  
-  .column-table-right {
-    border-radius: 0px 10px 10px 0px;
-  }
-  
-  .thstyles {
-    justify-content: center;
-  }
-  
-  .piso {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-  }
-  
-  .turno {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
   }
   
   .titulo {
@@ -306,16 +288,22 @@
 
   .disponible {
     margin-left: 0px ;
-    background-color: transparent !important;
-    color: rgb(112, 223, 112) !important;
-    font-size: 16px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e !important;
+    border-color: rgba(34, 197, 94, 0.35);
+    padding: 7px;
+    border-radius: 20px;
+    border: 1px solid;
   }
   
   .noDisponible {
     margin-left: 0px ;
-    background-color: transparent !important;
+    background: rgba(241, 99, 99, 0.15);
     color: #f16363 !important;
-    font-size: 16px;
+    border-color: rgba(241, 99, 99, 0.35);
+    padding: 7px;
+    border-radius: 20px;
+    border: 1px solid;
   }
 
     .btnEdit {

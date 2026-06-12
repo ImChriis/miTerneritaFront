@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { EventsService } from '../../@core/services/events.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';

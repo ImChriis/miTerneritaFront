@@ -1,5 +1,6 @@
 <body class="container">
-    <div  [class.blurred-background]="isModalOpen">
+  <div class="table">
+        <div  [class.blurred-background]="isModalOpen">
       @if(
         events$ | async
         ; as state) {
@@ -42,22 +43,25 @@
                 <th style="min-width: 1rem" class="border">
                   <div class="flex thstyles"><p-checkbox /></div>
                 </th>
-                <th style="min-width: 10rem">
+                <th class="name" style="min-width: 20rem">
                   <div class="flex thstyles">Nombre</div>
                 </th>
-                <th style="min-width: 10rem">
+                <th style="min-width: 5rem">
                   <div class="flex thstyles">Fecha</div>
                 </th>
-                <th style="min-width: 10rem">
+                <th style="min-width: 5rem">
                   <div class="flex thstyles">Hora</div>
-                </th>                
-                <th style="min-width: 10rem">
+                </th> 
+                <th class="text-center" style="min-width: 5rem">
+                  <div class="flex thstyles">Salon</div>
+                </th>               
+                <th class="text-center" style="min-width: 5rem">
                   <div class="flex thstyles">Capacidad</div>
                 </th>
-                <th style="min-width: 1rem">
+                <th style="min-width: 5rem">
                   <div class="flex thstyles">Estado</div>
                 </th>
-                <th class="text-center" style="min-width: 1rem" class="border2">
+                <th class="text-center" style="min-width: 5rem" class="border2">
                   <div class="flex thstyles option">Opciones</div>
                 </th>
               </tr>
@@ -67,7 +71,7 @@
                 <td class="column-table-left mr-5">
                    <p-checkbox />
                 </td>
-                <td>
+                <td class="name">
                   {{ event.name }}
                 </td>
                 <td>
@@ -75,6 +79,9 @@
                 </td>
                 <td>
                   {{ event.time }}
+                </td>
+                <td>
+                  {{ event.room }}
                 </td>
                 <td>
                   {{ event.capacity }}
@@ -102,6 +109,7 @@
           </p-table>
         }
       </div>
-    </body>
+  </div>
+</body>
     
   

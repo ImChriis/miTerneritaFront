@@ -168,4 +168,8 @@ onSubmit() {
     }
   });
 }
+
+  formateTimeString(time: string){
+    
+  }
 }
