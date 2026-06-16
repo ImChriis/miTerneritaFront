@@ -37,14 +37,26 @@ form{
 
 .formGroup input{
     width: 100%;
+    background-color: transparent;
+    color: white;
 }
 
 .formGroup .p-select{
     width: 100% !important;
+    background-color: transparent;
+    color: white;
 }
 
-.formGroup .p-select{
-    width: 100%;
+::ng-deep .p-select-label.ng-star-inserted{
+    color: white !important;
+}
+
+::ng-deep .p-select .p-select-label.p-placeholder{
+    color: white !important;
+}
+
+::ng-deep .p-select .p-icon{
+    color: white !important;
 }
 
 .date, .time, .room, .capacity{
@@ -53,10 +65,85 @@ form{
     width: 50%;
 }
 
+.date input, .time input, .room input, .capacity input{
+    background-color: transparent;
+    color: white;
+}
+
 .description{
     width: 100%;
     display: flex;
     flex-direction: column;
+}
+
+::ng-deep .p-editor {
+  border: 1px solid white !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+::ng-deep .p-editor .p-editor-toolbar {
+  background-color: #000 !important;
+  border: none !important;
+}
+
+::ng-deep .p-editor .p-editor-content {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+::ng-deep .p-editor .ql-toolbar {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+::ng-deep .p-editor .ql-container {
+  background-color: transparent !important;
+  border: none !important;
+  color: white !important;
+}
+
+::ng-deep .p-editor .ql-editor {
+  min-height: 200px;
+  color: white !important;
+  background-color: transparent !important;
+}
+
+::ng-deep .p-editor .ql-editor.ql-blank::before {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+::ng-deep .p-editor .ql-toolbar .ql-picker-label {
+  color: white !important;
+  border: none !important;
+}
+
+::ng-deep .p-editor .ql-toolbar .ql-picker-label:hover {
+  color: #1D4ED8 !important;
+}
+
+::ng-deep .p-editor .ql-toolbar .ql-picker-options {
+  background-color: black !important;
+//   border: 1px solid #EEFB07 !important;
+  border-radius: 10px !important;
+}
+
+::ng-deep .p-editor .ql-toolbar .ql-picker-item {
+  color: white !important;
+}
+
+::ng-deep .p-editor .ql-toolbar .ql-picker-item:hover {
+  background-color: #1D4ED8 !important;
+  color: black !important;
+}
+
+::ng-deep .p-editor .ql-toolbar .ql-picker-item.ql-selected {
+  background-color: #1D4ED8 !important;
+  color: black !important;
+}
+
+::ng-deep .p-editor .ql-toolbar .ql-list .ql-active{
+    color: #1D4ED8 !important;
 }
 
 .imageTitle{

@@ -10,7 +10,7 @@ nav{
   left: 0;
   height: 5vh;
   width: 100%;
-  background: #2E2E2E;
+  background: #181A1F;
   box-shadow: 0 0 1px rgba(0,0,0,0.1);
   z-index: 1000;
   display: flex;
@@ -73,7 +73,7 @@ nav .sidebar{
   height: 100%;
   width: 260px;
   padding:  0;
-  background-color: #2E2E2E;
+  background-color: #181A1F;
   box-shadow: 0 5px 10px rgba(0,0,0,0.1);
   transition: all 0.4s ease;
 }
@@ -123,7 +123,7 @@ nav.open .sidebar{
   text-decoration: none;
 }
 .nav-link:hover{
-  background-color: #1522D1;
+  background-color:#1D4ED8;
 }
 .nav-link .icon{
   margin-right: 14px;
@@ -168,7 +168,7 @@ nav.open ~ .overlay{
 
 footer{
     flex-shrink: 0;
-    background-color: #2E2E2E;
+    background-color: #181A1F;
     // height: 10vh;
     display: flex;
     justify-content: space-between;
@@ -208,8 +208,37 @@ footer{
 
 ::ng-deep{
   body {
-    background-color: #141414; //cambiar colores
+    background-color: #0F1115; //cambiar colores
   }
+}
+
+::ng-deep .p-inputtext:enabled:focus,
+::ng-deep .p-inputtext.p-focus,
+::ng-deep .p-inputtext:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #1D4ED8 !important; /* o el color que quieras fijo */
+}
+
+::ng-deep .p-inputtext:hover{
+  border-color: #1D4ED8 !important;
+}
+
+::ng-deep .p-dialog{
+  border: none;
+  border-color: black !important;
+}
+
+::ng-deep .p-select:enabled:focus,
+::ng-deep .p-select.p-focus,
+::ng-deep .p-select:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #1D4ED8 !important; /* o el color que quieras fijo */
+}
+
+::ng-deep .p-select:hover{
+  border-color: #1D4ED8  !important;
 }
 
 

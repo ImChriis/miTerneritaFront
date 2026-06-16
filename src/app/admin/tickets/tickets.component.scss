@@ -1,60 +1,131 @@
 ::ng-deep{
     body::-webkit-scrollbar {
-      width: 0px;
       background: transparent;
     }
   }
 
-  .title{
+  .container{
     width: 100%;
-    height: 10vh;
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
   }
 
-  .content{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .title{
     width: 100%;
-    margin-top: 50px;
-    height: auto;
+    height: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    margin-bottom: 1vh;
+    padding-bottom: 10px;
+  }
+
+  .title h1{
+    margin-bottom: 0px;
+    color: white;
+    font-size: 30px;
+  }
+
+  .title p{
+    margin-top: 0px;
+    color: white;
+    font-size: 18px;
+  }
+
+  .table{
+    margin-top: 2vh;
+    padding: 20px;
+    background-color: #232831;
+    border-radius: 20px;
+  }
+
+  ::ng-deep{
+    .p-datatable-header {
+      background-color: #232831 !important;
+      border-color: #232831 !important;
+      color: white !important;
+    }
+  
+    .p-paginator {
+      background-color: #232831 !important;
+      border-color: #232831 !important;;
+    }
+  
+    .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+      background: #EEFB07 !important;
+      border-color: #EEFB07 !important;
+    }
+
+    .p-paginator-page.p-paginator-page-selected{
+      background: #2C323C !important;
+      color: white !important;
+    }
+
+    .p-paginator-first, .p-paginator-prev, .p-paginator-next, .p-paginator-last {
+      background-color: transparent !important;
+      border-color: transparent !important;
+      color: white !important;
+    }
   }
   
-  h1, span {
-    font-weight: bold;
+  .toolbar{
+    display: flex;
+    gap: 20px;
+    background-color: transparent !important;
   }
-  
+
+  .searchBar{
+    background-color: transparent !important;
+    border: 1px solid white;
+    color: white;
+  }
+
+  .searchBar::placeholder{
+    color: white;
+    opacity: 0.8;
+  }
+
   td,
   th {
-    color: white;
+    color: #FFFFFF !important;
     font-size: 15px;
     border: transparent;
     text-align: center;
   }
-  
-  .blurred-background {
-    filter: blur(4px);
-    transition: filter 0.3s ease;
+
+  td{
+    text-align: center !important;
+     border-bottom: 1px solid #3A4250 !important;
+  }
+
+  .name{
+    text-align: left !important;
   }
   
   th {
-    background-color : #3b3d47 !important;
+    background-color: #2C323C !important;
     border: transparent;
     font-weight: normal;
     padding: 0;
     height: 45px !important;
+    text-align: center !important;
+     border-bottom: 1px solid #2C323C !important;
   }
   
   :host ::ng-deep p-table tr:nth-child(odd) {
-    background-color: #21232D !important;
+    background-color: #232831 !important;
   }
   
-  
   :host ::ng-deep p-table tr:nth-child(even) {
-    background-color: rgb(25, 28, 36) !important;
+    background-color: #232831 !important;
+  }
+
+  tr:hover{
+    background-color: #2B313B !important;
   }
   
   .check-estado{
@@ -66,17 +137,7 @@
   input:focus {
     box-shadow: none;
   }
-  
-  .border {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-  
-  .border2 {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-  
+
   .p-toolbar-group-start {
     display: flex;
     flex-direction: column;
@@ -148,33 +209,6 @@
       transform: translateY(-50%);
     }
   
-    .p-toolbar {
-      background-color: #22242e !important;
-      border-color: #21232d !important;
-    }
-  
-    .p-datatable-header {
-      background-color: #22242e !important;
-      border-color: #22242e !important;
-    }
-  
-    .p-paginator {
-      background-color: #22242e !important;
-      border-color: #22242e !important;
-    }
-  
-    .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-      background: #EEFB07 !important;
-      border-color: #EEFB07 !important;
-    }
-  
-    .p-badge-warning {
-      margin-left: 0px;
-      background-color: transparent !important;
-      color: rgb(235, 165, 59) !important;
-      font-size: 17px;
-    }
-  
     .p-dialog-content {
       background-color: #1a1b20;
       color: white;
@@ -184,11 +218,6 @@
       background-color: #1a1b20;
       color: white;
     }
-  
-    // .p-button {
-    //   background-color: #3b3d47 ;
-    //   border-color: transparent;
-    // }
   }
   
   .flex-row {
@@ -197,7 +226,6 @@
     align-items: center;
     width: 100%;
     margin-bottom: -5px;
-    background-color: #22242e !important;
   }
   
   .toobar {
@@ -220,44 +248,20 @@
   }
   
   .btn {
-    background-color: transparent !important;
-    border-radius: 50px;
+    background-color:  #2563EB !important;
+    border-radius: 10px;
     height: 45px;
     width: 250px;
     color: white;
-    border: 1px solid white !important;
+    border: 1px solid #475569 !important;
     font-family: poppins;
     &:hover {
      background-color: transparent !important;
      color: white;
-     opacity: 0.9;
+    //  opacity: 0.9;
+     background-color: #1D4ED8 !important;
      cursor: pointer;
     }
-  }
-  
-  .column-table-left {
-    border-radius: 10px 0px 0px 10px;
-  }
-  
-  .column-table-right {
-    border-radius: 0px 10px 10px 0px;
-  }
-  
-  .thstyles {
-    justify-content: center;
-  }
-  
-  .piso {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-  }
-  
-  .turno {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
   }
   
   .titulo {
@@ -284,21 +288,27 @@
 
   .disponible {
     margin-left: 0px ;
-    background-color: transparent !important;
-    color: rgb(112, 223, 112) !important;
-    font-size: 16px;
+    background: rgba(34,197,94,.15);
+    color: #4ADE80 !important;
+    border-color: #22C55E;
+    padding: 7px;
+    border-radius: 20px;
+    border: 1px solid;
   }
   
   .noDisponible {
     margin-left: 0px ;
-    background-color: transparent !important;
-    color: #f16363 !important;
-    font-size: 16px;
+    background: rgba(239,68,68,.15);
+    color: #F87171 !important;
+    border-color: #EF4444;
+    padding: 7px;
+    border-radius: 20px;
+    border: 1px solid;
   }
 
     .btnEdit {
       background-color: transparent !important;
-      color: #EEFB07 !important;
+      color: white !important;
       border: transparent;
       font-size: 25px;
       cursor: pointer;
@@ -306,7 +316,6 @@
 
     .p-button:focus{
       outline: none !important;
-  
     }
 
     .btnEdit:hover {
@@ -315,7 +324,7 @@
   
     .btnDelete {
       background-color: transparent !important;
-      color: #f16363 !important;
+      color: #EF4444 !important;
       border: transparent;
       font-size: 25px;
       cursor: pointer;

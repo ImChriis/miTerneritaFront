@@ -14,9 +14,9 @@
           #dt1
           [value]="state"
           dataKey="id"
-          [rows]="10"
+          [rows]="5"
           [paginator]="true"
-          [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']" 
+          [globalFilterFields]="['name', 'date', 'time', 'room', 'capacity']" 
           >
           <ng-template pTemplate="caption">
             <div class="flex-row">
@@ -24,10 +24,12 @@
                 <span class="p-input-icon-left ml-auto">
                   <i class=""></i>
                   <input
+                    #searchInput
                     pInputText
                     type="text"
                     placeholder="Buscar"
                     class="searchBar"
+                    (input)="dt1.filterGlobal(searchInput.value, 'contains')"
                     />
                   </span>
                 </div>
@@ -112,4 +114,7 @@
   </div>
 </body>
     
+
+
+
   

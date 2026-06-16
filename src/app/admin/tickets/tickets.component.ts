@@ -10,6 +10,8 @@ import { CreateTicketsComponent } from './components/create-tickets/create-ticke
 import { UpdateTicketsComponent } from './components/update-tickets/update-tickets.component';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
+import { EventsService } from '../../@core/services/events.service';
 
 @Component({
   selector: 'app-tickets',
@@ -17,7 +19,8 @@ import { InputText } from 'primeng/inputtext';
     CommonModule,
     TableModule,
     ButtonModule,
-    InputText
+    InputText,
+    CheckboxModule
   ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.scss'
@@ -25,6 +28,7 @@ import { InputText } from 'primeng/inputtext';
 export class TicketsComponent implements OnInit{
   private ticketsService = inject(TicketsService);
   private dialogService = inject(DialogService);
+  private eventsService = inject(EventsService);
   private messageService = inject(MessageService);
   ref: DynamicDialogRef | undefined;
   isModalOpen = false;
@@ -76,5 +80,16 @@ export class TicketsComponent implements OnInit{
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
     });
+  }
+
+  getEventName(id: number){
+    let eventName = '';
+    this.eventsService.getEventById(id).pipe(
+      tap(event => {
+        eventName = event.name;
+        console.log('Nombre del evento:', eventName);
+      })
+    ).subscribe();
+    return eventName;
   }
 }
