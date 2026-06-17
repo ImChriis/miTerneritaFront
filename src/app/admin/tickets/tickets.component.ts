@@ -33,6 +33,7 @@ export class TicketsComponent implements OnInit{
   ref: DynamicDialogRef | undefined;
   isModalOpen = false;
   tickets$!: Observable<Ticket[]>;
+  eventNames = new Map<number, string>();
 
   ngOnInit() {
     this.tickets$ = this.ticketsService.refreshTicketsObservable$.pipe(
@@ -41,6 +42,12 @@ export class TicketsComponent implements OnInit{
         return this.ticketsService.getTickets();
       })
     )
+
+     this.eventsService.getEvents().subscribe(events => {
+      events.forEach(event => {
+        this.eventNames.set(event.idEvents, event.name);
+      });
+    });
   }
 
   openCreateModal(){
@@ -83,13 +90,6 @@ export class TicketsComponent implements OnInit{
   }
 
   getEventName(id: number){
-    let eventName = '';
-    this.eventsService.getEventById(id).pipe(
-      tap(event => {
-        eventName = event.name;
-        console.log('Nombre del evento:', eventName);
-      })
-    ).subscribe();
-    return eventName;
+    return this.eventNames.get(id) ?? '';
   }
 }
