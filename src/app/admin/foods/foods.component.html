@@ -1,97 +1,110 @@
 <body class="container">
-    <div  [class.blurred-background]="isModalOpen">
-      @if(
-          foods$ | async
-          ; as state) {
+    <div class="table">
+          <div  [class.blurred-background]="isModalOpen">
+        @if(
+            foods$ | async
+            ; as state) {
 
-          <div class="title">
-            <h1>Bebidas</h1>
-          </div>
+            <div class="title">
+              <h1>Comidas</h1>
+              <p>Crea los platillos disponibles para tus eventos</p>
+            </div>
 
-          <p-table
-          #dt1
-          [value]="state"
-          dataKey="id"
-          [rows]="10"
-          [showCurrentPageReport]="true"
-          [rowsPerPageOptions]="[10, 25, 50]"
-          [paginator]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
-          [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']"
-          styleClass="ml-3 mr-3"
-          >
-          <ng-template pTemplate="caption">
-            <div class="flex-row">
-              <div class="p-toolbar-group-end">
-                <span class="p-input-icon-left ml-auto">
-                  <i class=""></i>
-                  <input
-                    pInputText
-                    type="text"
-                    placeholder="Buscar"
-                    />
-                  </span>
-                </div>
-                <button
-                  class="btn"
-                  icon=""
-                  (click)="openCreateModal()"
-                >Agregar Bebida</button>
-              </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th style="min-width: 10rem" class="border">
-                  <div class="flex thstyles">ID</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Nombre</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Precio</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Estado</div>
-                </th>
-                <th class="text-center" style="min-width: 10rem" class="border2">
-                  <div class="flex thstyles option">Opciones</div>
-                </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-food class="p-table">
-              <tr class="table-content">
-                <td class="column-table-left mr-5">
-                  {{ food.idFood }}
-                </td>
-                <td>
-                  {{ food.description }}
-                </td>
-                <td>
-                  {{ food.price }}
-                </td>
-                <td>
-                  @if (food.status === 1) {
-                    <p class="disponible">Disponible</p>
-                  }  @else {
-                    <p class="noDisponible">No Disponible</p>
-                  }
-                </td>
-                <td class="text-center column-table-right">
-                  <div class="option">
-                    <i class="pi pi-pencil btnEdit" (click)="openEditModal(food)" ></i>
-                    <i class="pi pi-times btnDelete" ></i>
+            <p-table
+            #dt1
+            [value]="state"
+            dataKey="id"
+            [rows]="5"
+            [paginator]="true"
+            [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']"
+            styleClass="ml-3 mr-3"
+            >
+            <ng-template pTemplate="caption" let-food>
+              <div class="flex-row">
+                <div class="p-toolbar-group-end">
+                  <span class="p-input-icon-left ml-auto">
+                    <i class=""></i>
+                    <input
+                      pInputText
+                      type="text"
+                      placeholder="Buscar"
+                      class="searchBar"
+                      />
+                    </span>
                   </div>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="7">No elementos encontrados.</td>
-              </tr>
-            </ng-template>
-          </p-table>
-        }
-      </div>
-    </body>
+
+                  <div class="buttons">
+                       <button
+                  *ngIf="selectedFoods.length > 0"
+                  pButton
+                  pRipple
+                  class="btn-delete"
+                  (click)="showConfirmModal(undefined, selectedFoods)"
+                ><i class="pi pi-trash" ></i></button>
+                  <button
+                    class="btn"
+                    icon=""
+                    (click)="openCreateModal()"
+                >Agregar Bebida</button>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="min-width: 1rem" class="border">
+                    <div class="flex thstyles"><p-checkbox   [binary]="true"
+                    [(ngModel)]="selectAll"
+                    (ngModelChange)="toggleSelectAll(state, $event)" /></div>
+                  </th>
+                  <th class="name" style="min-width: 20rem">
+                    <div class="flex thstyles">Nombre</div>
+                  </th>
+                  <th style="min-width: 10rem">
+                    <div class="flex thstyles">Precio</div>
+                  </th>
+                  <th style="min-width: 10rem">
+                    <div class="flex thstyles">Estado</div>
+                  </th>
+                  <th class="text-center" style="min-width: 10rem" class="border2">
+                    <div class="flex thstyles option">Opciones</div>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-food class="p-table">
+                <tr class="table-content">
+                  <td class="column-table-left mr-5">
+                    <p-checkbox [(ngModel)]="selectedFoods" [value]="food" />
+                  </td>
+                  <td class="name">
+                    {{ food.description }}
+                  </td>
+                  <td>
+                    {{ food.price }}
+                  </td>
+                  <td>
+                    @if (food.status === 1) {
+                      <p class="disponible">Disponible</p>
+                    }  @else {
+                      <p class="noDisponible">No Disponible</p>
+                    }
+                  </td>
+                  <td class="text-center column-table-right">
+                    <div class="option">
+                      <i class="pi pi-pencil btnEdit" (click)="openEditModal(food)" ></i>
+                      <i class="pi pi-trash btnDelete" (click)="showConfirmModal(food)" ></i>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="7">No elementos encontrados.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          }
+        </div>
+    </div>
+  </body>
     
   

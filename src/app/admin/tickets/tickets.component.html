@@ -28,24 +28,35 @@
                     #searchInput
                     pInputText
                     type="text"
+                    class="searchBar"
                     placeholder="Buscar"
                     (input)="dt1.filterGlobal(searchInput.value, 'contains')"
                     />
                   </span>
                 </div>
-                <button
-                  class="btn"
-                  icon=""
-                  (click)="openCreateModal()"
-                >Agregar Entrada</button>
+           <div class="buttons">
+                  <button
+                  *ngIf="selectedTickets.length > 0"
+                  pButton
+                  pRipple
+                  class="btn-delete"
+                  (click)="showConfirmModal()"
+                ><i class="pi pi-trash" ></i></button>
+                  <button
+                    class="btn"
+                    icon=""
+                    (click)="openCreateModal()"
+                >Agregar ticket</button>
+                  </div>
               </div>
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
                 <th style="min-width: 1rem" class="border">
-                  <div class="flex thstyles"><p-checkbox /></div>
+                  <div class="flex thstyles"><p-checkbox [binary]="true"
+                    [(ngModel)]="selectAll"   (ngModelChange)="toggleSelectAll(state, $event)"/></div>
                 </th>
-                <th class="name" style="min-width: 20rem">
+                <th class="name" style="min-width: 25rem">
                   <div class="flex thstyles">Nombre</div>
                 </th>
                 <th style="min-width: 5rem">
@@ -65,7 +76,7 @@
             <ng-template pTemplate="body" let-ticket class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                  <p-checkbox />
+                  <p-checkbox [(ngModel)]="selectedTickets" [value]="ticket"/>
                 </td>
                 <td class="name">
                   {{ ticket.name }}
@@ -86,7 +97,7 @@
                 <td class="text-center column-table-right">
                   <div class="option">
                     <i class="pi pi-pencil btnEdit" (click)="openEditModal(ticket)" ></i>
-                    <i class="pi pi-times btnDelete" ></i>
+                    <i class="pi pi-trash btnDelete" ></i>
                   </div>
                 </td>
               </tr>

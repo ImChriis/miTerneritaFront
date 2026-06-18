@@ -28,10 +28,25 @@ form{
 
 .formGroup input{
     width: 100%;
+    color: white;
 }
 
 .formGroup .p-select{
-    width: 100%;
+    width: 100% !important;
+    background-color: transparent;
+    color: white;
+}
+
+::ng-deep .p-select-label.ng-star-inserted{
+    color: white !important;
+}
+
+::ng-deep .p-select .p-select-label.p-placeholder{
+    color: white !important;
+}
+
+::ng-deep .p-select .p-icon{
+    color: white !important;
 }
 
 .imageTitle{

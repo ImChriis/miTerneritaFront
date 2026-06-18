@@ -48,14 +48,14 @@ export class UpdateTicketsComponent implements OnInit{
     status: this.fb.control<number | null>(1),
   });
 
-  ngOnInit(): void {
-    this.updateTicketForm.patchValue({
-      ...this.ticket,
-      idEvents: this.ticket.event?.idEvents || null
-    });
-    
+  ngOnInit(): void {    
     this.eventsService.getEvents().subscribe((events) => {
       this.events = events;
+
+        this.updateTicketForm.patchValue({
+          ...this.ticket,
+          idEvents: this.ticket.idEvents || null
+        });
     });
   }
 

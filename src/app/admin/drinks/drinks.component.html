@@ -1,22 +1,21 @@
 <body class="container">
-    <div  [class.blurred-background]="isModalOpen">
+    <div class="table">
+      <div  [class.blurred-background]="isModalOpen">
       @if(
           drinks$ | async
           ; as state) {
 
           <div class="title">
             <h1>Bebidas</h1>
+            <p>Crea las bebidas disponibles para tus eventos</p>
           </div>
 
           <p-table
           #dt1
           [value]="state"
           dataKey="id"
-          [rows]="10"
-          [showCurrentPageReport]="true"
-          [rowsPerPageOptions]="[10, 25, 50]"
+          [rows]="5"
           [paginator]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
           [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']"
           styleClass="ml-3 mr-3"
           >
@@ -29,22 +28,34 @@
                     pInputText
                     type="text"
                     placeholder="Buscar"
+                    class="searchBar"
                     />
                   </span>
                 </div>
-                <button
-                  class="btn"
-                  icon=""
-                  (click)="openCreateModal()"
+                 <div class="buttons">
+                  <button
+                  *ngIf="selectedDrinks.length > 0"
+                  pButton
+                  pRipple
+                  class="btn-delete"
+                  (click)="showConfirmModal()"
+                ><i class="pi pi-trash" ></i></button>
+                  <button
+                    class="btn"
+                    icon=""
+                    (click)="openCreateModal()"
                 >Agregar Bebida</button>
+                  </div>
               </div>
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
-                <th style="min-width: 10rem" class="border">
-                  <div class="flex thstyles">ID</div>
+                <th style="min-width: 1rem" class="border">
+                  <div class="flex thstyles"> <p-checkbox [binary]="true"
+                    [(ngModel)]="selectAll"
+                    (ngModelChange)="toggleSelectAll(state, $event)" /></div>
                 </th>
-                <th style="min-width: 10rem">
+                <th class="name" style="min-width: 20rem">
                   <div class="flex thstyles">Nombre</div>
                 </th>
                 <th style="min-width: 10rem">
@@ -61,9 +72,9 @@
             <ng-template pTemplate="body" let-drink class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                  {{ drink.idDrinks }}
+                   <p-checkbox [(ngModel)]="selectedDrinks" [value]="drink" />
                 </td>
-                <td>
+                <td class="name">
                   {{ drink.description }}
                 </td>
                 <td>
@@ -79,7 +90,7 @@
                 <td class="text-center column-table-right">
                   <div class="option">
                     <i class="pi pi-pencil btnEdit" (click)="openEditModal(drink)" ></i>
-                    <i class="pi pi-times btnDelete" ></i>
+                    <i class="pi pi-trash btnDelete" (click)="showConfirmModal(drink)" ></i>
                   </div>
                 </td>
               </tr>
@@ -92,6 +103,7 @@
           </p-table>
         }
       </div>
-    </body>
+    </div>
+</body>
     
   

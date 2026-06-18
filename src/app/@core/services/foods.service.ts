@@ -33,4 +33,10 @@ export class FoodsService {
       tap(() => this.refreshFoods$.next()),
     )
   }
+
+  deleteFood(idFood: number){
+    return this.http.delete(`${this.api}/food/${idFood}`).pipe(
+      tap(() => this.refreshFoods$.next()),
+    );
+  }
 }

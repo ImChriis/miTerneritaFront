@@ -45,6 +45,12 @@ export class DrinksService {
       tap(() => this.refreshDrinks$.next()),
     )
   }
+
+  deleteDrink(id: number){
+    return this.http.delete(`${this.api}/drinks/${id}`).pipe(
+      tap(() => this.refreshDrinks$.next()),
+    );
+  }
 }
   
 

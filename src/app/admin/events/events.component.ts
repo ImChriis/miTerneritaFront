@@ -27,6 +27,12 @@ export class EventsComponent implements OnInit{
   ref: DynamicDialogRef | undefined;
   isModalOpen = false;
   events$!: Observable<Event[]>;
+  
+   consumo = [
+    { label: 'Sí', value: 1 },
+    { label: 'No', value: 0 }
+  ];
+
 
   ngOnInit(): void {
     this.events$ = this.eventsService.refreshEventsObservable$.pipe(
@@ -35,6 +41,10 @@ export class EventsComponent implements OnInit{
         return this.eventsService.getEvents();
       })
     )
+
+    this.eventsService.getEvents().subscribe(res => {
+      console.log(res);
+    })
   }
 
   openCreateModal(){

@@ -43,4 +43,9 @@ export class TicketsService {
     );
   }
 
+  deleteTicket(id: number){
+    return this.http.delete(`${this.api}/ticket/${id}`).pipe(
+      tap(() => this.refreshTickets$.next())
+    );
+  }
 }

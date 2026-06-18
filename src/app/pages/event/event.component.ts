@@ -24,10 +24,7 @@ export class EventComponent implements OnInit{
   ngOnInit() {
     this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
 
-    document.body.style.backgroundImage = `url(${this.wallpaper})`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
+    this.setBodyBackground('');
 
     this.eventsService.getEventById(this.idEvent).subscribe({
       next: (event) => {
@@ -36,11 +33,29 @@ export class EventComponent implements OnInit{
         this.time = event.time;
         this.name = event.name;
         this.idEvents = event.idEvents;
-        const candidate = (event as any).image1 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
+
+        const candidate =
+          (event as any).image1 ??
+          (event as any).flyer ??
+          (event as any).image ??
+          (event as any).imagen ??
+          '';
+
         this.wallpaper = this.getFullUrl(candidate);
-        document.body.style.backgroundImage = `url(${this.wallpaper})`;
+        this.setBodyBackground(this.wallpaper);
       }
     });
+  }
+
+   ngOnDestroy() {
+    this.setBodyBackground('');
+  }
+
+  private setBodyBackground(url: string) {
+    document.body.style.backgroundImage = url ? `url(${url})` : '';
+    document.body.style.backgroundSize = url ? 'cover' : '';
+    document.body.style.backgroundPosition = url ? 'center' : '';
+    document.body.style.backgroundRepeat = url ? 'no-repeat' : '';
   }
 
   private getFullUrl(path: string): string {

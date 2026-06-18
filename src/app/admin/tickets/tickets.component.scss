@@ -80,13 +80,28 @@
 
   .searchBar{
     background-color: transparent !important;
-    border: 1px solid white;
     color: white;
   }
 
   .searchBar::placeholder{
     color: white;
     opacity: 0.8;
+  }
+
+   .buttons{
+    display: flex;
+    gap: 20px;
+    justify-content: end;
+    width: 40%;
+  }
+
+  .btn-delete{
+    background-color: #f16363 !important;
+    border-color: #f16363 !important;
+    height: 45px;
+    width: 15%;
+    color: white !important;
+    font-family: none  !important;
   }
 
   td,

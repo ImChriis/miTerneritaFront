@@ -13,6 +13,8 @@ import { CreateDrinksComponent } from './components/create-drinks/create-drinks.
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
 import { UpdateDrinksComponent } from './components/update-drinks/update-drinks.component';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 
 
 @Component({
@@ -27,7 +29,8 @@ import { UpdateDrinksComponent } from './components/update-drinks/update-drinks.
     FormsModule,
     ReactiveFormsModule,
     DynamicDialogModule,
-    AsyncPipe
+    AsyncPipe,
+    CheckboxModule
   ],
   templateUrl: './drinks.component.html',
   styleUrl: './drinks.component.scss'
@@ -39,6 +42,8 @@ export class DrinksComponent implements OnInit{
   ref: DynamicDialogRef | undefined;
   isModalOpen = false;
   drinks$!: Observable<Drink[]>;
+  selectAll = false;
+  selectedDrinks: Drink[] = [];
 
   ngOnInit(): void {
     this.drinks$ = this.drinksService.refreshDrinksObservable$.pipe(
@@ -85,6 +90,44 @@ export class DrinksComponent implements OnInit{
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
     });
+  }
+
+  showConfirmModal(drink?: Drink, selectedItems: Drink[] = this.selectedDrinks) {
+    const itemsToDelete = drink ? [drink] : selectedItems;
+  
+    this.ref = this.dialogService.open(ConfirmDeleteModalComponent, {
+      header: 'Confirmar Eliminación',
+      width: '40vw',
+      modal: true,
+      data: {
+        message: itemsToDelete.length === 1
+          ? `¿Estás seguro de que deseas eliminar ${itemsToDelete[0].description || 'esta bebida'}?`
+          : `¿Estás seguro de que deseas eliminar ${itemsToDelete.length} bebidas?`,
+        selectedItems: itemsToDelete
+      }
+    });
+  
+    this.ref.onClose.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        itemsToDelete.forEach(item => this.executeDeleteDrink(item.idDrinks));
+      }
+    });
+  }
+
+  private executeDeleteDrink(id: number){
+    this.drinksService.deleteDrink(id).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Bebida eliminada correctamente' });
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Ocurrió un error al eliminar la bebida' });
+      }
+    })
+  }
+
+  toggleSelectAll(drinks: Drink[], checked: boolean) {
+    this.selectAll = checked;
+    this.selectedDrinks = checked ? [...drinks] : [];
   }
 }
 

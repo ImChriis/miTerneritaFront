@@ -12,6 +12,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { EventsService } from '../../@core/services/events.service';
+import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tickets',
@@ -20,7 +22,8 @@ import { EventsService } from '../../@core/services/events.service';
     TableModule,
     ButtonModule,
     InputText,
-    CheckboxModule
+    CheckboxModule,
+    FormsModule
   ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.scss'
@@ -34,6 +37,8 @@ export class TicketsComponent implements OnInit{
   isModalOpen = false;
   tickets$!: Observable<Ticket[]>;
   eventNames = new Map<number, string>();
+  selectAll = false;
+  selectedTickets: Ticket[] = [];
 
   ngOnInit() {
     this.tickets$ = this.ticketsService.refreshTicketsObservable$.pipe(
@@ -53,7 +58,7 @@ export class TicketsComponent implements OnInit{
   openCreateModal(){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(CreateTicketsComponent, {
-      header: 'Agregar Evento',
+      header: 'Agregar Ticket',
       width: '50vw',
       // height: '65vh',
       modal: true,
@@ -72,7 +77,7 @@ export class TicketsComponent implements OnInit{
   openEditModal(ticket: Ticket){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(UpdateTicketsComponent, {
-      header: 'Agregar Evento',
+      header: 'Editar Ticket',
       width: '50vw',
       // height: '65vh',
       modal: true,
@@ -92,4 +97,42 @@ export class TicketsComponent implements OnInit{
   getEventName(id: number){
     return this.eventNames.get(id) ?? '';
   }
+
+  showConfirmModal(ticket?: Ticket, selectedItems: Ticket[] = this.selectedTickets) {
+      const itemsToDelete = ticket ? [ticket] : selectedItems;
+    
+      this.ref = this.dialogService.open(ConfirmDeleteModalComponent, {
+        header: 'Confirmar Eliminación',
+        width: '40vw',
+        modal: true,
+        data: {
+          message: itemsToDelete.length === 1
+            ? `¿Estás seguro de que deseas eliminar ${itemsToDelete[0].name || 'este ticket'}?`
+            : `¿Estás seguro de que deseas eliminar ${itemsToDelete.length} tickets?`,
+          selectedItems: itemsToDelete
+        }
+      });
+    
+      this.ref.onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          itemsToDelete.forEach(item => this.executeDeleteTicket(item.idTicket));
+        }
+      });
+    }
+
+   private executeDeleteTicket(id: number){
+      this.ticketsService.deleteTicket(id).subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Ticket eliminado correctamente' });
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Ocurrió un error al eliminar el ticket' });
+        }
+      })
+    }
+  
+    toggleSelectAll(tickets: Ticket[], checked: boolean) {
+      this.selectAll = checked;
+      this.selectedTickets = checked ? [...tickets] : [];
+    }
 }
