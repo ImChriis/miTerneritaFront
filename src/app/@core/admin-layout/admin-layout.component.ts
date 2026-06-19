@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Renderer2 } from '@angular/core';
+import { Component, inject, OnInit, Renderer2 } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
@@ -19,10 +19,23 @@ interface RouteLayout {
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss'
 })
-export class AdminLayoutComponent {
+export class AdminLayoutComponent implements OnInit {
   private authService = inject(AuthService);
   private renderer2 = inject(Renderer2);
   private router = inject(Router);
+  nombre!: string;
+  lastName!: string;
+  role!: string;
+
+    ngOnInit(){
+      const user = localStorage.getItem('user');
+      if(user){
+        const userObj = JSON.parse(user);
+        this.nombre = userObj.name;
+        this.lastName = userObj.lastName;
+        this.role = userObj.role;
+      }
+    }
 
     routes: RouteLayout[] = [
     { 

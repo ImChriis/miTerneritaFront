@@ -33,17 +33,26 @@
                     />
                   </span>
                 </div>
-                <button
-                  class="btn"
-                  icon=""
-                  (click)="openCreateModal()"
-                >Crear Evento</button>
+                    <div class="buttons">
+                  <button
+                  *ngIf="selectedEvents.length > 0"
+                  pButton
+                  pRipple
+                  class="btn-delete"
+                  (click)="showConfirmModal()"
+                ><i class="pi pi-trash" ></i></button>
+                  <button
+                    class="btn"
+                    icon=""
+                    (click)="openCreateModal()"
+                >Agregar Evento</button>
+                  </div>
               </div>
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
                 <th style="min-width: 1rem" class="border">
-                  <div class="flex thstyles"><p-checkbox /></div>
+                  <div class="flex thstyles"><p-checkbox [binary]="true" [(ngModel)]="selectAll" (ngModelChange)="toggleSelectAll(state, $event)" /></div>
                 </th>
                 <th class="name" style="min-width: 20rem">
                   <div class="flex thstyles">Nombre</div>
@@ -74,7 +83,7 @@
             <ng-template pTemplate="body" let-event class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                   <p-checkbox />
+                   <p-checkbox [(ngModel)]="selectedEvents" [value]="event" />
                 </td>
                 <td class="name">
                   {{ event.name }}
@@ -108,7 +117,7 @@
                 <td class="text-center column-table-right">
                   <div class="option">
                     <i class="pi pi-pencil btnEdit" (click)="openEditModal(event)" ></i>
-                    <i class="pi pi-trash btnDelete" ></i>
+                    <i class="pi pi-trash btnDelete" (click)="showConfirmModal(event)" ></i>
                   </div>
                 </td>
               </tr>
