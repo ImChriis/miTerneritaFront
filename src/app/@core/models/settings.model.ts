@@ -3,5 +3,5 @@ export interface Settings {
     phone: string;
     instagram: string;
     BCV: number;
-    Dolar: number;
+    tasaDolar: number;
 }

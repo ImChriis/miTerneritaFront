@@ -5,5 +5,5 @@ export interface FormSettings {
     phone: FormControl<string>;
     instagram: FormControl<string>;
     BCV: FormControl<number | null>;
-    Dolar: FormControl<number | null>;
+    tasaDolar: FormControl<number | null>;
 }

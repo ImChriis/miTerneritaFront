@@ -29,7 +29,7 @@ export class SettingsComponent implements OnInit{
     phone: new FormControl('', { nonNullable: true }),
     instagram: new FormControl('', { nonNullable: true }),
     BCV: new FormControl<number | null>(null),
-    Dolar: new FormControl<number | null>(null)
+    tasaDolar: new FormControl<number | null>(null)
   })
 
   ngOnInit() {
