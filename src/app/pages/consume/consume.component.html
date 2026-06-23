@@ -1,4 +1,4 @@
-<div class="container" [style.backgroundImage]="wallpaper ? 'url(' + wallpaper + ')' : ''">
+<div class="container">
     <div class="sections">
     <p>Detalles del evento ></p> <p>Espacios ></p> <p class="selected">Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
 </div>
@@ -6,104 +6,17 @@
 <div class="content">
   <div class="details">
         <div class="title">
-        <h1>{{ name }}</h1>
-        </div>
-
-        <div class="title">
+            <h1>{{ name }}</h1>
             <h3>Selecciona lo que vas a consumir</h3>
         </div>
 
         <div class="list">
             <p-tabs value="0">
                 <p-tablist>
-                    <!-- <p-tab value="0">Platos</p-tab> -->
                     <p-tab value="0">Bebidas</p-tab>
                 </p-tablist>
                 <p-tabpanels>
-                    <!-- <p-tabpanel value="0">
-                        <div class="grid">
-                            <div class="card">
-                                <div class="cardImg">
-                                    <img class="imgCard" src="../../../assets/img/empanadas.jfif">
-                                </div>
 
-                                <div class="cardInfo">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolore cumque pariatur quas blanditiis non inventore iste fuga. Laudantium beatae amet maiores quos aperiam harum sunt expedita ut vero commodi.</p>
-                                    <h3>American Burger</h3>
-                                    <h4>10$</h4>
-                                </div>
-                                <div class="cardBtn">
-                                    <button class="btn1">Agregar</button>
-                                </div>
-                            </div>
-
-                                                        <div class="card">
-                                <div class="cardImg">
-                                    <img class="imgCard" src="../../../assets/img/empanadas.jfif">
-                                </div>
-
-                                <div class="cardInfo">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolore cumque pariatur quas blanditiis non inventore iste fuga. Laudantium beatae amet maiores quos aperiam harum sunt expedita ut vero commodi.</p>
-                                    <h3>American Burger</h3>
-                                    <h4>10$</h4>
-                                </div>
-                                <div class="cardBtn">
-                                    <button class="btn1">Agregar</button>
-                                </div>
-                            </div>
-
-                                                        <div class="card">
-                                <div class="cardImg">
-                                    <img class="imgCard" src="../../../assets/img/empanadas.jfif">
-                                </div>
-
-                                <div class="cardInfo">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolore cumque pariatur quas blanditiis non inventore iste fuga. Laudantium beatae amet maiores quos aperiam harum sunt expedita ut vero commodi.</p>
-                                    <h3>American Burger</h3>
-                                    <h4>10$</h4>
-                                </div>
-                                <div class="cardBtn">
-                                    <button class="btn1">Agregar</button>
-                                </div>
-                            </div>
-
-                                                        <div class="card">
-                                <div class="cardImg">
-                                    <img class="imgCard" src="../../../assets/img/empanadas.jfif">
-                                </div>
-
-                                <div class="cardInfo">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolore cumque pariatur quas blanditiis non inventore iste fuga. Laudantium beatae amet maiores quos aperiam harum sunt expedita ut vero commodi.</p>
-                                    <h3>American Burger</h3>
-                                    <h4>10$</h4>
-                                </div>
-                                <div class="cardBtn">
-                                    <button class="btn1">Agregar</button>
-                                </div>
-
-                                
-                            </div>
-
-                            <div class="card">
-                                <div class="cardImg">
-                                    <img class="imgCard" src="../../../assets/img/empanadas.jfif">
-                                </div>
-
-                                <div class="cardInfo">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni dolore cumque pariatur quas blanditiis non inventore iste fuga. Laudantium beatae amet maiores quos aperiam harum sunt expedita ut vero commodi.</p>
-                                    <h3>American Burger</h3>
-                                    <h4>10$</h4>
-                                </div>
-                                <div class="cardBtn">
-                                    <button class="btn1">Agregar</button>
-                                </div>
-
-                                
-                            </div>
-
-                            
-                        </div>
-                    </p-tabpanel> -->
                     <p-tabpanel value="0" *ngIf="drinks$ | async as drinks">
                         <div class="grid">
                             <div class="card2" *ngFor="let drink of drinks">

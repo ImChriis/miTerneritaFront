@@ -1,77 +1,149 @@
 <div class="content">
-  <div class="cards">
-    <div class="card">
-      <div class="cardHeader">
-        <div class="cardTitle">
-          <h4>Total de Facturas</h4>
+    <div class="cards">
+                    <div class="item">
+            <!-- <div class="icon">
+                <i class="pi pi-user"></i>
+            </div> -->
+
+            <div class="info">
+                <label><i class="pi pi-user"></i>Total de Usuarios</label>
+                <p>{{ totalUser }}</p>
+            </div>
+
+            
+            <div class="more">
+                <a routerLink="/admin/users">Ver más</a>
+            </div>
         </div>
 
-        <div class="cardIcon">
-            <i class="pi pi-ticket"></i>
-        </div>
-      </div>
+        <div class="item">
+            <!-- <div class="icon">
+                <i class="pi pi-user-plus"></i>
+            </div> -->
 
-      <div class="cardContent">
-        <h5>100</h5>
-      </div>
+            <div class="info">
+                <label><i class="pi pi-user"></i>Usuarios nuevos de hoy</label>
+                <p>{{ usersToday }}</p>
+            </div>
+        </div>
+
+        <div class="item">
+            <!-- <div class="icon">
+                <i class="pi pi-ticket"></i>
+            </div> -->
+
+            <div class="info">
+                <label> <i class="pi pi-ticket"></i>Total de facturas</label>
+                <p>{{ totalPayments }}</p>
+            </div>
+
+            
+            <div class="more">
+                <a routerLink="/admin/payments">Ver más</a>
+            </div>
+        </div>
+
+        <div class="item">
+            <!-- <div class="icon">
+                <i class="pi pi-ticket"></i>
+            </div> -->
+
+            <div class="info">
+                <label> <i class="pi pi-ticket"></i>Total de entradas vendidas</label>
+                <p>{{ totalTickets }}</p>
+            </div>
+
+            
+            <div class="more">
+                <a routerLink="/admin/payments">Ver más</a>
+            </div>
+        </div>
+
+           <!-- <div class="item">
+            <div class="icon">
+                <i class="pi pi-credit-card"></i>
+            </div>
+
+            <div class="info">
+                <label><i class="pi pi-credit-card"></i>Pagos Realizados hoy</label>
+                <p>{{ paymentsToday }}</p>
+            </div>
+        </div> -->
     </div>
 
-        <div class="card">
-      <div class="cardHeader">
-        <div class="cardTitle">
-          <h4>Entradas Vendidas</h4>
+       <div class="table">
+  
+      <!-- @if(
+        payments$ | async
+        ; as state) { -->
+        <p-table
+          #dt1
+          dataKey="idCabecera"
+          [rows]="10"
+          styleClass="ml-3 mr-3"
+          >
+          <ng-template pTemplate="caption">
+                    <div class="title">
+          <h1>Ultimos 5 pagos</h1>
+        </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="min-width: 1rem" class="border">
+                  <div class="flex thstyles">Fecha</div>
+                </th>
+                <th style="min-width: 10rem">
+                  <div class="flex thstyles">Nombre</div>
+                </th>
+                <th style="min-width: 10rem">
+                  <div class="flex thstyles">Evento</div>
+                </th>
+                <th style="min-width: 1rem">
+                    <div class="flex thstyles">Estado</div>
+                  </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user class="p-table">
+              <tr class="table-content">
+                <td class="column-table-left mr-5">
+                  {{ user.cabecera.fecha | date : "dd-MM-YYYY" : "es" }}
+                  </td>
+                <td>
+                  {{ user.usuario.nombre }} {{ user.usuario.apellido }}
+                </td>
+                <td>
+                  {{ user.evento.nombre }} 
+                </td>
+                <td>
+                  <!-- @if (user.cabecera.estado == userStatus.activo) { -->
+                    <p-badge severity="success" [value]="user.cabecera.estado"></p-badge>
+                  <!-- }  @else {
+                    <p-badge severity="danger" [value]="user.cabecera.estado"></p-badge>
+                  } -->
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7">No elementos encontrados.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        <!-- } -->
+      </div>
+    
+      
+    <div class="charts">
+        <div class="left">
+            <div class="card">
+                <p-chart  type="doughnut" [data]="basicData" [options]="basicOptions" class="w-full" />
+            </div>
         </div>
 
-        <div class="cardIcon">
-            <i class="pi pi-ticket"></i>
+        <div class="right">
+            <div class="card">
+                <p-chart name="pagos" type="bar" [data]="basicData" [options]="basicOptions" class="w-full" />
+            </div>
         </div>
-      </div>
-
-      <div class="cardContent">
-        <h5>100</h5>
-      </div>
     </div>
-
-        <div class="card">
-      <div class="cardHeader">
-        <div class="cardTitle">
-          <h4>Usuarios Registrados</h4>
-        </div>
-
-        <div class="cardIcon">
-            <i class="pi pi-ticket"></i>
-        </div>
-      </div>
-
-      <div class="cardContent">
-        <h5>100</h5>
-      </div>
-    </div>
-
-        <div class="card">
-      <div class="cardHeader">
-        <div class="cardTitle">
-          <h4>Usuarios nuevos de hoy</h4>
-        </div>
-
-        <div class="cardIcon">
-            <i class="pi pi-ticket"></i>
-        </div>
-      </div>
-
-      <div class="cardContent">
-        <h5>100</h5>
-      </div>
-    </div>
-  </div>
-
-  <div class="charts">
-    <div class="left">
-        <p-chart class="chart" type="bar" [data]="basicData" [options]="basicOptions" />
-    </div>
-
-    <div class="right">
-       <p-chart class="chart" type="bar" [data]="basicData" [options]="basicOptions" />
-    </div>
-  </div>
 </div>

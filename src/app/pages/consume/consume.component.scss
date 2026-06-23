@@ -1,11 +1,25 @@
 .container{
-  width: 100%;
-  min-height: 83vh; /* garantiza que el fondo ocupe al menos la altura visual */
-  background-image: none;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover; /* cubrir siempre el contenedor */
-  background-color: transparent;
+    position: relative;
+    width: 100%;
+    min-height: 83vh; /* garantiza que el fondo ocupe al menos la altura visual */
+    background-image: none;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; /* cubrir siempre el contenedor */
+    background-color: transparent;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.container > * {
+  position: relative;
+  z-index: 1;
 }
 
 .sections{
@@ -14,9 +28,10 @@
     align-items: center;
     gap: 10px;
     margin-left: 5%;
+    color: white;
 }
 
-.selected{
+.selected{  
     color: #1522D1;
 }
 
@@ -25,7 +40,6 @@
     justify-content: center;
     align-items: start;
     height: auto;
-    margin-top: 25px;
     flex-direction: row;
 }
 
@@ -36,7 +50,6 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 20px;
 }
 
 .title{
@@ -53,11 +66,14 @@
     font-weight: 900;
     text-align: center;
     margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 .title h3{
     text-align: center;
     margin-top: 0px;
+    margin-bottom: 0px;
+    color: white;
 }
 
 .list{
@@ -84,7 +100,7 @@
 }
 
 .card2{
-    width: 20.5%;
+    width: 20%;
     height: 50vh;
     background-color: #2b2b2b;
     border-radius: 20px;
@@ -126,10 +142,12 @@
 
 .cardInfo h3{
     margin-bottom: 0px;
+    color: white;
 }
 
 .cardInfo h4{
     margin-top: 0px;
+    color: white;
 }
 
 .cardBtn{
@@ -146,11 +164,18 @@
   padding: 10px 24px;
   border-radius: 10px;
   cursor: pointer;
-  margin-top: 20px;
   width: 50%;
-  height: 3.5vh;
   font-weight: bold;
-  margin-bottom: 20px;
+  /* 1. Define la altura deseada */
+  height: 30px; /* Nota: 30px es un poco pequeño para web, 40px o 45px suele ser más cómodo para hacer clic */
+
+  /* 2. Quita el padding vertical (deja solo el horizontal si lo necesitas) */
+  padding: 0 24px;
+
+  /* 3. Aplica Flexbox para centrar perfectamente */
+  display: inline-flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center;     /* Centrado vertical */
 }
 
 .btn1:hover {
@@ -170,18 +195,16 @@
   padding: 10px 24px;
   border-radius: 50px;
   cursor: pointer;
-  margin-top: 20px;
   width: 10%;
-  height: 3.5vh;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .btn2:hover {
   // background-color: #2345a1;
   opacity: 0.9;
-}
-
+}x
 
 .imagen{
     width: 30%;

@@ -112,6 +112,13 @@ agregarSeleccion() {
         total
       };
 
+      //si la suma total de canntidad es 10 no se puede agregar
+      const cantidadTotal = this.selected.reduce((acc, item) => acc + item.cantidad, 0);
+      if (cantidadTotal + cantidad > 10) {
+        this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'No puedes seleccionar más de 10 entradas en total.' });
+        return;
+      }  
+      
       this.selected.push(seleccionItem);
       // limpiar el select (modelo) y resetear cantidad
       this.selectedZone = null;

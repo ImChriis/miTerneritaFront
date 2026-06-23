@@ -35,13 +35,25 @@ export class ConsumeComponent implements OnInit{
 
     this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.eventsService.getEventById(this.idEvent).pipe(
-      tap((event) => {
+    this.eventsService.getEventById(this.idEvent).subscribe({
+      next: (event) => {
         this.name = event.name;
-        const candidate = (event as any).image1 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
+
+        const candidate =
+          (event as any).image1 ??
+          (event as any).flyer ??
+          (event as any).image ??
+          (event as any).imagen ??
+          '';
+
         this.wallpaper = this.getFullUrl(candidate);
-      })
-    ).subscribe();
+
+        document.body.style.backgroundImage = `url(${this.wallpaper})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+      }
+    });
   }
 
     private getFullUrl(path: string): string {

@@ -1,11 +1,16 @@
-import { isPlatformBrowser } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { BadgeModule } from 'primeng/badge';
 import { ChartModule } from 'primeng/chart';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
-    ChartModule
+    ChartModule,
+    BadgeModule,
+    DatePipe,
+    TableModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -15,6 +20,12 @@ export class DashboardComponent implements OnInit{
     basicData: any;
     basicOptions: any;
     platformId = inject(PLATFORM_ID);
+    payments$: any[] = [];
+    totalUser = 20;
+    usersToday = 10;
+    totalPayments = 20;
+    totalTickets = 20;
+
 
     // configService = inject(AppConfigService);
 
