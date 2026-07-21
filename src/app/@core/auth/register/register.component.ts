@@ -129,7 +129,7 @@ export class RegisterComponent implements OnInit{
       const numeroIdentificacion = this.registerForm.get('noCedula')?.value;
       const cedula = `${tipoIdentificacion}-${numeroIdentificacion}`;
 
-        this.registerForm.patchValue({ cedula });
+      this.registerForm.patchValue({ cedula });
 
       const formData = { ...this.registerForm.value };
       delete formData.tipo;

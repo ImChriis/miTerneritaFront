@@ -49,7 +49,7 @@
 
         <div class="inputGroup">
             <label for="telefono">Teléfono</label>
-            <input type="number" id="telefono" name="telefono" formControlName="phone">
+            <input type="text" id="telefono" name="telefono" formControlName="phone">
             <small *ngIf="isValidField('phone')">{{ getErrorMessage('phone') }}</small>
         </div>
 
