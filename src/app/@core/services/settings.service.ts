@@ -13,7 +13,11 @@ export class SettingsService {
   public refreshObservable$ = this.refresh$.asObservable();
 
   getSettings() {
-    return this.http.get(`${this.api}/configuration`);
+    return this.http.get(`${this.api}/configuration`).pipe(
+      tap((data) => {
+        console.log('Settings fetched:', data);
+      })
+    )
   }
 
   updateSettings(settings: any) {

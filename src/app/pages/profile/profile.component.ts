@@ -1,24 +1,23 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { RegisterForm } from '../../models/forms/form-register';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
+import { AuthService } from '../../@core/services/auth.service';
+import { RegisterForm } from '../../@core/models/forms/form-register';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-profile',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    RouterLink
-],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+    ReactiveFormsModule
+  ],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.scss'
 })
-export class RegisterComponent implements OnInit{
-  private authService = inject(AuthService);
+export class ProfileComponent {
+ private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
   private dialogService = inject(DialogService);

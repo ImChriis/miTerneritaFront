@@ -17,7 +17,7 @@
             <a href="#" *ngIf="authService.isAuthenticated()">Mis Compras</a>
             <button *ngIf="!authService.isAuthenticated()" routerLink="/login" class="login">Login</button>
 
-            <div class="user" *ngIf="authService.isAuthenticated()">
+            <div  routerLink="/home/profile" class="user" *ngIf="authService.isAuthenticated()">
                 <i class="pi pi-user"></i>
                 <a>{{ user?.name }}  {{ user?.lastName }}</a>
             </div>
@@ -40,7 +40,7 @@
                 <a href="#">Eventos</a>
                 <a href="#">Contacto</a>
                 <a routerLink="/admin/dashboard">Dashboard</a>
-                <a href="">Christopher Medina</a>
+                <a routerLink="/home/profile">Christopher Medina</a>
             </div>
         </div>
     </nav>
@@ -62,12 +62,17 @@
         </div>
 
         <div class="socialMedia">
-            <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
-            <i class="pi pi-telegram" style="font-size: 2.5rem"></i>
-            <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
-            <i class="pi pi-facebook" style="font-size: 2.5rem"></i>
-            <i class="pi pi-youtube" style="font-size: 2.5rem"></i>
-            <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
+            <a *ngIf="whatsapp" [href]="whatsapp" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
+            </a>
+
+            <a *ngIf="instagram" [href]="instagram" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
+            </a>
+
+            <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
+            </a>
         </div>
     </footer>
 
@@ -77,12 +82,17 @@
         </div>
 
         <div class="socialMedia">
-            <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
-            <i class="pi pi-telegram" style="font-size: 2.5rem"></i>
-            <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
-            <i class="pi pi-facebook" style="font-size: 2.5rem"></i>
-            <i class="pi pi-youtube" style="font-size: 2.5rem"></i>
-            <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
+            <a *ngIf="whatsapp" [href]="whatsapp" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
+            </a>
+
+            <a *ngIf="instagram" [href]="instagram" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
+            </a>
+
+            <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
+            </a>
         </div>
 
         <hr>

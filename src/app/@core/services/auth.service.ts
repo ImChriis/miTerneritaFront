@@ -70,4 +70,12 @@ export class AuthService {
       return true;
     }
   }
+
+  forgotPassword(body: any) {
+    return this.http.post(`${this.api}/auth/forgot-password`, body);
+  }
+
+  resetPassword(body: any) {
+    return this.http.post(`${this.api}/auth/reset-password`, body);
+  }
 }

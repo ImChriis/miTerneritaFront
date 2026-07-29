@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   imports: [
     ReactiveFormsModule,
     CommonModule,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -79,7 +80,7 @@ export class LoginComponent {
         if(role !== 'user') {
           this.router.navigateByUrl('/admin/dashboard');
         } else {
-          this.router.navigateByUrl('/home');
+          this.router.navigateByUrl('');
         }
 
       },
@@ -93,4 +94,6 @@ export class LoginComponent {
   register(){
     this.router.navigateByUrl('/register');
   }
+
+
 }

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { SettingsService } from '../services/settings.service';
 
 
 @Component({
@@ -14,10 +15,22 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   private ruoter = inject(Router);
+  private settingsService = inject(SettingsService);
   showMobileMenu = false;
   authService = inject(AuthService);
+  instagram!: string;
+  tiktok!: string;
+  whatsapp!: string;
+
+  ngOnInit(){
+        this.settingsService.getSettings().subscribe((data: any) => {
+        this.instagram = data.instagram;
+        this.tiktok = data.tiktok;
+        this.whatsapp = data.whatsapp;
+      })
+  }
 
   get user(){
     return this.authService.getUser();

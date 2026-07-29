@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, Renderer2 } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { SettingsService } from '../services/settings.service';
 
 interface RouteLayout {
   name: string;
@@ -23,9 +24,14 @@ export class AdminLayoutComponent implements OnInit {
   private authService = inject(AuthService);
   private renderer2 = inject(Renderer2);
   private router = inject(Router);
+  private settingsService = inject(SettingsService);
   nombre!: string;
   lastName!: string;
   role!: string;
+  instagram!: string;
+  tiktok!: string;
+  whatsapp!: string;
+
 
     ngOnInit(){
       const user = localStorage.getItem('user');
@@ -35,6 +41,12 @@ export class AdminLayoutComponent implements OnInit {
         this.lastName = userObj.lastName;
         this.role = userObj.role;
       }
+
+      this.settingsService.getSettings().subscribe((data: any) => {
+        this.instagram = data.instagram;
+        this.tiktok = data.tiktok;
+        this.whatsapp = data.whatsapp;
+      })
     }
 
     routes: RouteLayout[] = [

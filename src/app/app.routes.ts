@@ -24,6 +24,11 @@ export const routes: Routes = [
             title: 'Register'
         },
         {
+            path: 'forgotPassword',
+            loadComponent: () => import('./@core/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+            title: 'Forgot Password'
+        },
+        {
             path: 'home/event/:id',
             loadComponent: () => import('./pages/event/event.component').then(m => m.EventComponent),
             title: 'Event'
@@ -33,47 +38,52 @@ export const routes: Routes = [
     {
     path: '',
     component: LayoutComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
         {
             path: '',
             loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
-            title: 'Home'
+            title: 'Inicio'
         },
         {
             path: 'login',
             loadComponent: () => import('./@core/auth/login/login.component').then(m => m.LoginComponent),
-            title: 'Login'
+            title: 'Iniciar Sesión'
         },
         {
             path: 'register',
             loadComponent: () => import('./@core/auth/register/register.component').then(m => m.RegisterComponent),
-            title: 'Register'
+            title: 'Registrarse'
         },
         {
             path: 'home/event/:id',
             loadComponent: () => import('./pages/event/event.component').then(m => m.EventComponent),
-            title: 'Event'
+            title: 'Evento'
         },
         {
             path: 'home/event/:id/ticket',
             loadComponent: () => import('./pages/ticket/ticket.component').then(m => m.TicketComponent),
-            title: 'Ticket'
+            title: 'Entrada'
         },
         {
             path: 'home/event/:id/ticket/consume',
             loadComponent: () => import('./pages/consume/consume.component').then(m => m.ConsumeComponent),
-            title: 'Consume'
+            title: 'Consumo'
         },
         {
             path: 'home/event/:id/ticket/checkout',
             loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent),
-            title: 'Checkout'
+            title: 'Confirmación de Compra'
         },
         {
             path: 'home/event/:id/ticket/checkout/payment',
             loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent),
-            title: 'Payment'
+            title: 'Pago'
+        },
+        {
+            path: 'home/profile',
+            loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent),
+            title: 'Perfil'
         }
     ],
 
@@ -82,7 +92,7 @@ export const routes: Routes = [
 {
   path: 'admin',
   component: AdminLayoutComponent,
-//   canActivate: [AuthGuard],
+  canActivate: [AuthGuard],
   children:[
     {
       path:'dashboard',
@@ -92,32 +102,32 @@ export const routes: Routes = [
     {
         path: 'events',
         loadComponent: () => import('./admin/events/events.component').then(m => m.EventsComponent),
-        title: 'Events'
+        title: 'Eventos'
     },
     {
         path: 'tickets',
         loadComponent: () => import('./admin/tickets/tickets.component').then(m => m.TicketsComponent),
-        title: 'Tickets'
+        title: 'Entradas'
     },
     {
         path: 'payments',
         loadComponent: () => import('./admin/payments/payments.component').then(m => m.PaymentsComponent),
-        title: 'Payments'
+        title: 'Pagos'
     },
     {
         path: 'drinks',
         loadComponent: () => import('./admin/drinks/drinks.component').then(m => m.DrinksComponent),
-        title: 'Drinks'
+        title: 'Bebidas'
     },
     {
         path: 'foods',
         loadComponent: () => import('./admin/foods/foods.component').then(m => m.FoodsComponent),
-        title: 'Foods'
+        title: 'Comidas'
     },
     {
         path: 'settings',
         loadComponent: () => import('./admin/settings/settings.component').then(m => m.SettingsComponent),
-        title: 'Settings'
+        title: 'Configuración'
     }
   ]
 }
