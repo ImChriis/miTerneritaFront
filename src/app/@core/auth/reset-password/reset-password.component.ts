@@ -3,7 +3,8 @@ import { AuthService } from '../../services/auth.service';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
@@ -19,7 +20,9 @@ export class ResetPasswordComponent {
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
   private dialogConfig = inject(DynamicDialogConfig);
+  private router = inject(Router);
   email = this.dialogConfig.data.email;
+  ref!: DynamicDialogRef;
 
     private passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
       const password = group.get('password')?.value;
@@ -29,9 +32,9 @@ export class ResetPasswordComponent {
 
   resertPasswordForm = this.fb.group({
     code: [''],
-    email: [''],
     password: [''],
-    confirmPassword: ['']
+    confirmPassword: [''],
+    newPassword: ['']
   },
   {
     validators: this.passwordsMatchValidator
@@ -105,13 +108,16 @@ export class ResetPasswordComponent {
 
   onSubmit(){
     const formData = {...this.resertPasswordForm.value};
-    formData.email = this.email; // Asignar el valor del email recibido al formulario
     delete formData.confirmPassword; // Eliminar el campo confirmPassword antes de enviarlo al backend
+    formData.newPassword = formData.password; // Renombrar el campo password a newPassword
+    delete formData.password; // Eliminar el campo password después de renombrarlo
 
     this.authService.resetPassword(formData).subscribe({
       next: (response) => {
         console.log('Contraseña restablecida exitosamente:', response);
         this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Contraseña restablecida exitosamente'});
+        this.ref.close();
+        this.router.navigateByUrl('/login'); // Redirigir al usuario a la página de inicio de sesión después de restablecer la contraseña
       },
       error: (error) => {
         console.error('Error al restablecer la contraseña:', error);

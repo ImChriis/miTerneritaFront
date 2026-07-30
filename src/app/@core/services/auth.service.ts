@@ -31,6 +31,7 @@ export class AuthService {
   login(body: Partial<User>){
     return this.http.post<User>(`${this.api}/auth/login`, body).pipe(
       tap((user: User) => {
+        console.log('User logged in:', user);
         const tok= user.access_token ?? null;
         localStorage.setItem('token', user.access_token || ''),
         localStorage.setItem('user', JSON.stringify(user));
@@ -69,6 +70,10 @@ export class AuthService {
     } catch {
       return true;
     }
+  }
+
+  editProfile(id: number, body: Partial<User>){
+    return this.http.put<User>(`${this.api}/users/${id}`, body);
   }
 
   forgotPassword(body: any) {

@@ -22,6 +22,7 @@ export class ProfileComponent {
   private messageService = inject(MessageService);
   private dialogService = inject(DialogService);
   private router = inject(Router);
+  id!: number;
 
     private passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
       const password = group.get('password')?.value;
@@ -48,6 +49,20 @@ export class ProfileComponent {
   ngOnInit(): void {
     this.registerForm.get('tipo')?.valueChanges.subscribe(() => this.updateIdentificacion());
     this.registerForm.get('noCedula')?.valueChanges.subscribe(() => this.updateIdentificacion());
+  
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      this.id = userData.id; 
+      if (userData.cedula && userData.cedula.includes('-')) {
+        const [tipo, noCedula] = userData.cedula.split('-');
+        
+        userData.tipo = tipo;
+        userData.noCedula = noCedula;
+      }
+
+      this.registerForm.patchValue(userData);
+    }
   }
 
    getErrorMessage(field: string): string {
@@ -135,8 +150,9 @@ export class ProfileComponent {
       delete formData.confirmPassword;
 
       console.log(formData);
-      this.authService.register(formData).subscribe({
+      this.authService.editProfile(this.id, formData).subscribe({
         next: (response) => {
+          console.log('Perfil actualizado exitosamente:', formData);
           this.messageService.add({severity:'success', summary: 'Registro Exitoso', detail: 'Usuario registrado correctamente'});
           this.router.navigateByUrl('/login');
         },
@@ -144,5 +160,10 @@ export class ProfileComponent {
           this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});
         }
       })
+    }
+
+    logOut(){
+      this.authService.logout();
+      this.router.navigateByUrl('/login');
     }
 }
