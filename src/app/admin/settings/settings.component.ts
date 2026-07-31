@@ -43,23 +43,28 @@ export class SettingsComponent implements OnInit{
     });
   }
 
-   onlyNumberInput(event: any) {
-  const value = event.target.value;
-  // Permite solo números y punto decimal
-  event.target.value = value.replace(/[^0-9.,]/g, '');
-}
+  onlyNumberInput(event: any) {
+    const input = event.target as HTMLInputElement;
 
-  onSubmit() {
-    const formValue = this.updateSettingsForm.value;
-
-    this.settingsService.updateSettings(formValue).subscribe({
-      next: (response) => {
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Configuración actualizada correctamente' });
-        window.location.reload();
-      },
-      error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar la configuración' });
-      }
-    });
+    input.value = input.value.replace(/[^0-9.,]/g, ''); 
   }
+
+onSubmit() {
+  const formValues = {
+    ...this.updateSettingsForm.value,
+    BCV: this.updateSettingsForm.value.BCV !== null ? Number(this.updateSettingsForm.value.BCV) : null,
+    tasaDolar: this.updateSettingsForm.value.tasaDolar !== null ? Number(this.updateSettingsForm.value.tasaDolar) : null
+  };
+
+  console.log(formValues);
+
+  this.settingsService.updateSettings(formValues).subscribe({
+    next: (response) => {
+      this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Configuración actualizada correctamente' });
+    },
+    error: (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar la configuración' });
+    }
+  });
+}
 }

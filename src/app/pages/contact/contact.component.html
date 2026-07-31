@@ -1,1 +1,58 @@
-<p>contact works!</p>
+<div class="content">
+    <form [formGroup]="whatsappForm" (ngSubmit)="sendMessage()">
+        <div class="info">
+            <h1>Contáctanos</h1>
+            <p>Envianos un mensaje y nos pondremos en contacto contigo lo antes posible.</p>
+        </div>
+
+        <div class="inputGroup2">
+            <div class="inputGroup">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" formControlName="nombre">
+            </div>
+
+            <div class="inputGroup">
+                <label for="apellido">Apellido</label>
+                <input type="text" id="apellido" name="apellido" formControlName="apellido">
+            </div>
+        </div>
+
+        <div class="inputGroup">
+            <label for="mensaje">Mensaje</label>
+            <textarea type="text" id="mensaje" name="mensaje" formControlName="mensaje"></textarea>
+        </div>
+
+        <div class="btn">
+            <button class="btnLogin" type="submit">Enviar</button>
+        </div>
+    </form>
+
+    <div class="social">
+        <div class="socialInfo red">
+            <h1>Correo Electrónico</h1>
+            <p>info&#64;miternerita.com</p>
+        </div>
+
+        <div class="socialInfo red">
+            <h1>Dirección</h1>
+            <p>Fuerzas Armadas</p>
+        </div>
+
+        <div class="socialInfo">
+            <h1>Redes Sociales</h1>
+            <div class="icons">
+                <a *ngIf="whatsapp" [href]="whatsapp" target="_blank" rel="noopener noreferrer">
+                    <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
+                </a>
+
+                <a *ngIf="instagram" [href]="instagram" target="_blank" rel="noopener noreferrer">
+                    <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
+                </a>
+
+                <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
+                    <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

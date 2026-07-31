@@ -1,0 +1,165 @@
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    width: 100%;
+    margin-top: 3vh;
+    gap: 20px;
+}
+
+form{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #1c1c1c;
+    background: rgba(28, 28, 28, 0.85);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.info{
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info h1{
+    color: white;
+    margin-bottom: 0px;
+}
+
+.info p{
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.inputGroup{
+    width: 70% !important;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.inputGroup2{
+    width: 70% !important;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+label{
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+input{
+    height: 3vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    background-color: #2b2b2b;
+    color: white;
+    outline: none;
+}
+
+textarea{
+    height: 15vh;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    background-color: #2b2b2b;
+    color: white;
+    outline: none;
+    resize: none;
+}
+
+.btn{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3vh;
+}
+
+.btnLogin{
+    margin-top: 20px;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    border-radius: 50px;
+    width: 20%;
+    height: 4vh;
+    font-weight: bold;
+}
+
+.btnLogin:hover{
+    cursor: pointer;
+    opacity: 0.9;
+} 
+
+.social{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 20px;
+    width: 40%;
+    height: 100%;
+}
+
+.socialInfo{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 20px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.socialInfo h1{
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.socialInfo p{
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-size: 18px;
+}
+
+.red{
+    border-bottom: 1px solid white;
+}
+
+.icons{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+.icons i{
+    font-size: 30px !important;
+    color: white;
+}
+

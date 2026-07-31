@@ -24,7 +24,7 @@
 
             <div class="form-group">
                 <label for="tasaDolar">Tasa Dólar</label>
-                <input pInputText type="number" (input)="onlyNumberInput($event)" id="tasaDolar" formControlName="tasaDolar" class="form-control">
+                <input pInputText type="number" pattern="[0-9]" (input)="onlyNumberInput($event)" id="tasaDolar" formControlName="tasaDolar" class="form-control">
             </div>
             
 

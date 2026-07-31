@@ -154,7 +154,6 @@ export class ProfileComponent {
         next: (response) => {
           console.log('Perfil actualizado exitosamente:', formData);
           this.messageService.add({severity:'success', summary: 'Registro Exitoso', detail: 'Usuario registrado correctamente'});
-          this.router.navigateByUrl('/login');
         },
         error: (err) => {
           this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});

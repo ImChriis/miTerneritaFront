@@ -33,6 +33,11 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/event/event.component').then(m => m.EventComponent),
             title: 'Event'
         },
+        {
+            path:'home/contact',
+            loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent),
+            title: 'Contact'
+        }
         ]
     },
     {

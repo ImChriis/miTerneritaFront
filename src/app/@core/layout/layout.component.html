@@ -19,7 +19,6 @@
 
             <div  routerLink="/home/profile" class="user" *ngIf="authService.isAuthenticated()">
                 <i class="pi pi-user"></i>
-                <a>{{ user?.name }}  {{ user?.lastName }}</a>
             </div>
         </div>
         
@@ -36,10 +35,10 @@
             </div>
 
             <div class="mobile-menu" *ngIf="showMobileMenu" [class.open]="showMobileMenu">
-                <a href="#">Inicio</a>
-                <a href="#">Eventos</a>
-                <a href="#">Contacto</a>
-                <a routerLink="/admin/dashboard">Dashboard</a>
+                <a routerLink="/">Inicio</a>
+                <a routerLink="/home/events">Eventos</a>
+                <a routerLink="/home/contact">Contacto</a>
+                <a routerLink="/admin/dashboard" *ngIf="authService.isAuthenticated() && user?.role === 'admin'">Dashboard</a>
                 <a routerLink="/home/profile">Christopher Medina</a>
             </div>
         </div>
