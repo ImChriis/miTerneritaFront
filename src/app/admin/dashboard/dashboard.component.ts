@@ -3,6 +3,8 @@ import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angu
 import { BadgeModule } from 'primeng/badge';
 import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
+import { DashboardService } from '../../@core/services/dashboard.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,15 +18,16 @@ import { TableModule } from 'primeng/table';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit{
+    private dashboardService = inject(DashboardService); 
     private cd = inject(ChangeDetectorRef);
     basicData: any;
     basicOptions: any;
     platformId = inject(PLATFORM_ID);
     payments$: any[] = [];
-    totalUser = 20;
-    usersToday = 10;
-    totalPayments = 20;
-    totalTickets = 20;
+    totalUser!: number;
+    usersToday!: number;
+    totalPayments!: number;
+    totalTickets!: number;
 
 
     // configService = inject(AppConfigService);
@@ -41,6 +44,25 @@ export class DashboardComponent implements OnInit{
 
     ngOnInit() {
         this.initChart();
+
+        forkJoin({
+            totalUser: this.dashboardService.getTotalUsers(),
+            usersToday: this.dashboardService.getNewUsers(),
+            totalPayments: this.dashboardService.getTotalInvoices(),
+            totalTickets: this.dashboardService.getTotalTickets()
+        }).subscribe({
+            next: (results: any) => {
+                console.log('Dashboard data:', results);
+                this.totalUser = results.totalUser.length;
+                this.totalPayments = results.totalPayments.length;
+                this.totalTickets = results.totalTickets.count;
+                this.usersToday = results.usersToday[0] || 0;
+
+                console.log('Total Payments:', this.totalPayments);
+                console.log('Total Tickets:', this.totalTickets);
+                console.log('Users Today:', this.usersToday);
+            }
+        })
     }
 
     initChart() {

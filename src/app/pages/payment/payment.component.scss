@@ -40,6 +40,15 @@
     flex-direction: row;
 }
 
+.contentEfectivo{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    height: auto;
+    flex-direction: column;
+    padding-left: 124px;
+}
+
 .payment{
     width: 50%;
     height: auto;
@@ -105,6 +114,14 @@ select{
     margin-bottom: 0px;
 }
 
+.totalEfectivo{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+}
+
 .total h3{
     color: #FFFFFF;
     font-size: 25px;
@@ -133,6 +150,21 @@ select{
     display: flex;
     gap: 20px;
     width: 100%;
+}
+
+.btnsEfectivo{
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btnsEfectivo button{
+    width: 20%;
+
+    &:hover{
+        opacity: 0.9;
+    }
 }
 
 .btn2 {

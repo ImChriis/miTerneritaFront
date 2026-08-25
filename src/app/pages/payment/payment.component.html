@@ -213,13 +213,13 @@
     </div>
             </p-tabpanel>
             <p-tabpanel value="2">
-                    <div class="content">
+                    <div class="contentEfectivo">
         <div class="payment">
             <div class="title"> 
                 <h1>Información de pago</h1>
             </div>
 
-            <form [formGroup]="paymentfForm" (ngSubmit)="onSubmit()">
+            <!-- <form [formGroup]="paymentfForm" (ngSubmit)="onSubmit()">
                 <div class="inputGroup">
                     <label for="cardNumber">Banco</label>
                     <select name="bank" id="bank" formControlName="banco">
@@ -255,7 +255,7 @@
                         <option value="R4">R4, BANCO MICROFINANCIERO, C.A.</option>
                         <option value="Venezolano de credito">VENEZOLANO DE CRÉDITO</option>
                         <!-- <option value="Bank Of America">Bank of America</option>
-                        <option value="Zelle">Zelle</option> -->
+                        <option value="Zelle">Zelle</option> 
                     </select>
                 </div>
 
@@ -278,21 +278,22 @@
                     <label for="monto">Monto pagado</label>
                     <input type="text" id="monto" name="monto" formControlName="totalGeneral"/>
                 </div>
-            </form>
+            </form> -->
 
-            <div class="total"> 
+            <div class="totalEfectivo"> 
+                <h3>Para pagos en efectivo favor contactar directamente con atencion al cliente</h3>
                 <h3>Total a pagar: <span>${{ total }} | {{ totalBs }}Bs</span></h3>
             </div>
 
-            <div class="btns" (click)="onSubmit()">
-                <button pButton class="btn2" [disabled]="!paymentfForm.valid || paymentfForm.get('totalGeneral')?.value !== total">Pagar</button>
+            <div class="btnsEfectivo" (click)="onSubmit()">
+                <button class="btn2">Contactar</button>
             </div>
         </div>
 
-        <div class="bank">
+        <!-- <div class="bank">
             <!-- <div class="img">
                 <img class="bankImg" src="../../../assets/img/logo.png" alt="">
-            </div> -->
+            </div> 
 
             <div class="title">
                 <h2>Datos Bancarios</h2>
@@ -312,13 +313,13 @@
                     <button type="button" class="custom-file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
                 </div>
 
-                <!-- Preview -->
+              
                 <div class="image-preview" *ngIf="previewUrl">
                     <img class="preview" [src]="previewUrl" alt="Vista previa" />
                     <i class="pi pi-times remove-btn" (click)="removeSelectedFile()" title="Quitar"></i>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
             </p-tabpanel>
         </p-tabpanels>
