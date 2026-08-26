@@ -95,6 +95,11 @@ export class AdminLayoutComponent implements OnInit {
     //   icon: "pi pi-users",
     //   routerLink: "/admin/users",
     // },
+    {
+      name: "Usuarios",
+      icon: "pi pi-users",
+      routerLink: "/admin/users",
+    },
   ]
 
   openSidebar(nav: HTMLElement) {

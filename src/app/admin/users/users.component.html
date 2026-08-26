@@ -1,0 +1,121 @@
+<body class="container">
+  <div class="table">
+        <div  [class.blurred-background]="isModalOpen">
+      @if(
+        users$ | async
+        ; as state) {
+
+        <div class="title">
+          <h1>Entradas</h1>
+          <p>Crea las entradas disponibles para tus eventos</p>
+        </div>
+
+        <p-table
+          #dt1
+          [value]="state"
+          dataKey="id"
+          [rows]="5"
+          [paginator]="true"
+          [globalFilterFields]="['Nombre', 'Apellido', 'Piso', 'Titulo', 'Estatus']"
+          styleClass="ml-3 mr-3"
+          >
+          <ng-template pTemplate="caption">
+            <div class="flex-row">
+              <div class="p-toolbar-group-end">
+                <span class="p-input-icon-left ml-auto">
+                  <i class=""></i>
+                  <input
+                    #searchInput
+                    pInputText
+                    type="text"
+                    class="searchBar"
+                    placeholder="Buscar"
+                    (input)="dt1.filterGlobal(searchInput.value, 'contains')"
+                    />
+                  </span>
+                </div>
+           <div class="buttons">
+                  <button
+                  *ngIf="selectedUsers.length > 0"
+                  pButton
+                  pRipple
+                  class="btn-delete"
+                  (click)="showConfirmModal()"
+                ><i class="pi pi-trash" ></i></button>
+                  <button
+                    class="btn"
+                    icon=""
+                    (click)="openCreateModal()"
+                >Agregar usuario</button>
+                  </div>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="min-width: 1rem" class="border">
+                  <div class="flex thstyles">
+                    <!-- <p-checkbox [binary]="true"
+                    [(ngModel)]="selectAll"   (ngModelChange)="toggleSelectAll(state, $event)"/> -->
+                    </div>
+                </th>
+                <th class="name" style="min-width: 5rem">
+                  <div class="flex thstyles">Nombre</div>
+                </th>
+                <th style="min-width: 5rem">
+                  <div class="flex thstyles">Apellido</div>
+                </th>
+                <th style="min-width: 5rem">
+                  <div class="flex thstyles">Cédula</div>
+                </th>
+                 <th style="min-width: 5rem">
+                  <div class="flex thstyles">Teléfono</div>
+                </th>
+                <th style="min-width: 15rem">
+                  <div class="flex thstyles">Correo</div>
+                </th>
+                <th class="text-center" style="min-width: 5rem" class="border2">
+                  <div class="flex thstyles option">Opciones</div>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user class="p-table">
+              <tr class="table-content">
+                <td class="column-table-left mr-5">
+                  <!-- <p-checkbox [(ngModel)]="selectedTickets" [value]="ticket"/> -->
+                </td>
+                <td class="name">
+                  {{ user.name }}
+                </td>
+                <td>
+                  {{ user.lastName }}
+                </td>
+                <td>
+                  {{ user.cedula }}
+                </td>
+                <td>
+                  {{ user.phone }}
+                </td>
+                <td>
+                    {{ user.email }}
+                </td>
+                <td class="text-center column-table-right">
+                  <div class="option">
+                    <i class="pi pi-pencil btnEdit"></i>
+                    <i class="pi pi-trash btnDelete" ></i>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7">No elementos encontrados.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        }
+      </div>
+  
+  </div>
+</body>
+    
+  

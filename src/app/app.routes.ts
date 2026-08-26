@@ -138,7 +138,12 @@ export const routes: Routes = [
         path: 'settings',
         loadComponent: () => import('./admin/settings/settings.component').then(m => m.SettingsComponent),
         title: 'Configuración'
-    }
+    },
+    {
+        path: 'users',
+        loadComponent: () => import('./admin/users/users.component').then(m => m.UsersComponent),
+        title: 'Usuarios'
+    },
   ]
 }
 
