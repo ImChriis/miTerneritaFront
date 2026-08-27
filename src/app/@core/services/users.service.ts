@@ -17,4 +17,13 @@ export class UsersService {
       tap((u) => console.log('Users fetched:', u)),
     )
   }
+
+  deleteUser(id: number){
+    return this.http.delete(`${this.api}/users/${id}`).pipe(
+      tap(() => {
+        console.log(`User with ID ${id} deleted successfully.`);
+        this.refreshUsers$.next(); // Notify subscribers to refresh the users list
+      }),
+    );
+  }
 }

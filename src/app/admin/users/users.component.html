@@ -6,8 +6,8 @@
         ; as state) {
 
         <div class="title">
-          <h1>Entradas</h1>
-          <p>Crea las entradas disponibles para tus eventos</p>
+          <h1>Usuarios</h1>
+          <p>Administra los usuarios de tu sistema</p>
         </div>
 
         <p-table
@@ -54,23 +54,20 @@
               <tr>
                 <th style="min-width: 1rem" class="border">
                   <div class="flex thstyles">
-                    <!-- <p-checkbox [binary]="true"
-                    [(ngModel)]="selectAll"   (ngModelChange)="toggleSelectAll(state, $event)"/> -->
+                    <p-checkbox [binary]="true"
+                    [(ngModel)]="selectAll"   (ngModelChange)="toggleSelectAll(state, $event)"/>
                     </div>
                 </th>
-                <th class="name" style="min-width: 5rem">
+                <th class="name" style="min-width: 10rem">
                   <div class="flex thstyles">Nombre</div>
                 </th>
-                <th style="min-width: 5rem">
+                <th style="min-width: 10rem">
                   <div class="flex thstyles">Apellido</div>
                 </th>
-                <th style="min-width: 5rem">
-                  <div class="flex thstyles">Cédula</div>
+                <th style="min-width: 8rem">
+                  <div class="flex thstyles number">Cédula</div>
                 </th>
-                 <th style="min-width: 5rem">
-                  <div class="flex thstyles">Teléfono</div>
-                </th>
-                <th style="min-width: 15rem">
+                <th style="min-width: 20rem">
                   <div class="flex thstyles">Correo</div>
                 </th>
                 <th class="text-center" style="min-width: 5rem" class="border2">
@@ -81,19 +78,16 @@
             <ng-template pTemplate="body" let-user class="p-table">
               <tr class="table-content">
                 <td class="column-table-left mr-5">
-                  <!-- <p-checkbox [(ngModel)]="selectedTickets" [value]="ticket"/> -->
+                  <p-checkbox [(ngModel)]="selectedUsers" [value]="user"/>
                 </td>
-                <td class="name">
+                <td>
                   {{ user.name }}
                 </td>
                 <td>
                   {{ user.lastName }}
                 </td>
-                <td>
+                <td class="number">
                   {{ user.cedula }}
-                </td>
-                <td>
-                  {{ user.phone }}
                 </td>
                 <td>
                     {{ user.email }}
@@ -101,7 +95,7 @@
                 <td class="text-center column-table-right">
                   <div class="option">
                     <i class="pi pi-pencil btnEdit"></i>
-                    <i class="pi pi-trash btnDelete" ></i>
+                    <i class="pi pi-trash btnDelete" (click)="showConfirmModal(user)"></i>
                   </div>
                 </td>
               </tr>
@@ -112,6 +106,8 @@
               </tr>
             </ng-template>
           </p-table>
+        } @else {
+          <app-loader [isLoading]="isLoading()"></app-loader>
         }
       </div>
   

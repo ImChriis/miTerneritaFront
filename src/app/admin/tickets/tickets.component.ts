@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { TicketsService } from '../../@core/services/tickets.service';
 import { Observable, startWith, switchMap, tap } from 'rxjs';
@@ -14,6 +14,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { EventsService } from '../../@core/services/events.service';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from '../../@core/components/loader/loader.component';
 
 @Component({
   selector: 'app-tickets',
@@ -23,7 +24,8 @@ import { FormsModule } from '@angular/forms';
     ButtonModule,
     InputText,
     CheckboxModule,
-    FormsModule
+    FormsModule,
+    LoaderComponent
   ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.scss'
@@ -39,11 +41,13 @@ export class TicketsComponent implements OnInit{
   eventNames = new Map<number, string>();
   selectAll = false;
   selectedTickets: Ticket[] = [];
+  isLoading = signal(false);
 
   ngOnInit() {
     this.tickets$ = this.ticketsService.refreshTicketsObservable$.pipe(
       startWith(null),
       switchMap(() => {
+        this.isLoading.set(true); 
         return this.ticketsService.getTickets();
       })
     )

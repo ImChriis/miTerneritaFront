@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { InputText } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { FoodsService } from '../../@core/services/foods.service';
@@ -14,6 +14,7 @@ import { Food } from '../../@core/models/foods.model';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { MessageService } from 'primeng/api';
+import { LoaderComponent } from '../../@core/components/loader/loader.component';
 
 @Component({
   selector: 'app-foods',
@@ -24,7 +25,8 @@ import { MessageService } from 'primeng/api';
     InputText,
     AsyncPipe,
     CheckboxModule,
-    FormsModule
+    FormsModule,
+    LoaderComponent
   ],
   templateUrl: './foods.component.html',
   styleUrl: './foods.component.scss'
@@ -38,11 +40,13 @@ export class FoodsComponent implements OnInit{
   isModalOpen = false;
   selectAll = false;
   selectedFoods: Food[] = [];
+  isLoading = signal(false);
 
   ngOnInit(): void {
     this.foods$ = this.foodsService.refreshFoodsObservable$.pipe(
       startWith(null),
       switchMap(() => {
+        this.isLoading.set(true);
         return this.foodsService.getAllFoods();
       })
     )

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { EventsService } from '../../@core/services/events.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -12,6 +12,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from '../../@core/components/loader/loader.component';
 
 @Component({
   selector: 'app-events',
@@ -20,7 +21,8 @@ import { FormsModule } from '@angular/forms';
     TableModule,
     InputText,
     CheckboxModule,
-    FormsModule
+    FormsModule,
+    LoaderComponent
   ],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'
@@ -34,6 +36,7 @@ export class EventsComponent implements OnInit{
   events$!: Observable<Event[]>;
   selectAll = false;
   selectedEvents: Event[] = [];
+  isLoading = signal(false);
   
    consumo = [
     { label: 'Sí', value: 1 },
@@ -45,6 +48,7 @@ export class EventsComponent implements OnInit{
     this.events$ = this.eventsService.refreshEventsObservable$.pipe(
       startWith(null),
       switchMap(() => {
+        this.isLoading.set(true); // Set loading to true before fetching events
         return this.eventsService.getEvents();
       })
     )

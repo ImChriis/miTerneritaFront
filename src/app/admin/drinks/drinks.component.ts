@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
@@ -15,6 +15,7 @@ import { Drink } from '../../@core/models/drink.model';
 import { UpdateDrinksComponent } from './components/update-drinks/update-drinks.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
+import { LoaderComponent } from '../../@core/components/loader/loader.component';
 
 
 @Component({
@@ -30,7 +31,8 @@ import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-del
     ReactiveFormsModule,
     DynamicDialogModule,
     AsyncPipe,
-    CheckboxModule
+    CheckboxModule,
+    LoaderComponent
   ],
   templateUrl: './drinks.component.html',
   styleUrl: './drinks.component.scss'
@@ -44,11 +46,13 @@ export class DrinksComponent implements OnInit{
   drinks$!: Observable<Drink[]>;
   selectAll = false;
   selectedDrinks: Drink[] = [];
+  isLoading = signal(false);
 
   ngOnInit(): void {
     this.drinks$ = this.drinksService.refreshDrinksObservable$.pipe(
       startWith(null),
       switchMap(() => {
+        this.isLoading.set(true);
         return this.drinksService.getAllDrinks();
       })
     )
