@@ -1,0 +1,42 @@
+<div class="container">
+    <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
+        <div class="formGroup2">
+            <div class="formGroup">
+                <label for="Nombre">Nombre</label>
+                <input pInputText id="Nombre" formControlName="name" type="text" />
+            </div>
+
+            <div class="formGroup">
+                <label for="Nombre">Apellido</label>
+                <input pInputText id="Nombre" formControlName="lastName" type="text" />
+            </div>
+        </div>
+
+        <div class="formGroup2">
+            <div class="formGroup">
+                <label for="Nombre">Cedula</label>
+                <input pInputText id="Nombre" formControlName="cedula" type="text" />
+            </div>
+
+            <div class="formGroup">
+                <label for="Nombre">Telefono</label>
+                <input pInputText id="Nombre" formControlName="phone" type="text" />
+            </div>
+        </div>
+
+        
+        <div class="formGroup">
+            <label for="Nombre">Correo electronico</label>
+            <input pInputText id="Nombre" formControlName="email" type="text" />
+        </div>
+<!-- 
+        <div class="formGroup">
+            <label for="Estado">Estado</label>
+            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" formControlName="status" appendTo="body"/>
+        </div> -->
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Actualizar"></button>
+        </div>
+    </form>
+</div>

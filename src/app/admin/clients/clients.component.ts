@@ -4,17 +4,18 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { User } from '../../@core/models/user.model';
-import { Observable, startWith, switchMap } from 'rxjs';
+import { finalize, map, Observable, startWith, switchMap } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
-import { EditUserComponent } from './components/edit-user/edit-user.component';
+import { EditUserComponent } from '../users/components/edit-user/edit-user.component';
+
 
 @Component({
-  selector: 'app-users',
+  selector: 'app-clients',
   imports: [
     CommonModule,
     TableModule,
@@ -23,11 +24,11 @@ import { EditUserComponent } from './components/edit-user/edit-user.component';
     FormsModule,
     LoaderComponent
   ],
-  templateUrl: './users.component.html',
-  styleUrl: './users.component.scss'
+  templateUrl: './clients.component.html',
+  styleUrl: './clients.component.scss'
 })
-export class UsersComponent implements OnInit {
-  private usersService = inject(UsersService);
+export class ClientsComponent {
+   private usersService = inject(UsersService);
   private messageService = inject(MessageService);
   private dialogService = inject(DialogService);
   ref!: DynamicDialogRef;
@@ -39,13 +40,21 @@ export class UsersComponent implements OnInit {
 
 
   ngOnInit(): void {
-     this.users$ = this.usersService.refreshUsersObservable$.pipe(
+      this.users$ = this.usersService.refreshUsersObservable$.pipe(
       startWith(null),
       switchMap(() => {
         this.isLoading.set(true);
-        return this.usersService.getUsers();
+        
+        return this.usersService.getUsers().pipe(
+          map((users: any) => 
+            users
+              .filter((user: any) => user.idRole === 3)
+              .map((user: any) => ({ ...user, role: 'Cliente' }))
+          ),
+          finalize(() => this.isLoading.set(false))
+        );
       })
-    )
+    );
   }
 
   openCreateModal(){

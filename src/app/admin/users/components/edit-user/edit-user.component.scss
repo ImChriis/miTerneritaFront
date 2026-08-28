@@ -1,0 +1,74 @@
+.container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form{
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formGroup{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+}
+
+.formGroup2{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.formGroup label{
+    color: white;
+}
+
+.formGroup input{
+    width: 100%;
+    background-color: transparent;
+    color: white;
+}
+
+.formGroup .p-select{
+    width: 100% !important;
+    background-color: transparent;
+    color: white;
+}
+
+::ng-deep .p-select-label.ng-star-inserted{
+    color: white !important;
+}
+
+::ng-deep .p-select .p-select-label.p-placeholder{
+    color: white !important;
+}
+
+::ng-deep .p-select .p-icon{
+    color: white !important;
+}
+
+.btn{
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 50px;
+}
+
+.btn:hover{
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    opacity: 0.9;
+}

@@ -144,6 +144,11 @@ export const routes: Routes = [
         loadComponent: () => import('./admin/users/users.component').then(m => m.UsersComponent),
         title: 'Usuarios'
     },
+    {
+        path: 'clients',
+        loadComponent: () => import('./admin/clients/clients.component').then(m => m.ClientsComponent),
+        title: 'Clientes'
+    },
   ]
 }
 

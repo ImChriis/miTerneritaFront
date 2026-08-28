@@ -97,8 +97,13 @@ export class AdminLayoutComponent implements OnInit {
     // },
     {
       name: "Usuarios",
-      icon: "pi pi-users",
+      icon: "pi pi-user",
       routerLink: "/admin/users",
+    },
+    {
+      name: "Clientes",
+      icon: "pi pi-users",
+      routerLink: "/admin/clients",
     },
   ]
 

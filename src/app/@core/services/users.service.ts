@@ -18,6 +18,15 @@ export class UsersService {
     )
   }
 
+  updateUser(id: number, userData: any){
+    return this.http.put(`${this.api}/users/${id}`, userData).pipe(
+      tap((res) => {
+        console.log(`User with ID ${id} updated successfully.`, res);
+        this.refreshUsers$.next(); // Notify subscribers to refresh the users list
+      }),
+    );
+  }
+
   deleteUser(id: number){
     return this.http.delete(`${this.api}/users/${id}`).pipe(
       tap(() => {
