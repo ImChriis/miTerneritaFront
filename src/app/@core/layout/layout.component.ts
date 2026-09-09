@@ -23,13 +23,18 @@ export class LayoutComponent implements OnInit {
   instagram!: string;
   tiktok!: string;
   whatsapp!: string;
+  email!: string;
 
   ngOnInit(){
         this.settingsService.getSettings().subscribe((data: any) => {
         this.instagram = data.instagram;
         this.tiktok = data.tiktok;
-        this.whatsapp = data.whatsapp;
+        this.whatsapp = 'https://wa.me/+58' + data.phone;
+        this.email = data.email;
+
+        console.log('settings', this.instagram, this.tiktok, this.whatsapp, this.email); 
       })
+
   }
 
   get user(){

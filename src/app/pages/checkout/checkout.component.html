@@ -13,9 +13,9 @@
         </div>
 
         <!-- <div class="date">
-        <p><i class="pi pi-calendar"></i> 15 de marzo</p>
-        <p><i class="pi pi-clock"></i> 10:00 PM</p>
-        </div> -->
+            <p><i class="pi pi-calendar"></i> 15 de marzo</p>
+            <p><i class="pi pi-clock"></i> 10:00 PM</p>
+        </div>  -->
 
         <div class="title">
             <h3>Información personal</h3>
@@ -50,7 +50,7 @@
             </div>
 
             <div class="btn">
-                <button class="btn2" type="submit" (click)="proceedToPayment()">Continuar</button>
+                <button class="btn2" type="button" (click)="proceedToPayment()">Continuar</button>
             </div>
         </form>
     </div>
@@ -67,6 +67,8 @@
             <p>Tipo de espacio: <span>{{ item.name }}</span></p>
             <p>Cantidad: <span>{{ item.cantidad }}</span></p>
             <p>Precio: <span>${{ item.total }}</span></p>
+            <hr>
+            <h3>Total a pagar: <span>${{ total }}</span></h3> 
         </div>
 
 <!--         
@@ -78,7 +80,7 @@
         </div> -->
 
         <div class="total">
-            <h3>Total a pagar: <span>${{ total }}</span></h3>
+
         </div>
     </div>
 </div>

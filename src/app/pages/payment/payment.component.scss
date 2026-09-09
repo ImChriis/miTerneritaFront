@@ -174,9 +174,9 @@ select{
   padding: 10px 24px;
   border-radius: 50px;
   cursor: pointer;
-  width: 15%;
   font-weight: bold;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .btn2:hover {
@@ -318,6 +318,14 @@ select{
         justify-content: center;
         align-items: center;
     }
+
+    .btnsEfectivo .btn2{
+        width: 30%;
+    }
+
+    .sections{
+        font-size: 12px;
+    }
 }
 
 @media(max-width: 425px){
@@ -326,11 +334,23 @@ select{
     }
 
     .sections{
-        font-size: 13px;
+        font-size: 10px;
     }
 
-    .btn2{
-        width: 30%;
+    .contentEfectivo{
+        justify-content: center;
+        align-items: center;
+        margin-left: -100px;
+    }
+
+    .payment{
+        width: 90%;
+        justify-content: center;
+        align-items: center;
+    }
+
+   .btnsEfectivo .btn2{
+        width: 100%;
     }
 }
 
@@ -340,7 +360,7 @@ select{
     }
 
     .sections{
-        font-size: 11px;
+        font-size: 10px;
     }
 
     .btn2{
@@ -358,7 +378,7 @@ select{
     }
 
     .sections{
-        font-size: 9px;
+        font-size: 8px;
     }
 
     .btn2{

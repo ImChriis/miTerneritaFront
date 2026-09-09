@@ -39,7 +39,8 @@
                 <a routerLink="/home/events">Eventos</a>
                 <a routerLink="/home/contact">Contacto</a>
                 <a routerLink="/admin/dashboard" *ngIf="authService.isAuthenticated() && user?.role === 'admin'">Dashboard</a>
-                <a routerLink="/home/profile">Christopher Medina</a>
+                <a routerLink="#">Mis Compras</a>
+                <a routerLink="/home/profile">Perfil</a>
             </div>
         </div>
     </nav>
@@ -56,8 +57,13 @@
         </div>
 
         <div class="footerInfo">
-            <p>© 2024 Mi Ternerita. Todos los derechos reservados.</p>
-            <p>Contacto: info&#64;miternerita.com</p>
+            <p>© 2026 Mi Ternerita. Todos los derechos reservados, Desarrollado por <a class="netsolca" href="">Netsolca</a></p>
+
+            <div class="policy">
+                <a href="">Política de Privacidad</a>
+                <a href="">Términos y Condiciones</a>
+                <a href="">Política de compras</a>
+            </div>
         </div>
 
         <div class="socialMedia">
@@ -71,6 +77,10 @@
 
             <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
                 <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
+            </a>
+
+            <a *ngIf="email" [href]="email" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-envelope" style="font-size: 2.5rem"></i>
             </a>
         </div>
     </footer>
@@ -78,7 +88,8 @@
     <div class="mobileFooter">
         <div class="footerLogo">
             <img class="footerImg" src="../../../assets/img/logo.png" alt="">
-        </div>
+         </div>
+
 
         <div class="socialMedia">
             <a *ngIf="whatsapp" [href]="whatsapp" target="_blank" rel="noopener noreferrer">
@@ -92,13 +103,22 @@
             <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
                 <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
             </a>
+
+            <a *ngIf="email" [href]="email" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-envelope" style="font-size: 2.5rem"></i>
+            </a>
+        </div>
+
+        <div class="policy">
+            <a href="">Política de Privacidad</a>
+            <a href="">Términos y Condiciones</a>
+            <a href="">Política de compras</a>
         </div>
 
         <hr>
 
          <div class="footerInfo">
-            <p>© 2024 Mi Ternerita. Todos los derechos reservados.</p>
-            <p>Contacto: info&#64;miternerita.com</p>
+            <p>© 2026 Mi Ternerita. Todos los derechos reservados, Desarrollado por <a class="netsolca" href="">Netsolca</a></p>
         </div>
     </div>
 </div>

@@ -14,6 +14,7 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.35);
   pointer-events: none;
+  z-index: -1;
 }
 
 .container > * {
@@ -236,10 +237,19 @@ select{
     .content{
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+    }
+
+    .title, .title2{
+        width: 90%;
+        align-items: center;
+        justify-content: center;
     }
 
     .details{
         width: 90%;
+        align-items: center;
+        justify-content: center;
     }
 
     .name{
@@ -255,6 +265,13 @@ select{
         width: 90%;
         margin-top: 20px;
         margin-bottom: 20px;
+        justify-content: start;
+        align-items: center;
+    }
+
+    .ticketDetails .total{
+        width: 90%;
+        text-align: center;
     }
 
     .btn2{
@@ -265,22 +282,26 @@ select{
         max-width: 100%;
         height: auto;
     }
+
+    .sections{
+        font-size: 12px;
+    }
 }
 
 @media(max-width: 425px){
     .sections{
-        font-size: 13px;
+        font-size: 10px;
     }
 }
 
 @media(max-width: 375px){
     .sections{
-        font-size: 11px;
+        font-size: 10px;
     }
 }
 
 @media(max-width: 320px){
     .sections{
-        font-size: 9px;
+        font-size: 8px;
     }
 }

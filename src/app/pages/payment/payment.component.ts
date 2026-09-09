@@ -68,7 +68,7 @@ export class PaymentComponent implements OnInit {
       // console.log('User ID en payment:', this.idUser);
     }
 
-    this.paymentData = history.state;
+    this.paymentData = history.state?.data || history.state;
     console.log("paymentData", this.paymentData)
     if(this.paymentData){
       this.total = this.paymentData.total;

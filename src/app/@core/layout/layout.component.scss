@@ -131,6 +131,8 @@ footer{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 10000;
+    padding-bottom: 5px;
 }
 
 .footerLogo{
@@ -149,6 +151,29 @@ footer{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.footerInfo .policy{
+    display: flex;
+    gap: 20px;
+}
+
+.footerInfo .policy a{
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+
+    &:hover{
+        color: #2441B8;
+    }
+}
+
+.netsolca{
+    color: white;
+    text-decoration: none;
+    &:hover{
+        color: #2441B8;
+    }
 }
 
 .socialMedia{
@@ -170,6 +195,10 @@ footer{
 
 .mobile-menu {
     display: none;
+}
+
+.menuBtn{
+    font-size: 30px;
 }
 
 .mobileFooter{
@@ -252,7 +281,7 @@ footer{
         display: flex;
         flex-direction: column;
         position: absolute;
-        top: 60px;
+        top: 90px;
         background: #2E2E2E;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         z-index: 1000;
@@ -271,6 +300,7 @@ footer{
 
     .mobile-menu a:last-child {
         border-bottom: none;
+        padding-bottom: 20px;
     }
 
     footer{
@@ -288,7 +318,7 @@ footer{
     }
 
     .mobileFooter .footerLogo{
-        width: 50%;
+        width: 40%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -298,7 +328,20 @@ footer{
         width: 100%;
         display: flex;
         justify-content: center;
-        
+        align-items: center;
+    }
+
+    .mobileFooter .policy{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .mobileFooter .policy a{
+        color: white;
+        text-decoration: none;
     }
 
     hr{
@@ -308,7 +351,6 @@ footer{
     .mobileFooter .footerInfo{
         width: 100%;
         text-align: center;
-        margin-bottom: 5vh;
     }
 }
 
@@ -407,7 +449,6 @@ footer{
     .mobileFooter .footerInfo{
         width: 100%;
         text-align: center;
-        margin-bottom: 5vh;
     }
 }
 

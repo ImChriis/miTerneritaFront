@@ -14,6 +14,7 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.35);
   pointer-events: none;
+  z-index: -1
 }
 
 .container > * {
@@ -208,18 +209,29 @@
 
 @media(max-width: 768px){
   .content{
+    width: 100%;
     flex-direction: column-reverse;
     align-items: center;
+    justify-content: center;
   }
 
   .details{
-    width: 90%;
+    width: 80%;
     align-items: center;
+    justify-content: center;
     text-align: center;
+  }
+
+  .date{
+    width: 100%;
+    justify-content: center;
+    align-items: center;
   }
 
   .description{
     width: 100%;
+    justify-content: center;
+    align-items: center;
     font-size: 18px;
     text-align: left;
   }
@@ -259,11 +271,15 @@
   .eventInfo .date p{
     font-size: 15px;
   }
+
+  .sections{
+    font-size: 12px;
+  }
 }
 
 @media(max-width: 425px){
   .sections{
-    font-size: 13px;
+    font-size: 10px;
   }
 
 .title h1{
@@ -273,7 +289,7 @@
 
 @media(max-width: 375px){
   .sections{
-    font-size: 11px;
+    font-size: 10px;
   }
 
 .title h1{
@@ -283,7 +299,7 @@
 
 @media(max-width: 320px){
   .sections{
-    font-size: 9px;
+    font-size: 8px;
   }
 }
 

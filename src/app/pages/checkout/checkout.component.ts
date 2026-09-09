@@ -100,6 +100,6 @@ ngOnInit() {
 
     console.log("paymentData to send:", paymentData);
 
-    this.router.navigate(['/home/event/' + this.idEvents + "/ticket/checkout/payment"], { state: paymentData });  
+    this.router.navigate(['/home/event/' + this.idEvents + "/ticket/checkout/payment"], { state: { data: paymentData } });  
   }
 }
