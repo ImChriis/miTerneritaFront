@@ -9,6 +9,8 @@ import { TicketsService } from '../../@core/services/tickets.service';
 import { Ticket } from '../../@core/models/ticket.model';
 import { EventsService } from '../../@core/services/events.service';
 import { environment } from '../../../environments/environment.developer';
+import { TimerComponent } from '../../shared/components/timer/timer.component';
+import { TimerServiceService } from '../../@core/services/timer-service.service';
 
 @Component({
   selector: 'app-ticket',
@@ -17,6 +19,7 @@ import { environment } from '../../../environments/environment.developer';
     FormsModule,
     InputText,
     SelectModule,
+    TimerComponent
 ],
   templateUrl: './ticket.component.html',
   styleUrl: './ticket.component.scss'
@@ -25,6 +28,7 @@ export class TicketComponent implements OnInit {
   private ticketService = inject(TicketsService);
   private messageService = inject(MessageService);
   private eventsService = inject(EventsService);
+  private timerService = inject(TimerServiceService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   selected: any[] = [];
@@ -65,6 +69,8 @@ export class TicketComponent implements OnInit {
       document.body.style.backgroundSize = 'cover';
     }
   });
+
+  this.timerService.startTimer(); // Inicia el temporizador al cargar la página
   }
 
   ngOnDestroy() {

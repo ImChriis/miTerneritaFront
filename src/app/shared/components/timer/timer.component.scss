@@ -1,0 +1,47 @@
+.timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(30, 41, 59, 0.8); /* Fondo oscuro semitransparente */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(8px); /* Efecto de vidrio */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: fit-content;
+
+  span {
+    color: #94a3b8;
+  }
+
+  strong {
+    color: #38bdf8; /* Azul claro reluciente */
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums; /* Evita que el ancho de los números brinque cada segundo */
+    letter-spacing: 0.5px;
+    padding: 0.1rem 0.4rem;
+    background-color: rgba(56, 189, 248, 0.1);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+}
+
+/* Agrega esto dentro de .timer-badge o a nivel raíz del archivo */
+strong.critical {
+  color: #f43f5e !important; /* Rojo de alerta */
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  animation: pulse-red 1s infinite alternate;
+}
+
+@keyframes pulse-red {
+  from {
+    box-shadow: 0 0 0px rgba(244, 63, 94, 0);
+  }
+  to {
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.5);
+  }
+}
