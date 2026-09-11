@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: rgba(30, 41, 59, 0.8); /* Fondo oscuro semitransparente */
+  background-color: rgba(46, 46, 46, 0.8); /* Fondo oscuro semitransparente */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 0.5rem 1rem;
@@ -12,13 +12,9 @@
   backdrop-filter: blur(8px); /* Efecto de vidrio */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   width: fit-content;
-
-  span {
-    color: #94a3b8;
-  }
-
+  
   strong {
-    color: #38bdf8; /* Azul claro reluciente */
+    color: white; /* Azul claro reluciente */
     font-size: 1.05rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums; /* Evita que el ancho de los números brinque cada segundo */
@@ -28,6 +24,10 @@
     border-radius: 4px;
     transition: all 0.3s ease;
   }
+
+  position: fixed;
+  top: 8%;
+  right: 2%;
 }
 
 /* Agrega esto dentro de .timer-badge o a nivel raíz del archivo */
@@ -44,4 +44,12 @@ strong.critical {
   to {
     box-shadow: 0 0 8px rgba(244, 63, 94, 0.5);
   }
+}
+
+@media (max-width: 768px) {
+ .timer-badge{
+    position: fixed;
+    top: 10%;
+    right: 2%;
+ }
 }

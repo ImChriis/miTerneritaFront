@@ -42,21 +42,14 @@ export class PaymentComponent implements OnInit {
   cantidad!: number;
   zelle!: "Zelle";
 
-  paymentfForm: FormGroup<FormPayment> = this.fb.group({
-    idUser: new FormControl<number | null>(null),
+  paymentfForm = this.fb.group({
     idEvents: new FormControl<number | null>(null),
-    totalGeneral: new FormControl<number | null>(null),
-    tasaDolar: new FormControl<number | null>(null),
-    montoDolar: new FormControl<number | null>(null),
     comprobante: new FormControl<File | null>(null),
     banco: new FormControl<string | null>(null),
     referencia: new FormControl<string | null>(null),
-    fechaTransferencia: new FormControl<string | null>(null), // 'YYYY-MM-DD'
-    // status: new FormControl<number | null>(1),
-
-    //extras
-    idTicket: new FormControl<number | null>(null),
-    ticketNum: new FormControl<number | null>(null),
+    fechaTransferencia: new FormControl<string | null>(null),
+    items: new FormControl<any[]>([]),
+    totalGeneral: new FormControl<number | null>(null),
   })
 
   ngOnInit() {
@@ -73,10 +66,14 @@ export class PaymentComponent implements OnInit {
     if(this.paymentData){
       this.total = this.paymentData.total;
       //arrays
-      this.idTicket = this.paymentData.ticket.map((t: any) => t.id).join(',');
-      this.cantidad = this.paymentData.ticket.map((t: any) => t.cantidad).join(',');
+      const tickets = this.paymentData?.ticket ?? [];
+      const items = tickets.map((t: any) => ({
+        idTicket: Number(t.id),
+        cantidad: Number(t.cantidad)
+      }));
+      this.paymentfForm.get('items')?.setValue(items);
       console.log("idTicket:", this.idTicket);
-      console.log("cantidad:", this.cantidad);
+      console.log("cantidad:", items);
     }
     
     this.settingsService.getSettings().subscribe({
@@ -121,81 +118,70 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    const fv: any = this.paymentfForm.value;
-    const fd = new FormData();
+onSubmit() {
+  // Desestructuramos para extraer lo que no queremos procesar en el loop de FormData
+  const { items: _, totalGeneral, tasaDolar, montoDolar, ...fv } = this.paymentfForm.value as any;
+  const fd = new FormData();
 
-    // Si hay tickets, enviarlos como arrays (JSON) y como campos repetidos por compatibilidad
-    const tickets = this.paymentData?.ticket ?? [];
-    if (tickets.length) {
-      const ids = tickets.map((t: any) => Number(t.id));
-      const cantidades = tickets.map((t: any) => Number(t.cantidad));
-      fd.append('idTicket', JSON.stringify(ids));
-      fd.append('ticketNum', JSON.stringify(cantidades));
-      ids.forEach((id: any) => fd.append('idTicket[]', String(id)));
-      cantidades.forEach((c: any) => fd.append('ticketNum[]', String(c)));
-    }
-
-    // Iterar campos del formulario y agregarlos correctamente a FormData
-    Object.entries(fv).forEach(([k, v]) => {
-      // archivos
-      if (v instanceof File) {
-        fd.append(k, v, v.name);
-        return;
-      }
-
-      // strings no vacíos
-      if (typeof v === 'string') {
-        if (v.trim() !== '') fd.append(k, v);
-        return;
-      }
-
-      // números (incluye 0)
-      if (typeof v === 'number') {
-        fd.append(k, String(v));
-        return;
-      }
-
-      // fechas
-      if (Object.prototype.toString.call(v) === '[object Date]') {
-        fd.append(k, (v as unknown as Date).toISOString().split('T')[0]);
-        return;
-      }
-
-      // otros
-      if (v !== null && v !== undefined) {
-        fd.append(k, String(v));
-      }
-    });
-
-    // Asegurar campos críticos desde el componente
-    fd.set('idUser', String(this.idUser ?? fv.idUser ?? ''));
-    fd.set('idEvents', String(this.idEvents ?? fv.idEvents ?? ''));
-    fd.set('totalGeneral', String(fv.totalGeneral ?? this.total ?? ''));
-    fd.set('tasaDolar', String(fv.tasaDolar ?? this.tasaDolar ?? ''));
-    fd.set('montoDolar', String(fv.montoDolar ?? this.total ?? ''));
-
-    // Debug: listar pares enviados
-    for (const pair of fd.entries()) {
-      console.log('FD', pair[0], pair[1]);
-    }
-
-    // Enviar FormData (no establecer Content-Type en el servicio)
-    this.paymentsService.createPayment(fd).subscribe({
-      next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pago enviado correctamente.' });
-        // revocar preview si existe
-        if (this.previewUrl && this.previewUrl.startsWith('blob:')) {
-          URL.revokeObjectURL(this.previewUrl);
-          this.previewUrl = null;
-        }
-        // window.location.reload();
-      },
-      error: (err: any) => {
-        console.error('Error al enviar pago:', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo enviar el pago.' });
-      }
-    });
+  // 1. Construir array de items para la API
+  const tickets = this.paymentData?.ticket ?? [];
+  if (tickets.length) {
+    const items = tickets.map((t: any) => ({
+      idTicket: Number(t.id),
+      cantidad: Number(t.cantidad)
+    }));
+    fd.append('items', JSON.stringify(items));
   }
+
+  // 2. Iterar solo los campos relevantes del formulario
+  Object.entries(fv).forEach(([k, v]) => {
+    if (v instanceof File) {
+      fd.append(k, v, v.name);
+      return;
+    }
+
+    if (typeof v === 'string') {
+      if (v.trim() !== '') fd.append(k, v);
+      return;
+    }
+
+    if (typeof v === 'number') {
+      fd.append(k, String(v));
+      return;
+    }
+
+    if (Object.prototype.toString.call(v) === '[object Date]') {
+      fd.append(k, (v as unknown as Date).toISOString().split('T')[0]);
+      return;
+    }
+
+    if (v !== null && v !== undefined) {
+      fd.append(k, String(v));
+    }
+  });
+
+  // 3. Agregar/Asegurar campos críticos globales
+  fd.set('idEvents', String(this.idEvents ?? fv.idEvents ?? ''));
+
+  // Debug: listar pares enviados
+  for (const pair of fd.entries()) {
+    console.log('FD', pair[0], pair[1]);
+  }
+
+  // Enviar FormData
+  this.paymentsService.createPayment(fd).subscribe({
+    next: () => {
+      this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pago enviado correctamente.' });
+      if (this.previewUrl && this.previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(this.previewUrl);
+        this.previewUrl = null;
+      }
+    },
+    error: (err: any) => {
+      console.error('Error al enviar pago:', err);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo enviar el pago.' });
+    }
+  });
+}
 
 }

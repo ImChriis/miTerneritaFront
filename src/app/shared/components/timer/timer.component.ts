@@ -54,7 +54,7 @@ export class TimerComponent implements OnInit, OnDestroy {
     });
 
     // 4. Redirigir al inicio o página del evento
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 
   // Formatea los segundos restantes en mm:ss
