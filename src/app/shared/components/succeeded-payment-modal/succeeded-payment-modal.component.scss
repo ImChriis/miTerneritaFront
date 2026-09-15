@@ -1,0 +1,104 @@
+.content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    color: white;
+}
+
+.icon{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.message{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+}
+
+.p-button{
+    background-color: transparent !important;
+    border-radius: 20px !important;
+    border: 1px solid white !important;
+    color: white !important;
+}
+
+.p-button:hover{
+    opacity: 0.8;
+}
+
+::ng-deep{
+    /* Estilos globales para modales en modo oscuro (PrimeNG) */
+.p-dialog {
+  background: #18181b !important; /* Fondo principal oscuro */
+  border: 1px solid #27272a !important; /* Borde sutil */
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+  color: #f4f4f5 !important;
+
+  /* Encabezado del Modal */
+  .p-dialog-header {
+    background: #18181b !important;
+    color: #f4f4f5 !important;
+    border-top-left-radius: 12px !important;
+    border-top-right-radius: 12px !important;
+    padding: 1.25rem 1.5rem !important;
+
+    .p-dialog-title {
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    /* Botón de cerrar (X) */
+    .p-dialog-header-icon {
+      color: #a1a5b7 !important;
+      border-radius: 6px !important;
+      transition: background-color 0.2s, color 0.2s !important;
+
+      &:hover {
+        background: #27272a !important;
+        color: #ffffff !important;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #3b82f6 !important;
+      }
+    }
+  }
+
+  /* Cuerpo del Modal */
+  .p-dialog-content {
+    background: #18181b !important;
+    color: #e4e4e7 !important;
+    padding: 1.5rem !important;
+
+    /* Si el contenido interno es tu SucceededPaymentModalComponent */
+    app-succeeded-payment-modal {
+      color: #e4e4e7;
+    }
+  }
+
+  /* Pie del Modal (Footer) */
+  .p-dialog-footer {
+    background: #18181b !important;
+    border-top: 1px solid #27272a !important;
+    border-bottom-left-radius: 12px !important;
+    border-bottom-right-radius: 12px !important;
+    padding: 1rem 1.5rem !important;
+  }
+}
+
+/* Fondo oscuro detrás del modal (Mask/Backdrop) */
+.p-dialog-mask {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(4px); /* Efecto de desenfoque moderno */
+}
+}

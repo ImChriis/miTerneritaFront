@@ -104,36 +104,52 @@ agregarSeleccion() {
   console.log('Zona seleccionada:', this.selectedZone);
   console.log('Cantidad seleccionada:', this.cantidad);
 
-    if (this.selectedZone && this.cantidad > 0) {
-      const cantidad = this.cantidad;
-      const precio = this.selectedZone.price ?? 0;
+  if (this.selectedZone && this.cantidad > 0) {
+    const cantidad = this.cantidad;
+    const precio = this.selectedZone.price ?? 0;
 
-      const total = cantidad * precio
-     
+    // 1. Validar límite máximo global de 10 entradas
+    const cantidadTotal = this.selected.reduce((acc, item) => acc + item.cantidad, 0);
+    if (cantidadTotal + cantidad > 10) {
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: 'Advertencia', 
+        detail: 'No puedes seleccionar más de 10 entradas en total.' 
+      });
+      return;
+    }
 
+    // 2. Buscar si el ticket/zona ya fue agregado previamente
+    const existingIndex = this.selected.findIndex(item => item.id === this.selectedZone?.idTicket);
+
+    if (existingIndex !== -1) {
+      // Si ya existe, se acumula la cantidad y se recalcula el subtotal
+      this.selected[existingIndex].cantidad += cantidad;
+      this.selected[existingIndex].total = this.selected[existingIndex].cantidad * precio;
+    } else {
+      // Si es un ticket nuevo, se agrega el objeto al arreglo
       const seleccionItem = {
-        id: this.selectedZone.idTicket,
+        id: this.selectedZone?.idTicket,
         name: this.selectedZone.name,
         cantidad,
-        total
+        total: cantidad * precio
       };
-
-      //si la suma total de canntidad es 10 no se puede agregar
-      const cantidadTotal = this.selected.reduce((acc, item) => acc + item.cantidad, 0);
-      if (cantidadTotal + cantidad > 10) {
-        this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'No puedes seleccionar más de 10 entradas en total.' });
-        return;
-      }  
-      
       this.selected.push(seleccionItem);
-      // limpiar el select (modelo) y resetear cantidad
-      this.selectedZone = null;
-      this.cantidad = 1;
-      console.log('Selección actualizada:', this.selected);
-    } else {
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debe seleccionar un espacio válida.' });
     }
+
+    // 3. Limpiar formulario
+    this.selectedZone = null;
+    this.cantidad = 1;
+    console.log('Selección actualizada:', this.selected);
+
+  } else {
+    this.messageService.add({ 
+      severity: 'warn', 
+      summary: 'Advertencia', 
+      detail: 'Debe seleccionar un espacio válido.' 
+    });
   }
+}
 
   clearSelection(index: number): void {
     if (index >= 0 && index < this.selected.length) {

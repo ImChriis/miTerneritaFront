@@ -10,6 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 import { SettingsService } from '../../@core/services/settings.service';
 import { TabsModule } from 'primeng/tabs';
 import { ButtonDirective } from "primeng/button";
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { SucceededPaymentModalComponent } from '../../shared/components/succeeded-payment-modal/succeeded-payment-modal.component';
 
 
 @Component({
@@ -31,6 +33,8 @@ export class PaymentComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private dialogService = inject(DialogService);
+  ref!: DynamicDialogRef;
   previewUrl: string | null = null;
   idEvents!: number;
   idUser!: number;
@@ -176,12 +180,26 @@ onSubmit() {
         URL.revokeObjectURL(this.previewUrl);
         this.previewUrl = null;
       }
+      this.paymentfForm.reset();
+      this.ref = this.dialogService.open(SucceededPaymentModalComponent, {
+        // header: 'Confirmar Eliminación',
+        width: '40vw',
+        modal: true,
+      })
     },
     error: (err: any) => {
       console.error('Error al enviar pago:', err);
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo enviar el pago.' });
     }
   });
+}
+
+click(){
+   this.ref = this.dialogService.open(SucceededPaymentModalComponent, {
+        // header: 'Confirmar Eliminación',
+        width: '40vw',
+        modal: true,
+      })
 }
 
 }

@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
@@ -8,9 +8,10 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { PaymentService } from '../../@core/services/payment.service';
-import { Observable } from 'rxjs';
+import { Observable, startWith, switchMap } from 'rxjs';
 import { UpdatePaymentComponent } from './update-payment/update-payment.component';
 import { Payment } from '../../@core/models/payment.model';
+import { LoaderComponent } from '../../@core/components/loader/loader.component';
 
 @Component({
   selector: 'app-payments',
@@ -23,6 +24,7 @@ import { Payment } from '../../@core/models/payment.model';
     BadgeModule,
     FormsModule,
     ReactiveFormsModule,
+    LoaderComponent
     // AsyncPipe
   ],
   templateUrl: './payments.component.html',
@@ -34,16 +36,23 @@ export class PaymentsComponent implements OnInit{
   ref: DynamicDialogRef | undefined;
   payments$!: Observable<any[]>;
   isModalOpen = false;
+  isLoading = signal(false);
 
   ngOnInit(): void {
-    this.payments$ = this.paymentsService.getAllPayments();
+    this.payments$ = this.paymentsService.refreshPaymentsObservable$.pipe(
+      startWith(null),
+      switchMap(() => {
+        this.isLoading.set(true);
+        return this.paymentsService.getAllPayments();
+      })
+    );
   }
 
   openUpdateModal(payment: Payment) {
     this.isModalOpen = true;
     this.ref = this.dialogService.open(UpdatePaymentComponent, {
       header: 'Actualizar pago',
-      width: '50vw',
+      width: '90%',
       // height: '65vh',
       modal: true,
       closable: true,

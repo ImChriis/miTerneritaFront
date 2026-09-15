@@ -70,16 +70,16 @@ export class AdminLayoutComponent implements OnInit {
       icon: "pi pi-ticket",
       routerLink: "/admin/tickets",
     },
-    {
-      name: "Bebidas",
-      icon: "pi pi-plus",
-      routerLink: "/admin/drinks",
-    },
-    {
-      name: "Comidas",
-      icon: "pi pi-plus",
-      routerLink: "/admin/foods",
-    },
+    // {
+    //   name: "Bebidas",
+    //   icon: "pi pi-plus",
+    //   routerLink: "/admin/drinks",
+    // },
+    // {
+    //   name: "Comidas",
+    //   icon: "pi pi-plus",
+    //   routerLink: "/admin/foods",
+    // },
     // {
     //   name: "Comidas",
     //   icon: "pi pi-plus",

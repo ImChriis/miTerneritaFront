@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.developer';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, of } from 'rxjs';
+import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,8 @@ import { catchError, map, of } from 'rxjs';
 export class PaymentService {
   private api: string = environment.api;
   private http = inject(HttpClient);
+  private refreshPayments$ = new Subject<void>();
+  public refreshPaymentsObservable$ = this.refreshPayments$.asObservable();
 
    getAllPayments(){
     return this.http.get<any[]>(`${this.api}/payment`).pipe(
@@ -29,6 +31,28 @@ export class PaymentService {
   }
 
   updatePayment(id: number, body: any){
-    return this.http.put(`${this.api}/payment/${id}/status`, body);
+    return this.http.patch(`${this.api}/payment/${id}/status`, body).pipe(
+      tap(() => this.refreshPayments$.next())
+    )
   }
+
+  getComprobante(id: number){
+    return this.http.get(`${this.api}/payment/${id}/comprobante`, {
+      responseType: 'blob'
+    } );
+  }
+
+  getTasaDolarEuro() {
+  return this.http.get<any[]>(`${environment.apiDolar}`).pipe(
+    map((res: any[]) => {
+      const tasaDolar = res?.[0]?.promedio ?? 0;
+      console.log('Tasa de cambio obtenida:', tasaDolar);
+      return tasaDolar;
+    }),
+    catchError((error) => {
+      console.error('Error al obtener la tasa de cambio:', error);
+      return of(0);
+    })
+  );
+}
 }

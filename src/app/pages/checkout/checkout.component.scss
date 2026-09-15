@@ -197,7 +197,7 @@ select{
 
 .ticketInfo p{
     font-weight: 400;
-    color: white;
+    color: white !important;
 }
 
 .ticketInfo span{
@@ -205,8 +205,12 @@ select{
     color: white;
 }
 
+.ticketInfo h3{
+    color: white;
+}
+
 .total h3{
-    color: #FFFFFF;
+    color: white !important;
     font-weight: 400;
 }
 
