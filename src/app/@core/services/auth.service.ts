@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment.developer';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
-import { tap } from 'rxjs';
+import { Subject, tap } from 'rxjs';
 
 
 @Injectable({
@@ -11,6 +11,8 @@ import { tap } from 'rxjs';
 export class AuthService {
   private api: string = environment.api;
   private http = inject(HttpClient);
+  private refreshUsers$ = new Subject<void>();
+  public refreshUsersObservable$ = this.refreshUsers$.asObservable();
 
   private token = signal<string | null>(localStorage.getItem('token'));
 
@@ -41,7 +43,9 @@ export class AuthService {
   }
 
   register(body: Partial<User>){
-    return this.http.post<User>(`${this.api}/auth/register`, body);
+    return this.http.post<User>(`${this.api}/auth/register`, body).pipe(
+      tap(() => this.refreshUsers$.next())
+    )
   }
 
   logout(){

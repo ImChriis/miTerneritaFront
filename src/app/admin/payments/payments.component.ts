@@ -9,9 +9,10 @@ import { InputText } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { PaymentService } from '../../@core/services/payment.service';
 import { Observable, startWith, switchMap } from 'rxjs';
-import { UpdatePaymentComponent } from './update-payment/update-payment.component';
+import { UpdatePaymentComponent } from './components/update-payment/update-payment.component';
 import { Payment } from '../../@core/models/payment.model';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
+import { CreatePaymentComponent } from './components/create-payment/create-payment.component';
 
 @Component({
   selector: 'app-payments',
@@ -46,6 +47,25 @@ export class PaymentsComponent implements OnInit{
         return this.paymentsService.getAllPayments();
       })
     );
+  }
+
+  openCreateModal(){
+     this.isModalOpen = true;
+    this.ref = this.dialogService.open(CreatePaymentComponent, {
+      header: 'Crear pago',
+      width: '90%',
+      // height: '65vh',
+      modal: true,
+      closable: true,
+       breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      styleClass: 'custom-dialog'
+    });
+    this.ref.onClose.subscribe(() => {
+      this.isModalOpen = false;
+    });
   }
 
   openUpdateModal(payment: Payment) {

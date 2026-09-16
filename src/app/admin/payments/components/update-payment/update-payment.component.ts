@@ -3,11 +3,11 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
-import { PaymentService } from '../../../@core/services/payment.service';
+import { PaymentService } from '../../../../@core/services/payment.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
 import { MessageService } from 'primeng/api';
-import { environment } from '../../../../environments/environment.developer';
+import { environment } from '../../../../../environments/environment.developer';
 
 @Component({
   selector: 'app-update-payment',

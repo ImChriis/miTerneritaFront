@@ -1,0 +1,3 @@
+<form [formGroup]="paymentFom">
+    <input type="text" formControlName="cedula" placeholder="Ingrese la cédula" (keydown.enter)="searchUserByCedula($event)" />
+</form>

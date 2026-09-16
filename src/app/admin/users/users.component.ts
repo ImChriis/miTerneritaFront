@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { User } from '../../@core/models/user.model';
-import { Observable, startWith, switchMap } from 'rxjs';
+import { finalize, map, Observable, startWith, switchMap } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -12,6 +12,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
 import { EditUserComponent } from './components/edit-user/edit-user.component';
+import { CreateUserComponent } from './components/create-user/create-user.component';
 
 @Component({
   selector: 'app-users',
@@ -43,13 +44,31 @@ export class UsersComponent implements OnInit {
       startWith(null),
       switchMap(() => {
         this.isLoading.set(true);
-        return this.usersService.getUsers();
+        return this.usersService.getUsers().pipe(
+           map((users: any) => 
+              users.filter((user: any) => user.roleName == "user" || user.roleName == "admin")),
+              finalize(() => this.isLoading.set(false))
+        )
       })
     )
   }
 
   openCreateModal(){
-    
+     this.ref = this.dialogService.open(CreateUserComponent, {
+     header: 'Editar Usuario',
+      width: '50vw',
+      // height: '65vh',
+      modal: true,
+      closable: true,
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      styleClass: 'custom-dialog'
+    })
+    this.ref.onClose.subscribe(() => {
+      this.isModalOpen = false;
+    });
   }
 
   openEditModal(user: User){

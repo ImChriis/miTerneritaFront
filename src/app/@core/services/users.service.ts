@@ -18,6 +18,12 @@ export class UsersService {
     )
   }
 
+  createUser(userData: any){
+    return this.http.post(`${this.api}/users`, userData).pipe(
+      tap(() => this.refreshUsers$.next())
+    )
+  }
+
   updateUser(id: number, userData: any){
     return this.http.put(`${this.api}/users/${id}`, userData).pipe(
       tap((res) => {
@@ -32,6 +38,14 @@ export class UsersService {
       tap(() => {
         console.log(`User with ID ${id} deleted successfully.`);
         this.refreshUsers$.next(); // Notify subscribers to refresh the users list
+      }),
+    );
+  }
+
+  searchUserByCedula(cedula: string){
+    return this.http.get(`${this.api}/users/${cedula}`).pipe(
+      tap((res) => {
+        console.log(`Search result for cedula ${cedula}:`, res);
       }),
     );
   }

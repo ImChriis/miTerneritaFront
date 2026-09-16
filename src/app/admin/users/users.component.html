@@ -42,11 +42,11 @@
                   class="btn-delete"
                   (click)="showConfirmModal()"
                 ><i class="pi pi-trash" ></i></button>
-                  <!-- <button
+                  <button
                     class="btn"
                     icon=""
                     (click)="openCreateModal()"
-                >Agregar usuario</button> -->
+                >Agregar usuario</button>
                   </div>
               </div>
             </ng-template>
@@ -70,6 +70,9 @@
                 <th style="min-width: 20rem">
                   <div class="flex thstyles">Correo</div>
                 </th>
+                <th style="min-width: 1rem">
+                  <div class="flex thstyles">Role</div>
+                </th>
                 <th class="text-center" style="min-width: 5rem" class="border2">
                   <div class="flex thstyles option">Opciones</div>
                 </th>
@@ -92,6 +95,9 @@
                 <td>
                     {{ user.email }}
                 </td>
+                <td>
+                    {{ user.roleName }}
+                </td>
                 <td class="text-center column-table-right">
                   <div class="option">
                     <i class="pi pi-pencil btnEdit" (click)="openEditModal(user)"></i>
@@ -110,7 +116,6 @@
           <app-loader [isLoading]="isLoading()"></app-loader>
         }
       </div>
-  
   </div>
 </body>
     

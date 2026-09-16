@@ -6,12 +6,14 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { User } from '../../@core/models/user.model';
 import { finalize, map, Observable, startWith, switchMap } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
 import { EditUserComponent } from '../users/components/edit-user/edit-user.component';
+import { RegisterForm } from '../../@core/models/forms/form-register';
+import { AuthService } from '../../@core/services/auth.service';
 
 
 @Component({
@@ -28,15 +30,20 @@ import { EditUserComponent } from '../users/components/edit-user/edit-user.compo
   styleUrl: './clients.component.scss'
 })
 export class ClientsComponent {
-   private usersService = inject(UsersService);
+  private usersService = inject(UsersService);
   private messageService = inject(MessageService);
   private dialogService = inject(DialogService);
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
   ref!: DynamicDialogRef;
   users$!: Observable<any>;
   selectedUsers: User[] = [];
   isModalOpen = false;
   selectAll = false;
   isLoading = signal(false);
+
+  
+   
 
 
   ngOnInit(): void {
@@ -48,18 +55,15 @@ export class ClientsComponent {
         return this.usersService.getUsers().pipe(
           map((users: any) => 
             users
-              .filter((user: any) => user.idRole === 3)
-              .map((user: any) => ({ ...user, role: 'Cliente' }))
-          ),
+              .filter((user: any) => user.roleName === "client")),
           finalize(() => this.isLoading.set(false))
         );
       })
     );
+
+
   }
 
-  openCreateModal(){
-    
-  }
 
   openEditModal(user: User){
     this.ref = this.dialogService.open(EditUserComponent, {
@@ -120,4 +124,6 @@ export class ClientsComponent {
     this.selectAll = checked;
     this.selectedUsers = checked ? [...users] : [];
   }
+
+   
 }
