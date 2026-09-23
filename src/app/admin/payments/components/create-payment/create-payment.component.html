@@ -1,3 +1,82 @@
-<form [formGroup]="paymentFom">
-    <input type="text" formControlName="cedula" placeholder="Ingrese la cédula" (keydown.enter)="searchUserByCedula($event)" />
-</form>
+<div class="container">
+    <form [formGroup]="paymentFom" (ngSubmit)="onSubmit()">
+        <div class="formGroup2">
+            <div class="formGroup">
+                <label for="cedula">Cédula</label>
+                <input pInputText type="text" formControlName="cedula" placeholder="Ingrese la cédula" (keydown.enter)="searchUserByCedula($event)" />
+            </div>
+
+            <div class="formGroup">
+                <label for="cedula">Nombre</label>
+                <input pInputText type="text" formControlName="name" readonly />
+            </div>
+        </div>
+
+        <div class="formGroup">
+            <label for="Estado">Seleccionar Evento</label>
+            <p-select 
+            [options]="events" 
+                    optionLabel="name" 
+                    optionValue="idEvents" 
+                    formControlName="idEvents" 
+                    appendTo="body" />
+        </div>
+
+
+            <div class="inputs">
+                <div class="inputGroup">
+                    <label for="zone">Tipo de espacio</label>
+                    <p-select id="zones" name="selectedZone" [options]="zones" optionLabel="name" [(ngModel)]="selectedZone" optionLabel="name" class="w-full md:w-56" [ngModelOptions]="{standalone: true}"></p-select>
+                </div>
+
+                <div class="inputGroup cantidad">
+                    <label for="zone">Cantidad</label>
+                    <div class="cantidad-input">
+                        <button type="button" (click)="decrement()" [disabled]="cantidad <= 1">-</button>
+                        <input pInputText type="text" id="cantidad" [value]="cantidad" readonly>
+                        <button type="button" (click)="increment()" [disabled]="cantidad >= 10">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btnDetails">
+                <!-- llamar al método que añade la selección -->
+                <button class="btn2" type="button" (click)="agregarSeleccion()">Agregar</button>
+            </div>
+
+                <div class="summary" *ngIf="selected.length > 0">
+      <div class="summary" [class.empty]="selected.length === 0">
+          <!-- <div class="summaryTitle">
+            <h3>Seleccion actual</h3>
+          </div> -->
+
+          <div class="summaryList">
+            <div class="summaryInfo" *ngFor="let item of selected; let i = index">
+              <i class="pi pi-times delete" (click)="clearSelection(i)"></i>
+              <p><span>{{ item.name }} x{{ item.cantidad }}</span></p>
+              <p>Total: <span>${{ item.total | number:'1.2-2' }}</span></p>
+          </div>
+
+            <!-- placeholder para reservar espacio cuando no hay items -->
+            <div class="summaryPlaceholder" *ngIf="selected.length === 0"></div>
+          </div>
+      </div>
+    </div>
+
+        <div class="formGroup2">
+            <div class="formGroup">
+                <label for="cedula">Total</label>
+                <input pInputText type="text" readonly [value]="total | number:'1.2-2'" />
+            </div>
+
+            <div class="formGroup">
+                <label for="cedula">Fecha</label>
+                <input pInputText type="date" formControlName="fechaTransferencia" />
+            </div>
+        </div>
+
+        <div class="btnContainer">
+            <button class="btn" pButton type="submit" label="Pagar" ></button>
+        </div>
+    </form>
+</div>

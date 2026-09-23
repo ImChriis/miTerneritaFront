@@ -47,15 +47,24 @@
         </div>
 
         <div class="formGroup2">
+            @if(banco !== "Efectivo"){
             <div class="formGroupItem">
-                <label for="banco">Banco</label>
+                <label for="banco">Método de pago</label>
+                <input pInputText readonly id="banco" type="text" [value]="'Transferencia a: ' + banco" />
+            </div>
+            }@else{
+            <div class="formGroupItem">
+                <label for="banco">Método de pago</label>
                 <input pInputText readonly id="banco" type="text" [value]="banco" />
             </div>
+            }
 
-            <div class="formGroupItem">
-                <label for="referencia">Referencia</label>
-                <input pInputText readonly id="referencia" type="text" [value]="referencia" />
-            </div>
+            @if(banco !== "Efectivo"){
+                <div class="formGroupItem">
+                    <label for="referencia">Referencia</label>
+                    <input pInputText readonly id="referencia" type="text" [value]="referencia" />
+                </div>
+            }
         </div>
 
         <div class="formGroup">
@@ -63,12 +72,14 @@
             <p-select [options]="status"  optionLabel="label" optionValue="value" formControlName="status"  appendTo="body"/>
         </div>
 
-        <div class="image">
-            <img
-                [src]=" this.img"
-                alt="Vista previa"
-                class="preview" />
-        </div>
+        @if(banco !== "Efectivo"){
+            <div class="image">
+                <img
+                    [src]=" this.img"
+                    alt="Vista previa"
+                    class="preview" />
+            </div>
+        }
 
         <div class="btnContainer">
             <button class="btn" pButton type="submit" label="Actualizar" ></button>

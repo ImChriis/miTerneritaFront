@@ -73,18 +73,19 @@
 
        <div class="table">
   
-      <!-- @if(
+      @if(
         payments$ | async
-        ; as state) { -->
+        ; as state) {
         <p-table
           #dt1
+          [value]="state"
           dataKey="idCabecera"
           [rows]="10"
           styleClass="ml-3 mr-3"
           >
           <ng-template pTemplate="caption">
                     <div class="title">
-          <h1>Ultimos 5 pagos</h1>
+          <h1>Últimos 5 pagos</h1>
         </div>
             </ng-template>
             <ng-template pTemplate="header">
@@ -103,23 +104,25 @@
                   </th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-user class="p-table">
-              <tr class="table-content">
+            <ng-template pTemplate="body" let-payment class="p-table">
+              <tr class="table-content" (click)="openUpdateModal(payment) ">
                 <td class="column-table-left mr-5">
-                  {{ user.cabecera.fecha | date : "dd-MM-YYYY" : "es" }}
+                  {{ payment.date | date: 'dd/MM/yyyy hh:mm a' : 'VE' }}
                   </td>
                 <td>
-                  {{ user.usuario.nombre }} {{ user.usuario.apellido }}
+                  {{ payment.idUser.name }} {{ payment.idUser.lastName }}
                 </td>
                 <td>
-                  {{ user.evento.nombre }} 
+                  {{ payment.idEvents.name }} 
                 </td>
                 <td>
-                  <!-- @if (user.cabecera.estado == userStatus.activo) { -->
-                    <p-badge severity="success" [value]="user.cabecera.estado"></p-badge>
-                  <!-- }  @else {
-                    <p-badge severity="danger" [value]="user.cabecera.estado"></p-badge>
-                  } -->
+                  @if (payment.status === "Aprobado") {
+                    <p class="disponible">Aprobado</p>
+                  }  @else if(payment.status === "Pendiente") {
+                    <p class="pendiente">Pendiente</p>
+                  } @else {
+                    <p class="noDisponible">Rechazado</p> 
+                  }
                 </td>
               </tr>
             </ng-template>
@@ -129,20 +132,58 @@
               </tr>
             </ng-template>
           </p-table>
-        <!-- } -->
+        }
       </div>
     
       
     <div class="charts">
         <div class="left">
             <div class="card">
-                <p-chart  type="doughnut" [data]="basicData" [options]="basicOptions" class="w-full" />
+                <div class="left w-full">
+    <div class="card p-4">
+      <!-- Filtro de selección de período -->
+      <div class="flex justify-content-between align-items-center mb-4">
+        <h3 class="text-white m-0">Resumen de Pagos</h3>
+        <p-selectButton 
+          [options]="filterOptions" 
+          [(ngModel)]="selectedFilter" 
+          (ngModelChange)="onPeriodChange($event)"
+          optionLabel="label" 
+          optionValue="value">
+        </p-selectButton>
+      </div>
+
+      <!-- Gráfico dinámico -->
+      @if (basicData) {
+        <p-chart type="bar" [data]="basicData" [options]="basicOptions" class="w-full" />
+      } @else {
+        <p class="text-white">Cargando datos del gráfico...</p>
+      }
+    </div>
+  </div>
             </div>
         </div>
 
         <div class="right">
             <div class="card">
-                <p-chart name="pagos" type="bar" [data]="basicData" [options]="basicOptions" class="w-full" />
+<div class="card p-4">
+      <div class="flex justify-content-between align-items-center mb-4">
+        <h3 class="text-white m-0">Resumen de Usuarios</h3>
+        <p-selectButton 
+          [options]="filterOptions" 
+          [(ngModel)]="selectedUserFilter" 
+          (ngModelChange)="onUserPeriodChange($event)"
+          optionLabel="label" 
+          optionValue="value">
+        </p-selectButton>
+      </div>
+
+      @if (userChartData) {
+        <p-chart type="doughnut" [data]="userChartData" [options]="basicOptions" class="w-full" />
+      } @else {
+        <p class="text-white">Cargando datos de usuarios...</p>
+      }
+    </div>
             </div>
         </div>
     </div>

@@ -97,13 +97,23 @@ i{
 
 .table th{
     color: white !important;
-    background-color: #232831 !important;
+    background-color: #2C323C !important;
 }
 
 .table tr{
     color: white !important;
     background-color: #232831 !important;
+    &:hover{
+        background-color: #1D4ED8 !important;
+        color: white !important;
+        cursor: pointer;
+    }
 }
+
+.table td{
+    text-align: center !important;
+     border-bottom: 1px solid #3A4250 !important;
+  }
 
 ::ng-deep{
     .p-datatable-header{
@@ -132,6 +142,29 @@ i{
     border-radius: 20px;
     padding: 20px;
 }
+
+ .disponible {
+    margin-left: 0px ;
+    background: rgba(34,197,94,.15);
+    color: #4ADE80 !important;
+    border-color: #22C55E;
+    padding: 5px;
+    border-radius: 20px;
+    border: 1px solid;
+    text-align: center;
+  }
+  
+  .noDisponible {
+    margin-left: 0px ;
+    background: rgba(239,68,68,.15);
+    color: #F87171 !important;
+    border-color: #EF4444;
+    padding: 5px;
+    border-radius: 20px;
+    border: 1px solid;
+    text-align: center;
+  }
+
 //Responsive
 @media(max-width: 320px){
     .content{
