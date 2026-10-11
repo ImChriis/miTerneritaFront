@@ -1,25 +1,30 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+/**
+ * - mode="window": loader global. Muestra el splash de marca solo en la primera carga
+ *   y una barra de progreso fina en las navegaciones siguientes.
+ * - mode="component" (por defecto): spinner en línea para tablas/listas.
+ */
 @Component({
   selector: 'app-loader',
-  imports: [
-    CommonModule
-  ],
+  imports: [],
   templateUrl: './loader.component.html',
   styleUrl: './loader.component.scss'
 })
-export class LoaderComponent {
+export class LoaderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
-  private routerSub?: Subscription; // Guardamos la suscripción aquí
+  private routerSub?: Subscription;
+  private doneTimer?: ReturnType<typeof setTimeout>;
 
   @Input() isLoading: boolean = false;
-  @Input() mode: 'window' | 'component' = 'window';
+  @Input() mode: 'window' | 'component' = 'component';
+
+  splash = signal(true);
+  navigating = signal(false);
 
   ngOnInit() {
-    // Solo escuchamos al router si es el loader GLOBAL (pantalla completa)
     if (this.mode === 'window') {
       this.listenToRouter();
     }
@@ -28,22 +33,20 @@ export class LoaderComponent {
   private listenToRouter() {
     this.routerSub = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        this.isLoading = true;
+        clearTimeout(this.doneTimer);
+        this.navigating.set(true);
       }
-      if (event instanceof NavigationEnd || 
-          event instanceof NavigationCancel || 
-          event instanceof NavigationError) {
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 600);
+      if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
+        this.doneTimer = setTimeout(() => {
+          this.navigating.set(false);
+          this.splash.set(false);
+        }, this.splash() ? 450 : 200);
       }
     });
   }
 
-  // ¡ESTA ES LA CLAVE!
   ngOnDestroy() {
-    if (this.routerSub) {
-      this.routerSub.unsubscribe(); // Matamos la suscripción al salir
-    }
+    this.routerSub?.unsubscribe();
+    clearTimeout(this.doneTimer);
   }
 }

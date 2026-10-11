@@ -1,15 +1,18 @@
-<div class="content">
-    <div class="icon">
-        <i class="pi pi-envelope" style="font-size: 2.5rem"></i>
+<div class="success">
+    <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="24" />
+            <path d="M15 27l7 7 15-16" />
+        </svg>
     </div>
 
-    <div class="message">
-        <h1>¡Gracias por tu compra!</h1>
-        <p>Tu pago ha sido procesado exitosamente.</p>
-        <p>Recibirás un correo con tus entradas en 24 horas hábiles.</p>
-    </div>
+    <h2>¡Gracias por tu compra!</h2>
+    <p>Recibimos tu pago y nuestro equipo lo está verificando.</p>
 
-    <div class="button">
-        <button pButton pRipple class="btn" label="Volver al inicio" (click)="goToHome()"></button>
-    </div>
+    <ul class="next">
+        <li><i class="pi pi-shield"></i> Validamos tu transferencia</li>
+        <li><i class="pi pi-envelope"></i> Recibirás tus entradas por correo en un máximo de 24 horas hábiles</li>
+    </ul>
+
+    <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg" (click)="goToHome()">Volver al inicio</button>
 </div>

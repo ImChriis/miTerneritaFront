@@ -1,12 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="es" data-theme="dark" class="app-dark">
 <head>
   <meta charset="utf-8">
-  <title>MiterneritaFront</title>
+  <title>Mi Ternerita House | Entradas y eventos</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Compra tus entradas para conciertos, fiestas y experiencias en Mi Ternerita House, Maracaibo.">
+  <meta name="theme-color" content="#0A0A0C">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <link rel="preload" href="assets/fonts/AlteHaasGroteskRegular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/AlteHaasGroteskBold.ttf" as="font" type="font/ttf" crossorigin>
+  <script>
+    // Aplica el tema guardado antes del primer pintado para evitar parpadeos.
+    (function () {
+      try {
+        var theme = localStorage.getItem('tm-theme') === 'light' ? 'light' : 'dark';
+        var root = document.documentElement;
+        root.setAttribute('data-theme', theme);
+        root.classList.toggle('app-dark', theme === 'dark');
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

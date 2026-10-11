@@ -1,49 +1,37 @@
-<div class="container">
-    <div class="sections">
-    <p>Detalles del evento ></p> <p>Espacios ></p> <p class="selected">Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
-</div>
+@if (wallpaper()) {
+    <div class="tm-page-backdrop" aria-hidden="true">
+        <img src="{{ wallpaper() }}" alt="" />
+    </div>
+}
 
-<div class="content">
-  <div class="details">
-        <div class="title">
-            <h1>{{ name }}</h1>
-            <h3>Selecciona lo que vas a consumir</h3>
+<div class="tm-container tm-flow">
+    <header class="tm-flow-head">
+        <div>
+            <p class="tm-eyebrow">Consumo</p>
+            <h1>{{ name() }}</h1>
+            <p class="meta">Selecciona lo que vas a consumir.</p>
         </div>
+    </header>
 
-        <div class="list">
-            <p-tabs value="0">
-                <p-tablist>
-                    <p-tab value="0">Bebidas</p-tab>
-                </p-tablist>
-                <p-tabpanels>
-
-                    <p-tabpanel value="0" *ngIf="drinks$ | async as drinks">
-                        <div class="grid">
-                            <div class="card2" *ngFor="let drink of drinks">
-                                <div class="cardImg">
-                                    <img class="imgCard" [src]="apiImg + '/' + drink.image" >
-                                </div>
-
-                                <div class="cardInfo">
-                                    <h3>{{ drink.description }}</h3>
-                                    <h4>{{ drink.price }}$</h4>
-                                </div>
-                                <div class="cardBtn">
-                                    <button class="btn1">Agregar</button>
-                                </div>
-                            </div>
+    <section class="tm-card tm-card--pad">
+        <h2 class="title">Bebidas</h2>
+        @if (drinks$ | async; as drinks) {
+            <div class="grid">
+                @for (drink of drinks; track drink.idDrinks) {
+                    <article class="drink">
+                        <img src="{{ apiImg + '/' + drink.image }}" [alt]="drink.description" loading="lazy" />
+                        <div class="drink-info">
+                            <h3>{{ drink.description }}</h3>
+                            <strong>${{ drink.price | number: '1.2-2' }}</strong>
                         </div>
-                    </p-tabpanel>
-                </p-tabpanels>
-            </p-tabs>
-        </div>
-   
+                        <button type="button" class="tm-btn tm-btn--soft tm-btn--sm tm-btn--block"><i class="pi pi-plus"></i> Agregar</button>
+                    </article>
+                }
+            </div>
+        }
+    </section>
 
-    
-        <div class="btnDetails">
-            <button class="btn2" routerLink="/home/event/ticket/consume/checkout">Continuar</button>
-        </div>
-  </div>
-  
-</div>
+    <div class="actions">
+        <a class="tm-btn tm-btn--primary tm-btn--lg" [routerLink]="['/home/event', idEvent, 'ticket', 'checkout']">Continuar <i class="pi pi-arrow-right"></i></a>
+    </div>
 </div>

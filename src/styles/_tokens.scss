@@ -1,0 +1,152 @@
+// =============================================================
+//  Design tokens — Mi Ternerita House
+//  Todos los colores de la app salen de aquí. El tema se cambia
+//  con [data-theme="light" | "dark"] en <html> (ver ThemeService).
+// =============================================================
+
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src: url('../assets/fonts/AlteHaasGroteskRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src: url('../assets/fonts/AlteHaasGroteskBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Alias usados por estilos antiguos del panel admin.
+@font-face {
+  font-family: 'AlteHaasGrotesk';
+  src: url('../assets/fonts/AlteHaasGroteskRegular.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AlteHaasGroteskBold';
+  src: url('../assets/fonts/AlteHaasGroteskBold.ttf') format('truetype');
+  font-display: swap;
+}
+
+:root {
+  --font-body: 'Alte Haas Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Alte Haas Grotesk', system-ui, sans-serif;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur: 250ms;
+  --dur-slow: 500ms;
+
+  --container: 1240px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --nav-h: 72px;
+
+  --z-nav: 1000;
+  --z-drawer: 1100;
+  --z-overlay: 1200;
+
+  // Texto sobre fotos/flyers: siempre claro, sin importar el tema.
+  --on-media: #ffffff;
+  --on-media-muted: rgba(255, 255, 255, 0.78);
+  --media-scrim: linear-gradient(180deg, rgba(5, 5, 8, 0) 0%, rgba(5, 5, 8, 0.35) 45%, rgba(5, 5, 8, 0.92) 100%);
+}
+
+// ---------- Tema oscuro (por defecto) ----------
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0a0a0c;
+  --bg-soft: #0f0f13;
+  --surface: #15151a;
+  --surface-2: #1c1c23;
+  --surface-3: #262630;
+  --glass: rgba(14, 14, 18, 0.72);
+  --scrim: rgba(5, 5, 8, 0.7);
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text: #f5f2ec;
+  --text-muted: #aaa7a2;
+  --text-subtle: #77756f;
+
+  --primary: #5b7cff;
+  --primary-hover: #7891ff;
+  --primary-pressed: #4a68e8;
+  --primary-contrast: #ffffff;
+  --primary-soft: rgba(91, 124, 255, 0.16);
+  --primary-glow: rgba(91, 124, 255, 0.45);
+
+  --accent: #efe7d4;
+
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.14);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+
+  --logo-filter: none;
+}
+
+// ---------- Tema claro ----------
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f6f4ef;
+  --bg-soft: #efece5;
+  --surface: #ffffff;
+  --surface-2: #f3f0e9;
+  --surface-3: #e8e4da;
+  --glass: rgba(255, 255, 255, 0.78);
+  --scrim: rgba(20, 18, 14, 0.45);
+
+  --border: rgba(22, 21, 26, 0.09);
+  --border-strong: rgba(22, 21, 26, 0.18);
+
+  --text: #16151a;
+  --text-muted: #57544e;
+  --text-subtle: #8a867f;
+
+  --primary: #2f54eb;
+  --primary-hover: #2445cf;
+  --primary-pressed: #1e3ab0;
+  --primary-contrast: #ffffff;
+  --primary-soft: rgba(47, 84, 235, 0.1);
+  --primary-glow: rgba(47, 84, 235, 0.3);
+
+  --accent: #6b5a35;
+
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.1);
+  --warning: #b45309;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.1);
+
+  --shadow-sm: 0 1px 2px rgba(30, 25, 15, 0.06);
+  --shadow-md: 0 12px 30px -12px rgba(30, 25, 15, 0.18);
+  --shadow-lg: 0 30px 80px -24px rgba(30, 25, 15, 0.28);
+
+  // El logo es blanco: en claro lo invertimos a negro.
+  --logo-filter: invert(1);
+}

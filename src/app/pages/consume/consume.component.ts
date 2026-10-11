@@ -1,66 +1,38 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TabsModule } from 'primeng/tabs';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { Observable } from 'rxjs';
 import { DrinksService } from '../../@core/services/drinks.service';
-import { Observable, tap } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
 import { environment } from '../../../environments/environment.developer';
-import { AsyncPipe, CommonModule } from '@angular/common';
 import { EventsService } from '../../@core/services/events.service';
+import { eventImage } from '../../@core/utils/event-utils';
 
 @Component({
   selector: 'app-consume',
-  imports: [
-    TabsModule,
-    RouterLink,
-   CommonModule,
-  //  AsyncPipe
-],
+  imports: [RouterLink, AsyncPipe, DecimalPipe],
   templateUrl: './consume.component.html',
   styleUrl: './consume.component.scss'
 })
-export class ConsumeComponent implements OnInit{
+export class ConsumeComponent implements OnInit {
   private drinksService = inject(DrinksService);
   private route = inject(ActivatedRoute);
   private eventsService = inject(EventsService);
   idEvent!: number;
   drinks$!: Observable<Drink[]>;
   apiImg: string = environment.apiImg;
-  name!: string;
-  wallpaper!: string;
-
+  name = signal('');
+  wallpaper = signal('');
 
   ngOnInit(): void {
     this.drinks$ = this.drinksService.getAllDrinks();
-
     this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
 
     this.eventsService.getEventById(this.idEvent).subscribe({
-      next: (event) => {
-        this.name = event.name;
-
-        const candidate =
-          (event as any).image1 ??
-          (event as any).flyer ??
-          (event as any).image ??
-          (event as any).imagen ??
-          '';
-
-        this.wallpaper = this.getFullUrl(candidate);
-
-        document.body.style.backgroundImage = `url(${this.wallpaper})`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundRepeat = 'no-repeat';
+      next: event => {
+        this.name.set(event.name);
+        this.wallpaper.set(eventImage(event.image1 || event.flyer));
       }
     });
   }
-
-    private getFullUrl(path: string): string {
-      if (!path) return '';
-      // absolute URL
-      if (/^https?:\/\//i.test(path)) return path;
-      if (/^(assets\/|\/)/.test(path)) return path;
-      return `${environment.apiImg}/${path}`;
-    }
 }

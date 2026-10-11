@@ -145,7 +145,7 @@ agregarSeleccion() {
 
   if (this.selectedZone && this.cantidad > 0) {
     const cantidad = this.cantidad;
-    const precio = this.selectedZone.price ?? 0;
+    const precio = Number(this.selectedZone.price ?? 0);
 
     // 1. Validar límite máximo global de 10 entradas
     const cantidadTotal = this.selected.reduce((acc, item) => acc + item.cantidad, 0);

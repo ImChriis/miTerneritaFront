@@ -1,84 +1,76 @@
-<div class="app-container">
- <nav #nav>
-  <div class="logo">
-    <i class="pi pi-bars menu-icon" (click)="openSidebar(nav)"></i>
-    <div class="logoImg">
-        <img src="../../../assets/img/logo.png" alt="">
-        <span class="logo-name">Mi Ternerita House</span>
-    </div>
-  </div>
-
-  <div class="sidebar">
-    <div class="logo">
-      <i class="pi pi-times menu-icon-close" (click)="closeSidebar(nav)"></i>
-    </div>
-
-    <div class="sidebar-user">
-      <i class="pi pi-user icon"></i>
-      <span class="username">{{ nombre }} {{ lastName }}</span>
-      <span class="role">{{ role }}</span>
-    </div>
-
-    <div class="sidebar-content">
-      <ul class="lists">
-        @for (route of routes; track route.name) {
-          <li class="list" (click)="closeSidebar(nav)">
-            <a [routerLink]="route.routerLink" class="nav-link">
-              <i class="{{route.icon}} icon"></i>
-              <span class="link">{{route.name}}</span>
+<div class="shell" [class.is-collapsed]="collapsed()" [class.is-mobile-open]="mobileOpen()">
+    <aside class="sidebar tm-vt-sidebar" aria-label="Menú del panel">
+        <div class="side-top">
+            <a routerLink="/admin/dashboard" class="side-brand">
+                <img src="assets/img/logo.png" alt="" class="tm-logo-img" />
+                <span class="side-label">
+                    <strong>Mi Ternerita</strong>
+                    <small>Panel de control</small>
+                </span>
             </a>
-          </li>
-        }
-      </ul>
-
-      <div class="bottom-content">
-        <li class="list">
-          <a href="/admin/settings" class="nav-link">
-            <i class="pi pi-cog icon"></i>
-            <span class="link">Configuración</span>
-          </a>
-        </li>
-        <li class="list">
-          <a (click)="logOut()" class="nav-link  logout">
-            <i class="pi pi-sign-out icon"></i>
-            <span class="link">Cerrar Sesión</span>
-          </a>
-        </li>
-      </div>
-    </div>
-  </div>
-</nav>
-
-
-   <div class="content">
-        <router-outlet></router-outlet>
-    </div>
-
-    <section class="overlay" (click)="closeSidebar(nav)"></section>
-
-  <footer>
-        <div class="footerLogo">
-            <img class="footerImg" src="../../../assets/img/logo.png" alt="">
+            <button type="button" class="tm-icon-btn close-mobile" aria-label="Cerrar menú" (click)="mobileOpen.set(false)">
+                <i class="pi pi-times"></i>
+            </button>
         </div>
 
-        <div class="footerInfo">
-            <p>© 2024 Mi Ternerita. Todos los derechos reservados.</p>
-            <p>Contacto: info&#64;miternerita.com</p>
+        <nav class="side-nav">
+            @for (group of groups; track group.label) {
+                <p class="side-group side-label">{{ group.label }}</p>
+                @for (route of group.items; track route.routerLink) {
+                    <a [routerLink]="route.routerLink" routerLinkActive="is-active" class="side-link" [attr.title]="collapsed() ? route.name : null">
+                        <i [class]="route.icon"></i>
+                        <span class="side-label">{{ route.name }}</span>
+                    </a>
+                }
+            }
+        </nav>
+
+        <div class="side-bottom">
+            <a routerLink="/admin/settings" routerLinkActive="is-active" class="side-link" [attr.title]="collapsed() ? 'Configuración' : null">
+                <i class="pi pi-cog"></i>
+                <span class="side-label">Configuración</span>
+            </a>
+            <a routerLink="/" class="side-link" [attr.title]="collapsed() ? 'Ver sitio web' : null">
+                <i class="pi pi-globe"></i>
+                <span class="side-label">Ver sitio web</span>
+            </a>
+            <button type="button" class="side-link logout" (click)="logOut()" [attr.title]="collapsed() ? 'Cerrar sesión' : null">
+                <i class="pi pi-sign-out"></i>
+                <span class="side-label">Cerrar sesión</span>
+            </button>
         </div>
+    </aside>
 
-        <div class="socialMedia">
-            <a *ngIf="whatsapp" [href]="whatsapp" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
-            </a>
+    <div class="scrim" (click)="mobileOpen.set(false)"></div>
 
-            <a *ngIf="instagram" [href]="instagram" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
-            </a>
+    <div class="main">
+        <header class="topbar">
+            <button type="button" class="tm-icon-btn" [attr.aria-label]="collapsed() ? 'Expandir menú' : 'Contraer menú'" (click)="toggleSidebar()">
+                <i class="pi pi-bars"></i>
+            </button>
 
-            <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
-            </a>
-        </div>
-    </footer>
+            <div class="page-title">
+                <span class="crumb">Panel <i class="pi pi-angle-right"></i></span>
+                <h1>{{ pageTitle() || 'Dashboard' }}</h1>
+            </div>
+
+            <div class="top-actions">
+                <a routerLink="/" class="tm-btn tm-btn--ghost tm-btn--sm site-link"><i class="pi pi-external-link"></i> Ver sitio</a>
+                <app-theme-toggle />
+                <div class="me">
+                    <span class="avatar">{{ initials() }}</span>
+                    <span class="me-text">
+                        <strong>{{ nombre }} {{ lastName }}</strong>
+                        <small>{{ role }}</small>
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <router-outlet></router-outlet>
+        </main>
+
+        <footer class="admin-footer">© {{ year }} Mi Ternerita House · Panel administrativo</footer>
+    </div>
 </div>
-

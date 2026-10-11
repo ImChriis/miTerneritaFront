@@ -34,7 +34,7 @@ form{
 }
 
 .logo h1{
-  color: white;
+  color: var(--text);
 }
 
 .group{
@@ -77,7 +77,7 @@ form{
     bottom: 21.8%;
     background: none;
     border: none;
-    color: white;
+    color: var(--text);
     cursor: pointer;
     font-size: 15px;
 }
@@ -89,14 +89,14 @@ form{
     bottom: 13.5%;
     background: none;
     border: none;
-    color: white;
+    color: var(--text);
     cursor: pointer;
     font-size: 15px;
 }
 
 
 label{
-    color: white;
+    color: var(--text);
     font-size: 20px;
     font-weight: 400;
 }
@@ -106,8 +106,8 @@ input{
     width: 100%;
     border-radius: 10px;
     border: none;
-    background-color: #2b2b2b;
-    color: white;
+    background-color: var(--surface-2);
+    color: var(--text);
 }
 
 select{
@@ -115,8 +115,8 @@ select{
     width: 100%;
     border-radius: 10px;
     border: none;
-    background-color: #2b2b2b;
-    color: white;
+    background-color: var(--surface-2);
+    color: var(--text);
 }
 
 .password-wrapper {
@@ -149,7 +149,7 @@ select{
 /* opcional: ajustar tamaño del icono */
 .password-wrapper .btn-Pass .pi, .password-wrapper .btn-Pass2 .pi {
   font-size: 1.1rem;
-  color: #555;
+  color: var(--text-muted);
 }
 
 .btn{
@@ -163,8 +163,8 @@ select{
 .btnRegister{
     margin-top: 20px;
     background-color: transparent;
-    border: 1px solid white;
-    color: white;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
     border-radius: 50px;
     width: 30%;
     height: 4vh;
@@ -185,16 +185,16 @@ select{
 }
 
 .links p{
-  color: white;
+  color: var(--text);
 }
 
 .links a{
   text-decoration: underline;
-  color: white;
+  color: var(--text);
 }
 
 small{
-    color: red;
+    color: var(--danger);
 }
 
    input{

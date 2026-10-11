@@ -1,47 +1,26 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { LoaderComponent } from './@core/components/loader/loader.component';
+import { ThemeService } from './@core/services/theme.service';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
-    CommonModule,
     ToastModule,
     LoaderComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
-  private router = inject(Router);
+export class AppComponent {
+  // Se inyecta aquí para que el tema quede sincronizado desde el arranque.
+  private theme = inject(ThemeService);
 
-  // title = 'miternerita-front';
-
-  isLoading = true;
-
-    constructor() {
-    this.router.events.subscribe(e => {
-      if (e instanceof NavigationEnd) {
-        const tree = this.router.parseUrl(this.router.url);
-        const fragment = tree.fragment;
-        if (fragment) {
-          // dar tiempo a renderizado del componente hijo
-          setTimeout(() => {
-            const el = document.getElementById(fragment);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 50);
-        }
-      }
-    });
-  }
-
-  ngOnInit() {
-    // Simulate a loading delay
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 1000);
+  constructor() {
+    // Compensa la barra de navegación fija al saltar a un #ancla (p. ej. /#eventos).
+    inject(ViewportScroller).setOffset([0, 88]);
   }
 }

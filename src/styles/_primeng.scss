@@ -1,0 +1,142 @@
+// =============================================================
+//  Ajustes globales de PrimeNG (el color base lo da el preset
+//  definido en app.config.ts; aquí solo forma y tipografía).
+// =============================================================
+
+.p-component,
+.p-inputtext,
+.p-select-label,
+.p-button,
+.p-toast,
+.p-dialog,
+.p-datatable {
+  font-family: var(--font-body);
+}
+
+// ---------- Toasts ----------
+.p-toast {
+  max-width: calc(100vw - 32px);
+}
+
+.p-toast .p-toast-message {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.p-toast-summary {
+  font-weight: 700;
+}
+
+// ---------- Diálogos ----------
+.p-dialog-mask {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.p-dialog {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--border) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.p-dialog-header,
+.p-dialog-content,
+.p-dialog-footer {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+.p-dialog-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+// ---------- Tabs (página de consumo) ----------
+.p-tabs,
+.p-tablist-tab-list,
+.p-tabpanels {
+  background: transparent !important;
+}
+
+.p-tab {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  font-family: var(--font-body);
+
+  &.p-tab-active {
+    color: var(--text) !important;
+  }
+}
+
+.p-tablist-active-bar {
+  background: var(--primary) !important;
+}
+
+// ---------- Inputs de PrimeNG ----------
+.p-inputtext,
+.p-select,
+.p-inputnumber-input,
+.p-datepicker-input {
+  border-radius: var(--radius-sm) !important;
+}
+
+.p-inputtext:enabled:focus,
+.p-select.p-focus {
+  box-shadow: 0 0 0 4px var(--primary-soft) !important;
+}
+
+// ---------- Editor (Quill) dentro de modales admin ----------
+.p-editor {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  .p-editor-toolbar,
+  .ql-toolbar {
+    background: var(--surface-2) !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  .ql-container {
+    border: 0 !important;
+    background: transparent !important;
+    color: var(--text) !important;
+  }
+
+  .ql-editor {
+    min-height: 200px;
+    color: var(--text);
+
+    &.ql-blank::before {
+      color: var(--text-subtle);
+    }
+  }
+
+  .ql-stroke {
+    stroke: var(--text-muted) !important;
+  }
+
+  .ql-fill {
+    fill: var(--text-muted) !important;
+  }
+
+  .ql-picker-label,
+  .ql-picker-item {
+    color: var(--text-muted) !important;
+  }
+
+  .ql-picker-options {
+    background: var(--surface) !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  button:hover .ql-stroke,
+  .ql-active .ql-stroke {
+    stroke: var(--primary) !important;
+  }
+}

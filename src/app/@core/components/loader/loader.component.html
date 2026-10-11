@@ -1,6 +1,16 @@
-<div class="loader-overlay" *ngIf="isLoading">
-    <div class="image-loader-container">
-        <img src="assets/img/logo.png" alt="Cargando..." class="center-image" />
-        <div class="loader-spinner"></div>
+@if (mode === 'window') {
+    @if (splash()) {
+        <div class="splash" role="status" aria-label="Cargando">
+            <div class="splash-mark">
+                <img src="assets/img/logo.png" alt="" class="tm-logo-img" />
+                <span class="ring"></span>
+            </div>
+        </div>
+    } @else if (navigating()) {
+        <div class="route-progress" role="progressbar" aria-label="Cargando página"></div>
+    }
+} @else if (isLoading) {
+    <div class="inline-loader" role="status" aria-label="Cargando">
+        <span class="spinner"></span>
     </div>
-</div>
+}

@@ -1,3 +1,15 @@
-<div class="timer-badge">
-  <strong [class.critical]="timeLeft() < 180">{{ formattedTime }}</strong>
+<div
+  class="timer"
+  [class.critical]="timer.timeLeft() < 180"
+  role="timer"
+  [attr.aria-label]="'Tiempo restante para completar la compra: ' + timer.formattedTime()"
+>
+  <svg viewBox="0 0 36 36" aria-hidden="true">
+    <circle class="track" cx="18" cy="18" r="15" />
+    <circle class="value" cx="18" cy="18" r="15" [attr.stroke-dasharray]="94.25" [attr.stroke-dashoffset]="94.25 * (1 - timer.progress())" />
+  </svg>
+  <span class="text">
+    <small>Tiempo restante</small>
+    <strong>{{ timer.formattedTime() }}</strong>
+  </span>
 </div>

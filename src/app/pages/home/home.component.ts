@@ -1,160 +1,237 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { Component, computed, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { EventsService } from '../../@core/services/events.service';
-import { map, Observable, tap } from 'rxjs';
+import { TicketsService } from '../../@core/services/tickets.service';
 import { Event } from '../../@core/models/event.model';
-import { environment } from '../../../environments/environment.developer';
+import {
+  byDateAsc,
+  CATEGORY_ICON,
+  CATEGORY_LABEL,
+  EventCategory,
+  eventCategory,
+  eventImage,
+  formatTime12,
+  isPastEvent,
+  parseEventDate,
+  stripHtml
+} from '../../@core/utils/event-utils';
+import { SpacesGalleryComponent } from '../../shared/components/spaces-gallery/spaces-gallery.component';
+import { PartnersMarqueeComponent } from '../../shared/components/partners-marquee/partners-marquee.component';
+import { RevealDirective } from '../../shared/directives/reveal.directive';
+
+type CategoryFilter = 'todos' | EventCategory;
+
+const FALLBACK_IMG = 'assets/img/optimized/fondo1.webp';
+
+interface EventView extends Event {
+  day: Date;
+  category: EventCategory;
+  categoryLabel: string;
+  categoryIcon: string;
+  timeLabel: string;
+  excerpt: string;
+  flyerUrl: string;
+  bannerUrl: string;
+  minPrice: number | null;
+}
+
+import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-home',
-  imports: [
-    CommonModule,
-    // RouterLink
-],
+  imports: [CapFirstPipe, DatePipe, DecimalPipe, RouterLink, RevealDirective, SpacesGalleryComponent, PartnersMarqueeComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomeComponent implements OnInit {
   private router = inject(Router);
   private eventService = inject(EventsService);
-  private intervalId: any;
-  events$!: Observable<Event[]>;
-  slideIndex = signal(0);
-  selectedIndex = 0;
-  apiImg = environment.apiImg;
-  eventsLoaded: Event[] = [];
+  private ticketsService = inject(TicketsService);
 
-  @ViewChild('eventsGrid') eventsSection!: ElementRef;
-  @ViewChild('zones') zonesSection!: ElementRef;
-  @ViewChild('zones2') zonesSection2!: ElementRef;
+  readonly skeletons = [0, 1, 2, 3, 4];
 
-  ngAfterViewInit() {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show');
-        }
-      });
-    }, { threshold: 0.2 });
+  private raw = signal<Event[]>([]);
+  private prices = signal<Map<number, number>>(new Map());
+  loading = signal(true);
 
-    if (this.eventsSection && this.eventsSection.nativeElement) {
-      observer.observe(this.eventsSection.nativeElement);
-    }
+  // ---------- Listas derivadas ----------
+  private all = computed<EventView[]>(() =>
+    this.raw()
+      .filter(e => e.status === 1)
+      .map(e => this.toView(e))
+  );
 
-    if (this.zonesSection && this.zonesSection.nativeElement) {
-      observer.observe(this.zonesSection.nativeElement);
-    }
+  upcoming = computed(() => this.all().filter(e => !isPastEvent(e)).sort(byDateAsc));
+  past = computed(() =>
+    this.all()
+      .filter(e => isPastEvent(e))
+      .sort((a, b) => byDateAsc(b, a))
+      .slice(0, 12)
+  );
+  concerts = computed(() => this.upcoming().filter(e => e.category === 'concierto'));
+  heroSlides = computed(() => this.upcoming().slice(0, 6));
 
-    if (this.zonesSection2 && this.zonesSection2.nativeElement) {
-      observer.observe(this.zonesSection2.nativeElement);
-    }
+  // ---------- Filtros ----------
+  query = signal('');
+  category = signal<CategoryFilter>('todos');
+  categories = computed(() => {
+    const present = new Set(this.upcoming().map(e => e.category));
+    return (['concierto', 'fiesta', 'evento'] as EventCategory[])
+      .filter(c => present.has(c))
+      .map(c => ({ value: c, label: CATEGORY_LABEL[c], icon: CATEGORY_ICON[c] }));
+  });
+  filtered = computed(() => {
+    const q = this.normalize(this.query());
+    const cat = this.category();
+    return this.upcoming().filter(
+      e =>
+        (cat === 'todos' || e.category === cat) &&
+        (!q || this.normalize(`${e.name} ${e.room} ${e.excerpt}`).includes(q))
+    );
+  });
+
+  // ---------- Hero ----------
+  slide = signal(0);
+  heroPaused = signal(false);
+  readonly autoplay = typeof matchMedia === 'undefined' || !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  private touchX: number | null = null;
+
+  // ---------- Tarjetas ampliables ----------
+  /** null = primera tarjeta abierta por defecto; -1 = todas cerradas (acordeón móvil). */
+  activeId = signal<number | null>(null);
+  activeEvent = computed(() => {
+    const list = this.filtered();
+    const id = this.activeId();
+    return list.find(e => e.idEvents === id) ?? (id === null ? list[0] ?? null : null);
+  });
+
+  private eventsSection = viewChild<ElementRef<HTMLElement>>('eventsSection');
+  private pastScroller = viewChild<ElementRef<HTMLElement>>('pastScroller');
+  private concertScroller = viewChild<ElementRef<HTMLElement>>('concertScroller');
+
+  ngOnInit() {
+    this.eventService.getEvents().subscribe({
+      next: events => {
+        this.raw.set(events ?? []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+      complete: () => this.loading.set(false)
+    });
+
+    // Precio "desde" de cada evento
+    this.ticketsService.getTickets().subscribe(tickets => {
+      const map = new Map<number, number>();
+      for (const t of tickets ?? []) {
+        if (t.status !== 1) continue;
+        const price = Number(t.price);
+        if (Number.isNaN(price)) continue;
+        map.set(t.idEvents, Math.min(map.get(t.idEvents) ?? Infinity, price));
+      }
+      this.prices.set(map);
+    });
   }
 
-ngOnInit() {
-  this.intervalId = setInterval(() => {
-    this.nextSlide();
-  }, 3500);
-
-  this.events$ = this.eventService.getEvents().pipe(
-    map(events => events.filter((event: Event) => event.status === 1)),
-    tap(events => this.eventsLoaded = events)
-  )
-}
-
-  selectEvent(index: number){
-    this.selectedIndex = index;
+  // ---------- Hero ----------
+  goToSlide(i: number) {
+    const total = this.heroSlides().length;
+    if (!total) return;
+    this.slide.set((i + total) % total);
   }
-
-  get selectedBackground(): string {
-    // Prefer events loaded from the service; fall back to local sample `testEvents` if none loaded
-    const ev = (this.eventsLoaded && this.eventsLoaded.length > 0)
-      ? (this.eventsLoaded[this.selectedIndex] as any)
-      : (this.testEvents && this.testEvents.length > 0)
-        ? (this.testEvents[this.selectedIndex] as any)
-        : undefined;
-    if (!ev) {
-      return '';
-    }
-
-    // Prefer image1 property when available (comes from backend model)
-    const candidate = (ev as any).image1 ?? (ev as any).foto ?? (ev as any).fondo ?? (ev as any).image ?? (ev as any).imagen ?? (ev as any).flyer;
-    if (!candidate) return '';
-
-    const full = this.getFullUrl(candidate);
-    return `url('${full}')`;
-  }
-
-  private getFullUrl(path: string): string {
-    if (!path) return '';
-    // If it's already an absolute URL, return as-is
-    if (/^https?:\/\//i.test(path)) return path;
-    // If it's an assets path (starts with assets or /), return as-is
-    if (/^(assets\/|\/)/.test(path)) return path;
-    // Otherwise assume it's a server-stored image and prefix with apiImg
-    return `${this.apiImg}/${path}`;
-  }
-
-ngOnDestroy() {
-  if (this.intervalId) {
-    clearInterval(this.intervalId);
-  }
-}
-
-  testEvents = [
-    {
-      nombre: 'Evento 1',
-      descripcion: 'Descripción del evento 1',
-      imagen: '../../../assets/img/zona1.jpg'
-    },
-    {
-      nombre: 'Evento 2',
-      descripcion: 'Descripción del evento 2',
-      imagen: '../../../assets/img/zona2.jpg'
-    },
-    {
-      nombre: 'Evento 3',
-      descripcion: 'Descripción del evento 3',
-      imagen: '../../../assets/img/zona3.jpg'
-    }
-  ];
-
 
   nextSlide() {
-    this.slideIndex.update(i => (i + 1 + this.testEvents.length) % this.testEvents.length);
+    this.goToSlide(this.slide() + 1);
   }
 
   prevSlide() {
-    if (this.testEvents.length > 0) {
-      this.slideIndex.update(i => (i - 1 + this.testEvents.length) % this.testEvents.length);
+    this.goToSlide(this.slide() - 1);
+  }
+
+  /** El avance automático lo marca el final de la animación de la barra de progreso. */
+  onProgressEnd() {
+    if (this.autoplay && this.heroSlides().length > 1) this.nextSlide();
+  }
+
+  onTouchStart(e: TouchEvent) {
+    this.touchX = e.touches[0]?.clientX ?? null;
+  }
+
+  onTouchEnd(e: TouchEvent) {
+    if (this.touchX === null) return;
+    const dx = (e.changedTouches[0]?.clientX ?? this.touchX) - this.touchX;
+    if (Math.abs(dx) > 50) dx < 0 ? this.nextSlide() : this.prevSlide();
+    this.touchX = null;
+  }
+
+  // ---------- Filtros ----------
+  setCategory(c: CategoryFilter) {
+    this.category.set(c);
+    this.activeId.set(null);
+  }
+
+  onSearch(value: string) {
+    this.query.set(value);
+    this.activeId.set(null);
+  }
+
+  submitSearch(event: SubmitEvent) {
+    event.preventDefault();
+    this.eventsSection()?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  clearFilters() {
+    this.query.set('');
+    this.category.set('todos');
+  }
+
+  // ---------- Tarjetas ----------
+  expand(ev: EventView, el?: HTMLElement) {
+    this.activeId.set(ev.idEvents);
+    // En móvil el acordeón cambia de alto: mantenemos la tarjeta a la vista
+    if (el && typeof window !== 'undefined' && window.innerWidth < 900) {
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 380);
     }
   }
 
-
-  formatTime(time: string): string {
-    if (!time) return '';
-  
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-  
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-  
-    const formattedHours = hours % 12 || 12;
-  
-    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-  
-    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+  scrollToSection(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  navigateToEvent(idEvento: number){
-    this.router.navigate(['/home/event/', idEvento]).then(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+  scrollRow(which: 'past' | 'concerts', dir: 1 | -1) {
+    const el = (which === 'past' ? this.pastScroller() : this.concertScroller())?.nativeElement;
+    el?.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: 'smooth' });
   }
 
-  goToEvent(idEvent: number){
-    this.router.navigate(['/home/event/', idEvent]).then(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+  goToEvent(id: number) {
+    this.router.navigate(['/home/event', id]);
+  }
+
+  buy(id: number) {
+    this.router.navigate(['/home/event', id, 'ticket']);
+  }
+
+  private toView(e: Event): EventView {
+    const category = eventCategory(e);
+    return {
+      ...e,
+      day: parseEventDate(e.date),
+      category,
+      categoryLabel: CATEGORY_LABEL[category],
+      categoryIcon: CATEGORY_ICON[category],
+      timeLabel: formatTime12(e.time),
+      excerpt: stripHtml(e.description ?? ''),
+      flyerUrl: eventImage(e.flyer || e.image1 || e.image3) || FALLBACK_IMG,
+      bannerUrl: eventImage(e.image3 || e.image1 || e.flyer) || FALLBACK_IMG,
+      minPrice: this.prices().get(e.idEvents) ?? null
+    };
+  }
+
+  private normalize(s: string) {
+    return s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .trim();
   }
 }

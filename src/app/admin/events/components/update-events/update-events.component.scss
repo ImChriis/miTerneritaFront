@@ -32,31 +32,31 @@ form{
 }
 
 .formGroup label{
-    color: white;
+    color: var(--text);
 }
 
 .formGroup input{
     width: 100%;
     background-color: transparent;
-    color: white;
+    color: var(--text);
 }
 
 .formGroup .p-select{
     width: 100% !important;
     background-color: transparent;
-    color: white;
+    color: var(--text);
 }
 
 ::ng-deep .p-select-label.ng-star-inserted{
-    color: white !important;
+    color: var(--text) !important;
 }
 
 ::ng-deep .p-select .p-select-label.p-placeholder{
-    color: white !important;
+    color: var(--text) !important;
 }
 
 ::ng-deep .p-select .p-icon{
-    color: white !important;
+    color: var(--text) !important;
 }
 
 .date, .time, .room, .capacity{
@@ -67,7 +67,7 @@ form{
 
 .date input, .time input, .room input, .capacity input{
     background-color: transparent;
-    color: white;
+    color: var(--text);
 }
 
 .description{
@@ -77,19 +77,19 @@ form{
 }
 
 ::ng-deep .p-editor {
-  border: 1px solid white !important;
+  border: 1px solid var(--border-strong) !important;
   border-radius: 12px;
   overflow: hidden;
 }
 
 ::ng-deep .p-editor .p-editor-toolbar {
-  background-color: #000 !important;
+  background-color: var(--surface-2) !important;
   border: none !important;
 }
 
 ::ng-deep .p-editor .p-editor-content {
   background-color: transparent !important;
-  color: white !important;
+  color: var(--text) !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar {
@@ -100,50 +100,50 @@ form{
 ::ng-deep .p-editor .ql-container {
   background-color: transparent !important;
   border: none !important;
-  color: white !important;
+  color: var(--text) !important;
 }
 
 ::ng-deep .p-editor .ql-editor {
   min-height: 200px;
-  color: white !important;
+  color: var(--text) !important;
   background-color: transparent !important;
 }
 
 ::ng-deep .p-editor .ql-editor.ql-blank::before {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--text-subtle) !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar .ql-picker-label {
-  color: white !important;
+  color: var(--text) !important;
   border: none !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar .ql-picker-label:hover {
-  color: #1D4ED8 !important;
+  color: var(--primary) !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar .ql-picker-options {
-  background-color: black !important;
-//   border: 1px solid #EEFB07 !important;
+  background-color: var(--surface-2) !important;
+//   border: 1px solid var(--primary) !important;
   border-radius: 10px !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar .ql-picker-item {
-  color: white !important;
+  color: var(--text) !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar .ql-picker-item:hover {
-  background-color: #1D4ED8 !important;
-  color: black !important;
+  background-color: var(--primary) !important;
+  color: var(--primary-contrast) !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar .ql-picker-item.ql-selected {
-  background-color: #1D4ED8 !important;
-  color: black !important;
+  background-color: var(--primary) !important;
+  color: var(--primary-contrast) !important;
 }
 
 ::ng-deep .p-editor .ql-toolbar .ql-list .ql-active{
-    color: #1D4ED8 !important;
+    color: var(--primary) !important;
 }
 
 .imageTitle{
@@ -180,8 +180,8 @@ form{
 
 .custom-file-btn {
   background-color: transparent;
-  border: 1px solid white !important;
-  color: white;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text);
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
@@ -195,15 +195,15 @@ form{
 
 .btn{
     background-color: transparent;
-    color: white;
-    border: 1px solid white;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
     border-radius: 50px;
 }
 
 .btn:hover{
     background-color: transparent;
-    color: white;
-    border: 1px solid white;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
     opacity: 0.9;
 }
 

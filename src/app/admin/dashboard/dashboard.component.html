@@ -1,190 +1,220 @@
-<div class="content">
-    <div class="cards">
-                    <div class="item">
-            <!-- <div class="icon">
-                <i class="pi pi-user"></i>
-            </div> -->
+<div class="dash">
+    <!-- Saludo + acciones rápidas -->
+    <section class="welcome">
+        <div>
+            <p class="date">{{ today | date: "EEEE d 'de' MMMM, y" | capFirst }}</p>
+            <h2>Hola{{ userName ? ', ' + userName : '' }}</h2>
+            <p class="tm-muted">Este es el resumen de ventas y actividad de Mi Ternerita House.</p>
+        </div>
+        <div class="quick">
+            <a routerLink="/admin/payments" class="tm-btn tm-btn--ghost">
+                <i class="pi pi-wallet"></i> Revisar pagos
+                @if (statusCounts().Pendiente) {
+                    <span class="count">{{ statusCounts().Pendiente }}</span>
+                }
+            </a>
+            <a routerLink="/admin/events" class="tm-btn tm-btn--primary"><i class="pi pi-plus"></i> Nuevo evento</a>
+        </div>
+    </section>
 
-            <div class="info">
-                <label><i class="pi pi-user"></i>Total de Usuarios</label>
-                <p>{{ totalUser }}</p>
-            </div>
+    <!-- KPIs -->
+    <section class="kpis">
+        <a routerLink="/admin/users" class="kpi">
+            <span class="kpi-icon blue"><i class="pi pi-users"></i></span>
+            <span class="kpi-label">Usuarios registrados</span>
+            @if (loadingKpis()) {
+                <span class="tm-skeleton kpi-sk"></span>
+            } @else {
+                <strong class="kpi-value">{{ totalUser() }}</strong>
+            }
+            <span class="kpi-foot"><span class="up"><i class="pi pi-arrow-up-right"></i> {{ usersToday() }}</span> nuevos hoy</span>
+        </a>
 
-            
-            <div class="more">
-                <a routerLink="/admin/users">Ver más</a>
-            </div>
+        <div class="kpi">
+            <span class="kpi-icon violet"><i class="pi pi-ticket"></i></span>
+            <span class="kpi-label">Entradas vendidas</span>
+            @if (loadingKpis()) {
+                <span class="tm-skeleton kpi-sk"></span>
+            } @else {
+                <strong class="kpi-value">{{ totalTickets() }}</strong>
+            }
+            <span class="kpi-foot">Total acumulado</span>
         </div>
 
-        <div class="item">
-            <!-- <div class="icon">
-                <i class="pi pi-user-plus"></i>
-            </div> -->
+        <a routerLink="/admin/payments" class="kpi">
+            <span class="kpi-icon green"><i class="pi pi-receipt"></i></span>
+            <span class="kpi-label">Pagos registrados</span>
+            @if (loadingKpis()) {
+                <span class="tm-skeleton kpi-sk"></span>
+            } @else {
+                <strong class="kpi-value">{{ totalPayments() }}</strong>
+            }
+            <span class="kpi-foot">{{ statusCounts().Aprobado }} aprobados</span>
+        </a>
 
-            <div class="info">
-                <label><i class="pi pi-user"></i>Usuarios nuevos de hoy</label>
-                <p>{{ usersToday }}</p>
+        <a routerLink="/admin/payments" class="kpi" [class.attention]="statusCounts().Pendiente > 0">
+            <span class="kpi-icon amber"><i class="pi pi-clock"></i></span>
+            <span class="kpi-label">Pagos por verificar</span>
+            @if (loadingPayments()) {
+                <span class="tm-skeleton kpi-sk"></span>
+            } @else {
+                <strong class="kpi-value">{{ statusCounts().Pendiente }}</strong>
+            }
+            <span class="kpi-foot">{{ statusCounts().Pendiente ? 'Requieren tu revisión' : 'Todo al día' }}</span>
+        </a>
+    </section>
+
+    <!-- Gráficos -->
+    <section class="row">
+        <article class="panel span-8">
+            <header class="panel-head">
+                <div>
+                    <h3>Pagos recibidos</h3>
+                    <p class="tm-muted">Cantidad de pagos por período</p>
+                </div>
+                <p-selectButton
+                    [options]="filterOptions"
+                    [ngModel]="selectedFilter()"
+                    (ngModelChange)="selectedFilter.set($event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    [allowEmpty]="false"
+                    size="small"
+                />
+            </header>
+            <div class="chart">
+                @if (loadingPayments()) {
+                    <div class="tm-skeleton chart-sk"></div>
+                } @else if (paymentsChart().labels.length) {
+                    <p-chart type="bar" [data]="paymentsChart()" [options]="axisOptions()" height="100%" />
+                } @else {
+                    <p class="empty"><i class="pi pi-chart-bar"></i> Aún no hay pagos para mostrar.</p>
+                }
             </div>
-        </div>
+        </article>
 
-        <div class="item">
-            <!-- <div class="icon">
-                <i class="pi pi-ticket"></i>
-            </div> -->
-
-            <div class="info">
-                <label> <i class="pi pi-ticket"></i>Total de facturas</label>
-                <p>{{ totalPayments }}</p>
+        <article class="panel span-4">
+            <header class="panel-head">
+                <div>
+                    <h3>Estado de pagos</h3>
+                    <p class="tm-muted">Todos los pagos registrados</p>
+                </div>
+            </header>
+            <div class="donut">
+                <div class="donut-chart">
+                    <p-chart type="doughnut" [data]="statusChart()" [options]="doughnutOptions()" height="100%" />
+                    <div class="donut-center">
+                        <strong>{{ allPaymentsCount() }}</strong>
+                        <small>pagos</small>
+                    </div>
+                </div>
+                <ul class="legend">
+                    <li><i class="dot ok"></i> Aprobados <strong>{{ statusCounts().Aprobado }}</strong></li>
+                    <li><i class="dot wait"></i> Pendientes <strong>{{ statusCounts().Pendiente }}</strong></li>
+                    <li><i class="dot no"></i> Rechazados <strong>{{ statusCounts().Rechazado }}</strong></li>
+                </ul>
             </div>
+        </article>
+    </section>
 
-            
-            <div class="more">
-                <a routerLink="/admin/payments">Ver más</a>
+    <section class="row">
+        <article class="panel span-8">
+            <header class="panel-head">
+                <div>
+                    <h3>Últimos pagos</h3>
+                    <p class="tm-muted">Toca un pago para revisarlo</p>
+                </div>
+                <a routerLink="/admin/payments" class="tm-link">Ver todos <i class="pi pi-arrow-right"></i></a>
+            </header>
+
+            <div class="table-wrap">
+                <table class="tm-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Evento</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (payment of latestPayments(); track payment.idPayments ?? $index) {
+                            <tr tabindex="0" (click)="openUpdateModal(payment)" (keydown.enter)="openUpdateModal(payment)">
+                                <td>
+                                    <div class="who">
+                                        <span class="mini-avatar">{{ (payment.idUser?.name?.[0] ?? '?') + (payment.idUser?.lastName?.[0] ?? '') }}</span>
+                                        <span>{{ payment.idUser?.name }} {{ payment.idUser?.lastName }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ payment.idEvents?.name }}</td>
+                                <td class="muted">{{ payment.date | date: 'dd/MM/yy · h:mm a' }}</td>
+                                <td><span class="tm-badge" [class]="statusClass(payment.status)">{{ payment.status }}</span></td>
+                            </tr>
+                        } @empty {
+                            <tr class="empty-row">
+                                <td colspan="4">{{ loadingPayments() ? 'Cargando pagos…' : 'No hay pagos registrados todavía.' }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
+        </article>
 
-        <div class="item">
-            <!-- <div class="icon">
-                <i class="pi pi-ticket"></i>
-            </div> -->
+        <article class="panel span-4">
+            <header class="panel-head">
+                <div>
+                    <h3>Próximos eventos</h3>
+                    <p class="tm-muted">En cartelera</p>
+                </div>
+                <a routerLink="/admin/events" class="tm-link">Gestionar <i class="pi pi-arrow-right"></i></a>
+            </header>
 
-            <div class="info">
-                <label> <i class="pi pi-ticket"></i>Total de entradas vendidas</label>
-                <p>{{ totalTickets }}</p>
+            <ul class="events">
+                @for (ev of upcoming(); track ev.idEvents) {
+                    <li>
+                        <span class="date-badge">
+                            <strong>{{ ev.day | date: 'dd' }}</strong>
+                            <small>{{ ev.day | date: 'MMM' }}</small>
+                        </span>
+                        <div>
+                            <strong>{{ ev.name }}</strong>
+                            <small>{{ ev.timeLabel }} · {{ ev.room }}</small>
+                        </div>
+                        <a [routerLink]="['/home/event', ev.idEvents]" class="tm-icon-btn" aria-label="Ver en el sitio"><i class="pi pi-external-link"></i></a>
+                    </li>
+                } @empty {
+                    <li class="empty"><i class="pi pi-calendar-plus"></i> No hay eventos próximos.</li>
+                }
+            </ul>
+        </article>
+    </section>
+
+    <section class="row">
+        <article class="panel span-12">
+            <header class="panel-head">
+                <div>
+                    <h3>Nuevos usuarios</h3>
+                    <p class="tm-muted">Registros por período</p>
+                </div>
+                <p-selectButton
+                    [options]="filterOptions"
+                    [ngModel]="selectedUserFilter()"
+                    (ngModelChange)="selectedUserFilter.set($event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    [allowEmpty]="false"
+                    size="small"
+                />
+            </header>
+            <div class="chart short">
+                @if (loadingKpis()) {
+                    <div class="tm-skeleton chart-sk"></div>
+                } @else if (usersChart().labels.length) {
+                    <p-chart type="line" [data]="usersChart()" [options]="axisOptions()" height="100%" />
+                } @else {
+                    <p class="empty"><i class="pi pi-users"></i> Aún no hay registros para mostrar.</p>
+                }
             </div>
-
-            
-            <!-- <div class="more">
-                <a routerLink="/admin/payments">Ver más</a>
-            </div> -->
-        </div>
-
-           <!-- <div class="item">
-            <div class="icon">
-                <i class="pi pi-credit-card"></i>
-            </div>
-
-            <div class="info">
-                <label><i class="pi pi-credit-card"></i>Pagos Realizados hoy</label>
-                <p>{{ paymentsToday }}</p>
-            </div>
-        </div> -->
-    </div>
-
-       <div class="table">
-  
-      @if(
-        payments$ | async
-        ; as state) {
-        <p-table
-          #dt1
-          [value]="state"
-          dataKey="idCabecera"
-          [rows]="10"
-          styleClass="ml-3 mr-3"
-          >
-          <ng-template pTemplate="caption">
-                    <div class="title">
-          <h1>Últimos 5 pagos</h1>
-        </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th style="min-width: 1rem" class="border">
-                  <div class="flex thstyles">Fecha</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Nombre</div>
-                </th>
-                <th style="min-width: 10rem">
-                  <div class="flex thstyles">Evento</div>
-                </th>
-                <th style="min-width: 1rem">
-                    <div class="flex thstyles">Estado</div>
-                  </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-payment class="p-table">
-              <tr class="table-content" (click)="openUpdateModal(payment) ">
-                <td class="column-table-left mr-5">
-                  {{ payment.date | date: 'dd/MM/yyyy hh:mm a' : 'VE' }}
-                  </td>
-                <td>
-                  {{ payment.idUser.name }} {{ payment.idUser.lastName }}
-                </td>
-                <td>
-                  {{ payment.idEvents.name }} 
-                </td>
-                <td>
-                  @if (payment.status === "Aprobado") {
-                    <p class="disponible">Aprobado</p>
-                  }  @else if(payment.status === "Pendiente") {
-                    <p class="pendiente">Pendiente</p>
-                  } @else {
-                    <p class="noDisponible">Rechazado</p> 
-                  }
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="7">No elementos encontrados.</td>
-              </tr>
-            </ng-template>
-          </p-table>
-        }
-      </div>
-    
-      
-    <div class="charts">
-        <div class="left">
-            <div class="card">
-                <div class="left w-full">
-    <div class="card p-4">
-      <!-- Filtro de selección de período -->
-      <div class="flex justify-content-between align-items-center mb-4">
-        <h3 class="text-white m-0">Resumen de Pagos</h3>
-        <p-selectButton 
-          [options]="filterOptions" 
-          [(ngModel)]="selectedFilter" 
-          (ngModelChange)="onPeriodChange($event)"
-          optionLabel="label" 
-          optionValue="value">
-        </p-selectButton>
-      </div>
-
-      <!-- Gráfico dinámico -->
-      @if (basicData) {
-        <p-chart type="bar" [data]="basicData" [options]="basicOptions" class="w-full" />
-      } @else {
-        <p class="text-white">Cargando datos del gráfico...</p>
-      }
-    </div>
-  </div>
-            </div>
-        </div>
-
-        <div class="right">
-            <div class="card">
-<div class="card p-4">
-      <div class="flex justify-content-between align-items-center mb-4">
-        <h3 class="text-white m-0">Resumen de Usuarios</h3>
-        <p-selectButton 
-          [options]="filterOptions" 
-          [(ngModel)]="selectedUserFilter" 
-          (ngModelChange)="onUserPeriodChange($event)"
-          optionLabel="label" 
-          optionValue="value">
-        </p-selectButton>
-      </div>
-
-      @if (userChartData) {
-        <p-chart type="doughnut" [data]="userChartData" [options]="basicOptions" class="w-full" />
-      } @else {
-        <p class="text-white">Cargando datos de usuarios...</p>
-      }
-    </div>
-            </div>
-        </div>
-    </div>
+        </article>
+    </section>
 </div>

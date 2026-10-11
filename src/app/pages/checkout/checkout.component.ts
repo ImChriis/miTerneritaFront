@@ -1,105 +1,105 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { EventsService } from '../../@core/services/events.service';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { environment } from '../../../environments/environment.developer';
+import { Event } from '../../@core/models/event.model';
+import { eventImage, formatTime12, parseEventDate } from '../../@core/utils/event-utils';
+import { PurchaseStepsComponent } from '../../shared/components/purchase-steps/purchase-steps.component';
 
+interface SelectedItem {
+  id: number;
+  name: string;
+  cantidad: number;
+  total: number;
+}
+
+import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-checkout',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule
-],
+  imports: [CapFirstPipe, DatePipe, DecimalPipe, ReactiveFormsModule, PurchaseStepsComponent],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
 })
-export class CheckoutComponent implements OnInit{
+export class CheckoutComponent implements OnInit {
   private eventsService = inject(EventsService);
+  private messageService = inject(MessageService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+
   idEvents!: number;
-  selected: any[] = [];
-  name!: string;
-  total!: number;
-  event: any = {};
-  wallpaper!: string;
+  selected: SelectedItem[] = [];
+  total = 0;
+  count = 0;
 
-  userData = this.fb.group({
-    name: [''],
-    lastName: [''],
-    email: [''],
-    phone: [''],
-    identification: ['']
-  })
+  event = signal<Event | null>(null);
+  day = computed(() => parseEventDate(this.event()?.date));
+  time = computed(() => formatTime12(this.event()?.time));
+  flyer = computed(() => eventImage(this.event()?.flyer || this.event()?.image1) || 'assets/img/optimized/fondo1.webp');
+  backdrop = computed(() => eventImage(this.event()?.image1 || this.event()?.image3) || this.flyer());
 
-  
-ngOnInit() {
+  userData = this.fb.nonNullable.group({
+    name: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.minLength(7)]],
+    identification: ['', Validators.required]
+  });
+
+  ngOnInit() {
     this.idEvents = Number(this.route.snapshot.paramMap.get('id'));
-    this.selected = history.state.selected;
+    this.selected = (history.state?.selected as SelectedItem[]) ?? [];
+
+    // Se llegó sin selección (p. ej. enlace directo): volvemos a elegir entradas
+    if (!this.selected.length) {
+      this.messageService.add({ severity: 'info', summary: 'Elige tus entradas', detail: 'Selecciona tus entradas para continuar.' });
+      this.router.navigate(['/home/event', this.idEvents, 'ticket'], { replaceUrl: true });
+      return;
+    }
+
     this.total = this.selected.reduce((acc, item) => acc + item.total, 0);
+    this.count = this.selected.reduce((acc, item) => acc + item.cantidad, 0);
 
     this.eventsService.getEventById(this.idEvents).subscribe({
-      next: (event) => {
-        this.name = event.name;
-        this.event = event;
-
-        const candidate =
-          (event as any).image1 ??
-          (event as any).flyer ??
-          (event as any).image ??
-          (event as any).imagen ??
-          '';
-
-        this.wallpaper = this.getFullUrl(candidate);
-
-        document.body.style.backgroundImage = `url(${this.wallpaper})`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundRepeat = 'no-repeat';
-      }
+      next: event => this.event.set(event)
     });
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.userData.patchValue({
+      name: user.name ?? '',
+      lastName: user.lastName ?? '',
+      email: user.email ?? '',
+      phone: user.phone ?? '',
+      identification: user.cedula ?? ''
+    });
+  }
 
-    if (user) {
-      this.userData.patchValue({
-        name: user.name,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        identification: user.cedula
-      });
+  invalid(field: 'name' | 'lastName' | 'email' | 'phone' | 'identification') {
+    const c = this.userData.controls[field];
+    return c.invalid && (c.touched || c.dirty);
+  }
+
+  back() {
+    this.router.navigate(['/home/event', this.idEvents, 'ticket']);
+  }
+
+  proceedToPayment() {
+    if (this.userData.invalid) {
+      this.userData.markAllAsTouched();
+      this.messageService.add({ severity: 'warn', summary: 'Revisa tus datos', detail: 'Completa los campos marcados.' });
+      return;
     }
-  }
 
-    ngOnDestroy() {
-    document.body.style.backgroundImage = '';
-    document.body.style.backgroundSize = '';
-    document.body.style.backgroundPosition = '';
-    document.body.style.backgroundRepeat = '';
-  }
-
-   private getFullUrl(path: string): string {
-        if (!path) return '';
-        // absolute URL
-        if (/^https?:\/\//i.test(path)) return path;
-        if (/^(assets\/|\/)/.test(path)) return path;
-        return `${environment.apiImg}/${path}`;
-      }
-
-  proceedToPayment(){
     const paymentData = {
-      user: this.userData.value,
+      user: this.userData.getRawValue(),
       total: this.total,
       ticket: this.selected,
-      event: this.event
-    }
+      event: this.event()
+    };
 
-    console.log("paymentData to send:", paymentData);
-
-    this.router.navigate(['/home/event/' + this.idEvents + "/ticket/checkout/payment"], { state: { data: paymentData } });  
+    this.router.navigate(['/home/event/' + this.idEvents + '/ticket/checkout/payment'], { state: { data: paymentData } });
   }
 }

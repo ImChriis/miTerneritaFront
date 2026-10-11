@@ -1,71 +1,121 @@
-<div class="container">
-    <div class="sections">
-    <p>Detalles del evento ></p> <p  class="selected">Espacios ></p> <p>Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
+<div class="tm-page-backdrop" aria-hidden="true">
+    <img src="{{ backdrop() }}" alt="" />
 </div>
 
-<div class="content">
-  <div class="details">
-    <div class="title">
-      <h1>{{ name }}</h1>
-    </div>
+<div class="tm-container tm-flow">
+    <app-purchase-steps [current]="1" [eventId]="idEvent" />
 
-    <div class="date">
-      <p><i class="pi pi-calendar"></i> {{ date }}</p>
-      <p><i class="pi pi-clock"></i> {{ time }}</p>
-    </div>
+    <header class="tm-flow-head">
+        <img class="thumb" src="{{ flyer() }}" alt="" />
+        <div>
+            <p class="tm-eyebrow">Elige tus entradas</p>
+            <h1>{{ event()?.name ?? 'Cargando…' }}</h1>
+            @if (event(); as ev) {
+                <p class="meta">
+                    <span><i class="pi pi-calendar"></i>{{ day() | date: "EEE d 'de' MMMM" | capFirst }}</span>
+                    <span><i class="pi pi-clock"></i>{{ time() }}</span>
+                    @if (ev.room) {
+                        <span><i class="pi pi-map-marker"></i>{{ ev.room }}</span>
+                    }
+                </p>
+            }
+        </div>
+    </header>
 
-    <div class="title">
-        <h3>Selecciona tu espacio</h3>
-    </div>
-
-    <form action="" (submit)="$event.preventDefault()">
-        <div class="inputs">
-              <div class="inputGroup">
-                <label for="zone">Tipo de espacio</label>
-                <!-- Si tienes un array `zones` en el componente, usa *ngFor y [value]="zone.idZona" -->
-                 <p-select id="zones" name="selectedZone" [options]="zones" optionLabel="name" [(ngModel)]="selectedZone" optionLabel="name" class="w-full md:w-56"></p-select>
+    <div class="tm-flow-grid">
+        <section class="tm-card tm-card--pad picker">
+            <div class="block-head">
+                <h2>Tipos de entrada</h2>
+                <span class="tm-chip">Máx. {{ max }} por compra</span>
             </div>
 
-            <div class="inputGroup cantidad">
-                <label for="zone">Cantidad</label>
-                <div class="cantidad-input">
-                    <button type="button" (click)="decrement()" [disabled]="cantidad <= 1">-</button>
-                    <input pInputText type="text" id="cantidad" [value]="cantidad" readonly>
-                    <button type="button" (click)="increment()" [disabled]="cantidad >= 10">+</button>
+            @if (loading()) {
+                @for (s of [0, 1, 2]; track s) {
+                    <div class="tm-skeleton option-skeleton"></div>
+                }
+            } @else if (zones().length) {
+                <ul class="options">
+                    @for (zone of zones(); track zone.idTicket) {
+                        <li
+                            [id]="'zone-' + zone.idTicket"
+                            class="option"
+                            [class.is-active]="activeZone() === zone.idTicket"
+                            [class.has-qty]="qty(zone) > 0"
+                        >
+                            <span class="option-icon"><i class="pi pi-ticket"></i></span>
+                            <div class="option-info">
+                                <strong>{{ zone.name }}</strong>
+                                <small>Precio por persona</small>
+                            </div>
+                            <strong class="option-price">${{ price(zone) | number: '1.2-2' }}</strong>
+                            <div class="tm-qty">
+                                <button type="button" [attr.aria-label]="'Quitar una entrada ' + zone.name" [disabled]="qty(zone) === 0" (click)="decrement(zone)">
+                                    <i class="pi pi-minus"></i>
+                                </button>
+                                <output aria-live="polite">{{ qty(zone) }}</output>
+                                <button type="button" [attr.aria-label]="'Agregar una entrada ' + zone.name" [disabled]="count() >= max" (click)="increment(zone)">
+                                    <i class="pi pi-plus"></i>
+                                </button>
+                            </div>
+                        </li>
+                    }
+                </ul>
+
+                <div class="block-head map-head">
+                    <h2>Plano de zonas</h2>
+                    <span class="tm-muted">Toca una zona para agregarla</span>
                 </div>
+                <app-venue-map [zones]="mapZones()" [active]="activeZone()" (pick)="onPick($event)" />
+            } @else {
+                <div class="tm-empty">
+                    <span class="tm-empty-icon"><i class="pi pi-ticket"></i></span>
+                    <h3>Aún no hay entradas a la venta</h3>
+                    <p>Vuelve pronto: estamos preparando las entradas para este evento.</p>
+                </div>
+            }
+        </section>
+
+        <aside class="summary">
+            <div class="tm-card tm-card--pad summary-card">
+                <h2>Tu compra</h2>
+
+                @if (selected().length) {
+                    <ul class="lines">
+                        @for (item of selected(); track item.id) {
+                            <li>
+                                <div>
+                                    <strong>{{ item.name }}</strong>
+                                    <small>{{ item.cantidad }} × ${{ item.total / item.cantidad | number: '1.2-2' }}</small>
+                                </div>
+                                <span>${{ item.total | number: '1.2-2' }}</span>
+                                <button type="button" class="remove" [attr.aria-label]="'Quitar ' + item.name" (click)="clearSelection(item.id)">
+                                    <i class="pi pi-times"></i>
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                } @else {
+                    <p class="empty-lines"><i class="pi pi-shopping-cart"></i> Aún no has elegido entradas.</p>
+                }
+
+                <div class="tm-summary-total">
+                    <span>Total <small class="tm-muted">({{ count() }} {{ count() === 1 ? 'entrada' : 'entradas' }})</small></span>
+                    <strong>${{ total() | number: '1.2-2' }}</strong>
+                </div>
+
+                <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" [disabled]="!count()" (click)="goToCheckout()">
+                    Continuar <i class="pi pi-arrow-right"></i>
+                </button>
+                <p class="tm-hint center">Precios expresados en dólares (USD).</p>
             </div>
-        </div>
-
-        <div class="btnDetails">
-          <!-- llamar al método que añade la selección -->
-          <button class="btn2" type="button" (click)="agregarSeleccion()">Agregar</button>
-        </div>
-     </form>
-
-    <div class="summary" *ngIf="selected.length > 0">
-      <div class="summary" [class.empty]="selected.length === 0">
-          <!-- <div class="summaryTitle">
-            <h3>Seleccion actual</h3>
-          </div> -->
-
-          <div class="summaryList">
-            <div class="summaryInfo" *ngFor="let item of selected; let i = index">
-              <i class="pi pi-times delete" (click)="clearSelection(i)"></i>
-              <p><span>{{ item.name }} x{{ item.cantidad }}</span></p>
-              <p>Total: <span>${{ item.total | number:'1.2-2' }}</span></p>
-          </div>
-
-            <!-- placeholder para reservar espacio cuando no hay items -->
-            <div class="summaryPlaceholder" *ngIf="selected.length === 0"></div>
-          </div>
-      </div>
+        </aside>
     </div>
-    
-        <div class="btnDetails" *ngIf="selected.length > 0">
-            <button class="btn2" (click)="goToCheckout(idEvent)">Continuar</button>
-        </div>
-</div>
-</div>
 </div>
 
-<app-timer></app-timer>
+<div class="tm-mobile-bar" [class.is-visible]="count() > 0">
+    <div>
+        <small>{{ count() }} {{ count() === 1 ? 'entrada' : 'entradas' }}</small>
+        <strong>${{ total() | number: '1.2-2' }}</strong>
+    </div>
+    <button type="button" class="tm-btn tm-btn--primary" (click)="goToCheckout()">Continuar <i class="pi pi-arrow-right"></i></button>
+</div>

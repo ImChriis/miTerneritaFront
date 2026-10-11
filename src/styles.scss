@@ -1,74 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
-@import "primeicons/primeicons.css";
+/* Estilos globales — el sistema de diseño vive en src/styles/ */
 
-@font-face {
-    font-family: 'AlteHaasGrotesk';
-    src: url('./assets/fonts/AlteHaasGroteskRegular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'AlteHaasGroteskBold';
-    src: url('./assets/fonts/AlteHaasGroteskBold.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-p, span, a, li, label, button, small, input {
-   font-family: "AlteHaasGrotesk" !important;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: "AlteHaasGroteskBold" !important;
-}
-
-
-html, body{
-    height: 100%;
-    margin: 0;
-}
-
-app-root {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ocupa toda la altura de la ventana */
-}
-
-.p-tabpanels{
-    background-color: transparent !important;
-}
-
-.p-tablist-tab-list{
-    background-color: transparent !important;
-    color: white;
-}
-
-.p-tab{
-    background-color: transparent !important;
-    color: white !important;
-    font-family: "AlteHaasGrotesk" !important;
-}
-
-.p-tablist-active-bar{
-    background-color: white !important;
-    color: white !important;
-}
-
-@media(max-width: 425px){
-    .sections{
-        font-size: 13px;
-    }
-}
-
-@media(max-width: 375px){
-    .sections{
-        font-size: 11px
-    }
-}
-
-@media(max-width: 320px){
-    .sections{
-        font-size: 9px;
-    }
-}
+@use 'styles/tokens';
+@use 'styles/base';
+@use 'styles/components';
+@use 'styles/flow';
+@use 'styles/auth';
+@use 'styles/primeng';
+@use 'styles/admin';
+@use 'styles/motion';

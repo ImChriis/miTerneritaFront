@@ -23,31 +23,31 @@ form{
 }
 
 .formGroup label{
-    color: white;
+    color: var(--text);
 }
 
 .formGroup input{
     width: 100%;
-    color: white;
+    color: var(--text);
     background-color: transparent !important;
 }
 
 .formGroup .p-select{
     width: 100% !important;
     background-color: transparent;
-    color: white;
+    color: var(--text);
 }
 
 ::ng-deep .p-select-label.ng-star-inserted{
-    color: white !important;
+    color: var(--text) !important;
 }
 
 ::ng-deep .p-select .p-select-label.p-placeholder{
-    color: white !important;
+    color: var(--text) !important;
 }
 
 ::ng-deep .p-select .p-icon{
-    color: white !important;
+    color: var(--text) !important;
 }
 
 .imageTitle{
@@ -62,8 +62,8 @@ form{
 
 .custom-file-btn {
   background-color: transparent;
-  border: 1px solid white !important;
-  color: white;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text);
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
@@ -77,15 +77,15 @@ form{
 
 .btn{
     background-color: transparent;
-    color: white;
-    border: 1px solid white;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
     border-radius: 50px;
 }
 
 .btn:hover{
     background-color: transparent;
-    color: white;
-    border: 1px solid white;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
     opacity: 0.9;
 }
 

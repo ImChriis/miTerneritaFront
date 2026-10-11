@@ -1,55 +1,72 @@
-.timer-badge {
+:host {
+  display: inline-flex;
+}
+
+.timer {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background-color: rgba(46, 46, 46, 0.8); /* Fondo oscuro semitransparente */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  color: #e2e8f0;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(8px); /* Efecto de vidrio */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  width: fit-content;
-  
+  gap: 0.65rem;
+  padding: 6px 14px 6px 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+
+  svg {
+    width: 36px;
+    height: 36px;
+    transform: rotate(-90deg);
+  }
+
+  circle {
+    fill: none;
+    stroke-width: 3.5;
+  }
+
+  .track {
+    stroke: var(--surface-3);
+  }
+
+  .value {
+    stroke: var(--primary);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke var(--dur) var(--ease-out);
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+
+  small {
+    color: var(--text-subtle);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+
   strong {
-    color: white; /* Azul claro reluciente */
     font-size: 1.05rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums; /* Evita que el ancho de los números brinque cada segundo */
-    letter-spacing: 0.5px;
-    padding: 0.1rem 0.4rem;
-    background-color: rgba(56, 189, 248, 0.1);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-  }
-
-  position: fixed;
-  top: 8%;
-  right: 2%;
-}
-
-/* Agrega esto dentro de .timer-badge o a nivel raíz del archivo */
-strong.critical {
-  color: #f43f5e !important; /* Rojo de alerta */
-  background-color: rgba(244, 63, 94, 0.15) !important;
-  animation: pulse-red 1s infinite alternate;
-}
-
-@keyframes pulse-red {
-  from {
-    box-shadow: 0 0 0px rgba(244, 63, 94, 0);
-  }
-  to {
-    box-shadow: 0 0 8px rgba(244, 63, 94, 0.5);
+    font-variant-numeric: tabular-nums;
   }
 }
 
-@media (max-width: 768px) {
- .timer-badge{
-    position: fixed;
-    top: 10%;
-    right: 2%;
- }
+.critical {
+  border-color: transparent;
+  background: var(--danger-soft);
+
+  .value {
+    stroke: var(--danger);
+  }
+
+  strong {
+    color: var(--danger);
+    animation: blink 1s steps(2, start) infinite;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.55;
+  }
 }

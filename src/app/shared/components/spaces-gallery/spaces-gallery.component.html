@@ -1,0 +1,19 @@
+<section class="tm-section spaces">
+    <div class="tm-container">
+        <header class="tm-section-head" appReveal>
+            <div>
+                <p class="tm-eyebrow"><i class="pi pi-building"></i> El lugar</p>
+                <h2 class="tm-h2">Conoce nuestros espacios</h2>
+            </div>
+        </header>
+
+        <div class="bento">
+            @for (s of spaces; track s.name; let i = $index) {
+                <figure class="bento-item b{{ i }}" appReveal [revealDelay]="i * 80">
+                    <img src="{{ s.image }}" [alt]="'Espacio ' + s.name" loading="lazy" />
+                    <figcaption>{{ s.name }}</figcaption>
+                </figure>
+            }
+        </div>
+    </div>
+</section>
