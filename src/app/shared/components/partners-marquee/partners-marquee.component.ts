@@ -11,5 +11,6 @@ import { PARTNERS } from '../../../@core/data/site';
   styleUrl: './partners-marquee.component.scss'
 })
 export class PartnersMarqueeComponent {
-  readonly partners = PARTNERS;
+  // Con pocos logos una sola vuelta no llena pantallas anchas: se repite la lista.
+  readonly partners = Array.from({ length: Math.ceil(12 / PARTNERS.length) }, () => PARTNERS).flat();
 }

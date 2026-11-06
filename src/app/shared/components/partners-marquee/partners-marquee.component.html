@@ -7,12 +7,12 @@
     <div class="marquee">
         @for (copy of [0, 1]; track copy) {
             <ul class="marquee-track" [attr.aria-hidden]="copy === 1">
-                @for (p of partners; track p.name) {
+                @for (p of partners; track $index) {
                     <li>
                         @if (p.logo) {
                             <img src="{{ p.logo }}" [alt]="p.name" loading="lazy" />
                         } @else {
-                            <span class="logo-placeholder">{{ p.name }}</span>
+                            <span class="logo-text">{{ p.name }}</span>
                         }
                     </li>
                 }

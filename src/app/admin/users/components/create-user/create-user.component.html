@@ -1,60 +1,79 @@
- <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <div class="group name">
-            <div class="inputGroup">
-                <label for="name">Nombre</label>
-                <input type="text" id="name" formControlName="name">
-                <small *ngIf="isValidField('name')">{{ getErrorMessage('name') }}</small>
+<form class="adm-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+    <section class="adm-section">
+        <h3>Datos personales</h3>
+        <div class="adm-grid">
+            <div class="adm-field">
+                <label for="cu-name">Nombre</label>
+                <input pInputText id="cu-name" formControlName="name" autocomplete="off" />
+                @if (isValidField('name')) {
+                    <p class="adm-error">{{ getErrorMessage('name') }}</p>
+                }
             </div>
 
-            <div class="inputGroup">
-                <label for="lastName">Apellido</label>
-                <input type="text" id="lastName" formControlName="lastName">
-                <small *ngIf="isValidField('lastName')">{{ getErrorMessage('lastName') }}</small>
-            </div>
-        </div>
-
-        <div class="inputGroup">
-            <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" formControlName="email" autocomplete="off">
-            <small *ngIf="isValidField('email')">{{ getErrorMessage('email') }}</small>
-        </div>
-
-        <div class="group">
-            <div class="inputGroupType">
-                <label for="tipo">Tipo</label>
-                <select name="tipo" id="tipo" formControlName="tipo">
-                    <option value="V">V</option>
-                    <option value="J">J</option>
-                    <option value="E">E</option>
-                </select>
-                <small class="error-message">
-                    {{ isValidField('tipo') ? getErrorMessage('tipo') : '' }}
-                </small>
+            <div class="adm-field">
+                <label for="cu-last">Apellido</label>
+                <input pInputText id="cu-last" formControlName="lastName" autocomplete="off" />
+                @if (isValidField('lastName')) {
+                    <p class="adm-error">{{ getErrorMessage('lastName') }}</p>
+                }
             </div>
 
-            <div class="inputGroupId">
-                <label for="cedula">Cedula</label>
-                <input type="number" class="cedula" id="cedula" formControlName="noCedula" >
-                 <small class="error-message">
-                    {{ isValidField('cedula') ? getErrorMessage('cedula') : '' }}
-                </small>
+            <div class="adm-field">
+                <label for="cu-cedula">Cédula</label>
+                <div class="adm-joined">
+                    <select class="adm-input" formControlName="tipo" aria-label="Tipo de documento">
+                        <option value="V">V</option>
+                        <option value="J">J</option>
+                        <option value="E">E</option>
+                    </select>
+                    <input pInputText id="cu-cedula" inputmode="numeric" formControlName="noCedula" placeholder="12345678" />
+                </div>
+                @if (isValidField('noCedula')) {
+                    <p class="adm-error">{{ getErrorMessage('noCedula') }}</p>
+                }
+            </div>
+
+            <div class="adm-field">
+                <label for="cu-phone">Teléfono</label>
+                <input pInputText id="cu-phone" type="tel" formControlName="phone" placeholder="0414 123 4567" />
+                @if (isValidField('phone')) {
+                    <p class="adm-error">{{ getErrorMessage('phone') }}</p>
+                }
+            </div>
+
+            <div class="adm-field adm-full">
+                <label for="cu-email">Correo electrónico</label>
+                <input pInputText id="cu-email" type="email" formControlName="email" autocomplete="off" />
+                @if (isValidField('email')) {
+                    <p class="adm-error">{{ getErrorMessage('email') }}</p>
+                }
             </div>
         </div>
+    </section>
 
-        <div class="inputGroup">
-            <label for="telefono">Teléfono</label>
-            <input type="text" id="telefono" name="telefono" formControlName="phone">
-            <small *ngIf="isValidField('phone')">{{ getErrorMessage('phone') }}</small>
+    <section class="adm-section">
+        <h3>Acceso</h3>
+        <div class="adm-grid">
+            <div class="adm-field">
+                <label for="cu-pass">Contraseña</label>
+                <input pInputText id="cu-pass" type="password" formControlName="password" autocomplete="new-password" />
+                @if (isValidField('password')) {
+                    <p class="adm-error">{{ getErrorMessage('password') }}</p>
+                }
+            </div>
+
+            <div class="adm-field">
+                <label for="cu-pass2">Repite la contraseña</label>
+                <input pInputText id="cu-pass2" type="password" formControlName="confirmPassword" autocomplete="new-password" />
+                @if (passwordsDistintas()) {
+                    <p class="adm-error">Las contraseñas no coinciden.</p>
+                }
+            </div>
         </div>
+    </section>
 
-        <div class="inputGroup">
-            <label for="telefono">Contraseña</label>
-            <input type="text" id="telefono" name="telefono" formControlName="password">
-            <small *ngIf="isValidField('password')">{{ getErrorMessage('password') }}</small>
-        </div>
-
-
-        <div class="btn">
-            <button class="btnRegister" type="submit">Registrar</button>
-        </div>
-    </form>
+    <div class="adm-actions">
+        <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn">Crear usuario</button>
+    </div>
+</form>

@@ -1,6 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { EventsService } from '../../@core/services/events.service';
@@ -21,7 +21,7 @@ import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-checkout',
-  imports: [CapFirstPipe, DatePipe, DecimalPipe, ReactiveFormsModule, PurchaseStepsComponent, PriceSummaryComponent],
+  imports: [CapFirstPipe, DatePipe, ReactiveFormsModule, PurchaseStepsComponent, PriceSummaryComponent],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
 })
@@ -37,9 +37,6 @@ export class CheckoutComponent implements OnInit {
   /** Comida y bebida apartadas en el paso de consumo. */
   consumo: LineaConsumo[] = [];
   total = 0;
-  totalEntradas = 0;
-  totalConsumo = 0;
-  count = 0;
 
   event = signal<Event | null>(null);
   day = computed(() => parseEventDate(this.event()?.date));
@@ -68,10 +65,7 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    this.totalEntradas = this.selected.reduce((acc, item) => acc + item.total, 0);
-    this.totalConsumo = this.consumo.reduce((acc, item) => acc + item.total, 0);
-    this.total = this.totalEntradas + this.totalConsumo;
-    this.count = this.selected.reduce((acc, item) => acc + item.cantidad, 0) + accesos;
+    this.total = [...this.selected, ...this.consumo].reduce((acc, item) => acc + item.total, 0);
 
     this.eventsService.getEventById(this.idEvents).subscribe({
       next: event => this.event.set(event)

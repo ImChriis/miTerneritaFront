@@ -1,42 +1,33 @@
-<div class="container">
-    <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
-        <div class="formGroup2">
-            <div class="formGroup">
-                <label for="Nombre">Nombre</label>
-                <input pInputText id="Nombre" formControlName="name" type="text" />
-            </div>
-
-            <div class="formGroup">
-                <label for="Nombre">Apellido</label>
-                <input pInputText id="Nombre" formControlName="lastName" type="text" />
-            </div>
+<form class="adm-form" [formGroup]="editUserForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="adm-grid">
+        <div class="adm-field">
+            <label for="eu-name">Nombre</label>
+            <input pInputText id="eu-name" formControlName="name" />
         </div>
 
-        <div class="formGroup2">
-            <div class="formGroup">
-                <label for="Nombre">Cedula</label>
-                <input pInputText id="Nombre" formControlName="cedula" type="text" />
-            </div>
-
-            <div class="formGroup">
-                <label for="Nombre">Telefono</label>
-                <input pInputText id="Nombre" formControlName="phone" type="text" />
-            </div>
+        <div class="adm-field">
+            <label for="eu-last">Apellido</label>
+            <input pInputText id="eu-last" formControlName="lastName" />
         </div>
 
-        
-        <div class="formGroup">
-            <label for="Nombre">Correo electronico</label>
-            <input pInputText id="Nombre" formControlName="email" type="text" />
+        <div class="adm-field">
+            <label for="eu-cedula">Cédula</label>
+            <input pInputText id="eu-cedula" formControlName="cedula" placeholder="V-12345678" />
         </div>
-<!-- 
-        <div class="formGroup">
-            <label for="Estado">Estado</label>
-            <p-select [options]="status" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" formControlName="status" appendTo="body"/>
-        </div> -->
 
-        <div class="btnContainer">
-            <button class="btn" pButton type="submit" label="Actualizar"></button>
+        <div class="adm-field">
+            <label for="eu-phone">Teléfono</label>
+            <input pInputText id="eu-phone" type="tel" formControlName="phone" />
         </div>
-    </form>
-</div>
+
+        <div class="adm-field adm-full">
+            <label for="eu-email">Correo electrónico</label>
+            <input pInputText id="eu-email" type="email" formControlName="email" />
+        </div>
+    </div>
+
+    <div class="adm-actions">
+        <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn">Guardar cambios</button>
+    </div>
+</form>

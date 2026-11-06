@@ -62,39 +62,23 @@ export class TicketsComponent implements OnInit{
   openCreateModal(){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(CreateTicketsComponent, {
-      header: 'Agregar Ticket',
-      width: '50vw',
-      // height: '65vh',
+      header: 'Nueva entrada',
+      width: '520px',
       modal: true,
       closable: true,
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
-    })
-    this.ref.onClose.subscribe(() => {
-      this.isModalOpen = false;
+      breakpoints: { '960px': '94vw' }
     });
   }
 
   openEditModal(ticket: Ticket){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(UpdateTicketsComponent, {
-      header: 'Editar Ticket',
-      width: '50vw',
-      // height: '65vh',
+      header: 'Editar entrada',
+      width: '520px',
       modal: true,
       closable: true,
       data: { ticket },
-            breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
-    })
-    this.ref.onClose.subscribe(() => {
-      this.isModalOpen = false;
+      breakpoints: { '960px': '94vw' }
     });
   }
 

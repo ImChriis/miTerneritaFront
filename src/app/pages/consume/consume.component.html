@@ -82,36 +82,7 @@
             <div class="tm-card tm-card--pad summary-card">
                 <h2>Tu compra</h2>
 
-                @if (selected.length || lineas().length) {
-                    <ul class="lines">
-                        @for (item of selected; track item.id) {
-                            <li>
-                                <div>
-                                    <strong>{{ item.name }}</strong>
-                                    <small>{{ item.cantidad }} × ${{ item.total / item.cantidad | number: '1.2-2' }}</small>
-                                </div>
-                                <span>${{ item.total | number: '1.2-2' }}</span>
-                            </li>
-                        }
-                        @for (l of lineas(); track l.name) {
-                            <li>
-                                <div>
-                                    <strong>{{ l.name }}</strong>
-                                    <small>{{ l.cantidad }} × ${{ l.total / l.cantidad | number: '1.2-2' }}</small>
-                                </div>
-                                <span>${{ l.total | number: '1.2-2' }}</span>
-                            </li>
-                        }
-                    </ul>
-                } @else {
-                    <p class="empty-lines"><i class="pi pi-shopping-cart"></i> Agrega una entrada o una botella con acceso.</p>
-                }
-
-                @if (accesos()) {
-                    <p class="tm-hint">Tus botellas incluyen acceso General para {{ accesos() }} {{ accesos() === 1 ? 'persona' : 'personas' }}.</p>
-                }
-
-                <app-price-summary [entradas]="totalEntradas()" [consumo]="totalConsumo()" [personas]="entradas()" />
+                <app-price-summary [entradas]="selected" [consumo]="lineas()" vacio="Agrega una entrada o una botella con acceso." />
 
                 <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" (click)="continue()">
                     Continuar <i class="pi pi-arrow-right"></i>

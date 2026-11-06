@@ -79,16 +79,11 @@ export class EventsComponent implements OnInit{
   openCreateModal(){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(CreateEventsComponent, {
-      header: 'Agregar Evento',
-      width: '50vw',
-      // height: '65vh',
+      header: 'Nuevo evento',
+      width: '880px',
       modal: true,
       closable: true,
-       breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
@@ -98,17 +93,12 @@ export class EventsComponent implements OnInit{
   openEditModal(event: any){
     this.isModalOpen = true;
     this.ref = this.dialogService.open(UpdateEventsComponent, {
-      header: 'Editar Evento',
-      width: '50vw',
-      // height: '65vh',
+      header: 'Editar evento',
+      width: '880px',
       modal: true,
       closable: true,
       data: { event },
-       breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;

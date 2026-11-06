@@ -1,0 +1,641 @@
+// =============================================================
+//  Formularios de los modales del panel (crear / editar).
+//  Los diálogos se montan en <body>, por eso estas clases son globales.
+// =============================================================
+.adm-form {
+  display: grid;
+  gap: 1.5rem;
+  color: var(--text);
+}
+
+// Foto a la izquierda, campos a la derecha
+.adm-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.adm-section {
+  display: grid;
+  gap: 1rem;
+
+  > h3 {
+    margin: 0;
+    color: var(--text-subtle);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+.adm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.adm-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.adm-full {
+  grid-column: 1 / -1;
+}
+
+.adm-field {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+
+  .p-inputtext,
+  .p-select,
+  .adm-input {
+    width: 100%;
+  }
+
+  // Misma altura para inputs de PrimeNG, nativos, stepper y botones (44px)
+  input.p-inputtext,
+  .p-select {
+    height: 44px;
+  }
+
+  .p-select {
+    align-items: center;
+  }
+}
+
+.adm-field-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.adm-hint,
+.adm-error {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.adm-hint {
+  color: var(--text-subtle);
+}
+
+.adm-error {
+  color: var(--danger);
+}
+
+// Rótulo de un dato que no es un input (cliente encontrado, método...)
+.adm-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.adm-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-self: start;
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Zona + cantidad + botón Agregar en una fila
+.adm-add {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px auto;
+  align-items: end;
+  gap: 1rem;
+}
+
+// Inputs nativos (tipo de cédula, contraseñas...)
+.adm-input {
+  height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+  transition:
+    box-shadow var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-soft);
+  }
+}
+
+.p-dialog input.ng-invalid.ng-touched,
+.p-dialog select.ng-invalid.ng-touched {
+  border-color: var(--danger) !important;
+}
+
+// "$" delante del precio
+.adm-prefix {
+  position: relative;
+
+  > span {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    z-index: 1;
+    transform: translateY(-50%);
+    color: var(--text-subtle);
+    font-weight: 700;
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    padding-left: 1.9rem !important;
+  }
+}
+
+// Cédula: tipo (V/J/E) + número en una sola fila
+.adm-joined {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+// Fila con interruptor (disponible, consumo...)
+.adm-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+
+  cursor: pointer;
+
+  strong {
+    display: block;
+    color: var(--text);
+    font-size: 0.92rem;
+  }
+
+  small {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 400;
+  }
+}
+
+// Selector segmentado (estado del pago)
+.adm-segment {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+
+  label {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-out);
+
+    &:has(input:checked) {
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    &:has(input:focus-visible) {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  span {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .seg-pendiente:has(input:checked) {
+    background: var(--warning-soft);
+
+    span {
+      color: var(--warning);
+    }
+  }
+
+  .seg-aprobado:has(input:checked) {
+    background: var(--success-soft);
+
+    span {
+      color: var(--success);
+    }
+  }
+
+  .seg-rechazado:has(input:checked) {
+    background: var(--danger-soft);
+
+    span {
+      color: var(--danger);
+    }
+  }
+}
+
+// Foto con fondo difuminado (igual que las tarjetas del catálogo)
+.adm-photo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  padding: 0;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--primary);
+    outline: none;
+  }
+
+  &.has-img {
+    border-style: solid;
+    border-color: var(--border);
+    background: #0d0d10;
+  }
+
+  .fondo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(22px) brightness(0.75);
+    transform: scale(1.25);
+  }
+
+  .foto {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .vacio {
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    padding: 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    .pi {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    small {
+      color: var(--text-subtle);
+      font-weight: 400;
+    }
+  }
+}
+
+.adm-photo--poster {
+  aspect-ratio: 4 / 5;
+}
+
+.adm-photo-wrap {
+  display: grid;
+  gap: 0.5rem;
+
+  > small {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+.adm-photo-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+
+  button {
+    height: 30px;
+    padding: 0 0.75rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+
+    &.quitar:hover {
+      border-color: var(--danger);
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+  }
+}
+
+.adm-photos {
+  display: grid;
+  grid-template-columns: 1.25fr repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: start;
+}
+
+// Datos de solo lectura (detalle de un pago)
+.adm-dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+
+  div {
+    min-width: 0;
+  }
+
+  dt {
+    margin-bottom: 0.2rem;
+    color: var(--text-subtle);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+
+    small {
+      display: block;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+  }
+}
+
+// Comprobante de pago
+.adm-receipt {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: #0d0d10;
+
+  img {
+    display: block;
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+  }
+
+  p {
+    margin: 0;
+    color: var(--on-media-muted);
+  }
+}
+
+// Líneas agregadas (entradas de un pago manual)
+.adm-lines {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+
+    & + li {
+      border-top: 1px solid var(--border);
+    }
+
+    > div {
+      flex: 1;
+      min-width: 0;
+    }
+
+    small {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    > span {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .total {
+    background: var(--surface-2);
+    font-weight: 700;
+
+    > span {
+      font-size: 1.15rem;
+    }
+  }
+}
+
+.adm-icon-btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-subtle);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+}
+
+// Stepper de cantidad
+.adm-stepper {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+
+  button {
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    &:disabled {
+      color: var(--text-subtle);
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--surface-3);
+    }
+  }
+
+  output {
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Cliente encontrado por cédula
+.adm-found {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--success-soft);
+  color: var(--success);
+  font-weight: 700;
+
+  &.is-empty {
+    background: var(--surface-2);
+    color: var(--text-subtle);
+    font-weight: 400;
+  }
+}
+
+// Botonera fija al pie del modal
+.adm-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 0 0.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.4rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: var(--primary-contrast);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+
+  &:hover:not(:disabled) {
+    background: var(--primary-hover);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.adm-btn--ghost {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+}
+
+@media (max-width: 720px) {
+  .adm-layout,
+  .adm-grid,
+  .adm-grid--3,
+  .adm-add,
+  .adm-dl {
+    grid-template-columns: 1fr;
+  }
+
+  .adm-layout > .adm-photo-wrap {
+    width: min(100%, 240px);
+    justify-self: center;
+  }
+
+  .adm-photos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .adm-actions .adm-btn {
+    flex: 1;
+  }
+}

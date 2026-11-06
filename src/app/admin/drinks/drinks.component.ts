@@ -7,10 +7,9 @@ import { DialogModule } from 'primeng/dialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DrinksService } from '../../@core/services/drinks.service';
 import { MessageService } from 'primeng/api';
-import { CreateDrinksComponent } from './components/create-drinks/create-drinks.component';
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
-import { UpdateDrinksComponent } from './components/update-drinks/update-drinks.component';
+import { ProductoFormComponent } from '../../shared/components/producto-form/producto-form.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
@@ -75,17 +74,13 @@ export class DrinksComponent implements OnInit{
 
   openCreateModal(){
     this.isModalOpen = true;
-    this.ref = this.dialogService.open(CreateDrinksComponent, {
-      header: 'Agregar Bebida',
-      width: '50vw',
-      // height: '65vh',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Nueva bebida',
+      width: '780px',
       modal: true,
       closable: true,
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      data: { tipo: 'bebida' },
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
@@ -94,16 +89,13 @@ export class DrinksComponent implements OnInit{
 
   openEditModal(drinks: Drink){
     this.isModalOpen = true;
-    this.ref = this.dialogService.open(UpdateDrinksComponent, {
-      width: '55vw',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Editar bebida',
+      width: '780px',
       modal: true,
       closable: true,
-      data: { drinks },
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog2'
+      data: { tipo: 'bebida', producto: drinks },
+      breakpoints: { '960px': '94vw' }
     });
 
     this.ref.onClose.subscribe(() => {

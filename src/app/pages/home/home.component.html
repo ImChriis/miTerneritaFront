@@ -263,27 +263,8 @@
     </div>
 </section>
 
-<!-- ================= CONCIERTO: MAPA DEL SALÓN ================= -->
-@if (concerts()[0]; as next) {
-    <section class="tm-section salon-cta" id="concierto">
-        <div class="tm-container">
-            <div class="salon-cta-card" appReveal>
-                <div class="salon-cta-text">
-                    <p class="tm-eyebrow"><i class="pi pi-map"></i> Concierto · Mapa del salón</p>
-                    <h2 class="tm-h2">{{ next.name }}</h2>
-                    <p class="tm-lead">
-                        {{ next.day | date: "EEEE d 'de' MMMM" | capFirst }} · {{ next.timeLabel }}. Elige tu zona en el mapa: General, VIP, Palco A o Palco B,
-                        y aparta tu consumo desde ahora.
-                    </p>
-                    <a class="tm-btn tm-btn--primary tm-btn--lg" routerLink="/concierto">Ver mapa y precios <i class="pi pi-arrow-right"></i></a>
-                </div>
-                <img src="{{ next.flyerUrl }}" [alt]="'Flyer de ' + next.name" loading="lazy" />
-            </div>
-        </div>
-    </section>
-}
-
-<!-- ================= CONCIERTOS ================= -->
+<!-- ================= CONCIERTOS =================
+     El próximo concierto va destacado con el mapa del salón; los demás, en la fila de abajo. -->
 <section class="tm-section concerts" id="conciertos">
     <div class="concerts-glow" aria-hidden="true"></div>
     <div class="tm-container">
@@ -293,17 +274,40 @@
                 <h2 class="tm-h2">Conciertos</h2>
                 <p class="tm-lead">Artistas y bandas en vivo en nuestros salones.</p>
             </div>
-            @if (concerts().length > 1) {
-                <div class="tm-scroller-nav">
-                    <button type="button" class="tm-icon-btn" aria-label="Anterior" (click)="scrollRow('concerts', -1)"><i class="pi pi-arrow-left"></i></button>
-                    <button type="button" class="tm-icon-btn" aria-label="Siguiente" (click)="scrollRow('concerts', 1)"><i class="pi pi-arrow-right"></i></button>
-                </div>
-            }
         </header>
 
-        @if (concerts().length) {
+        @if (concerts()[0]; as next) {
+            <div class="salon-cta-card" appReveal>
+                <div class="salon-cta-text">
+                    <p class="tm-eyebrow"><i class="pi pi-map"></i> Próximo concierto · Mapa del salón</p>
+                    <h3 class="tm-h2">{{ next.name }}</h3>
+                    <p class="tm-lead">
+                        {{ next.day | date: "EEEE d 'de' MMMM" | capFirst }} · {{ next.timeLabel }}. Elige tu zona en el mapa: General, VIP, Palco A o Palco B,
+                        y aparta tu consumo desde ahora.
+                    </p>
+                    <div class="salon-cta-foot">
+                        <a class="tm-btn tm-btn--primary tm-btn--lg" routerLink="/concierto">Ver mapa y precios <i class="pi pi-arrow-right"></i></a>
+                        @if (next.minPrice !== null) {
+                            <span>Desde <strong>${{ next.minPrice | number: '1.0-2' }}</strong></span>
+                        }
+                    </div>
+                </div>
+                <img src="{{ next.flyerUrl }}" [alt]="'Flyer de ' + next.name" loading="lazy" />
+            </div>
+        }
+
+        @if (otherConcerts().length) {
+            <div class="concerts-more">
+                <h3>Más conciertos</h3>
+                @if (otherConcerts().length > 1) {
+                    <div class="tm-scroller-nav">
+                        <button type="button" class="tm-icon-btn" aria-label="Anterior" (click)="scrollRow('concerts', -1)"><i class="pi pi-arrow-left"></i></button>
+                        <button type="button" class="tm-icon-btn" aria-label="Siguiente" (click)="scrollRow('concerts', 1)"><i class="pi pi-arrow-right"></i></button>
+                    </div>
+                }
+            </div>
             <div class="tm-scroller concert-row" #concertScroller>
-                @for (ev of concerts(); track ev.idEvents; let i = $index) {
+                @for (ev of otherConcerts(); track ev.idEvents; let i = $index) {
                     <article class="concert-card" appReveal [revealDelay]="i * 70">
                         <img src="{{ ev.flyerUrl }}" [alt]="'Flyer de ' + ev.name" loading="lazy" />
                         <div class="concert-info">
@@ -322,7 +326,7 @@
                     </article>
                 }
             </div>
-        } @else if (!loading()) {
+        } @else if (!loading() && !concerts().length) {
             <div class="concerts-empty" appReveal>
                 <div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
                 <div>

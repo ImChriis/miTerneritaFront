@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="18 30 296 128" role="img" aria-label="Loop">
+  <defs>
+    <mask id="huecos">
+      <rect x="0" y="0" width="340" height="190" fill="#fff"/>
+      <circle cx="102" cy="90" r="13" fill="#000"/>
+      <circle cx="186" cy="90" r="13" fill="#000"/>
+      <circle cx="262" cy="90" r="13" fill="#000"/>
+    </mask>
+  </defs>
+  <g fill="#c9a25d" mask="url(#huecos)">
+    <rect x="24" y="36" width="36" height="108" rx="6"/>
+    <circle cx="102" cy="90" r="46"/>
+    <circle cx="186" cy="90" r="46"/>
+    <rect x="216" y="44" width="36" height="108" rx="6"/>
+    <circle cx="262" cy="90" r="46"/>
+  </g>
+</svg>

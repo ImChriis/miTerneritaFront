@@ -253,16 +253,12 @@ export class DashboardComponent implements OnInit {
 
   openUpdateModal(payment: Payment) {
     this.ref = this.dialogService.open(UpdatePaymentComponent, {
-      header: 'Actualizar pago',
-      width: '720px',
+      header: 'Revisar pago',
+      width: '820px',
       modal: true,
       closable: true,
       data: { payment },
-      breakpoints: {
-        '960px': '85vw',
-        '640px': '94vw'
-      },
-      styleClass: 'custom-dialog'
+      breakpoints: { '960px': '94vw' }
     });
   }
 }

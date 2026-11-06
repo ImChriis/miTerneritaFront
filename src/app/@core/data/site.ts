@@ -17,18 +17,14 @@ export interface Partner {
 
 /**
  * Empresas aliadas / patrocinadores del carrusel blanco de la página de inicio.
- * Para agregar logos: copia los archivos (PNG/SVG con fondo transparente) en
- * src/assets/img/partners/ y completa `logo` en cada entrada.
+ * Logos en src/assets/img/partners/ (PNG/SVG recortado, fondo transparente).
+ * Sin `logo` se muestra el nombre como texto.
  */
 export const PARTNERS: Partner[] = [
-  { name: 'Aliado 01' },
-  { name: 'Aliado 02' },
-  { name: 'Aliado 03' },
-  { name: 'Aliado 04' },
-  { name: 'Aliado 05' },
-  { name: 'Aliado 06' },
-  { name: 'Aliado 07' },
-  { name: 'Aliado 08' }
+  { name: 'Loop', logo: 'assets/img/partners/loop.svg' },
+  { name: 'Santa Teresa' },
+  { name: 'Smirnoff', logo: 'assets/img/partners/smirnoff.png' },
+  { name: 'Old Parr', logo: 'assets/img/partners/old-parr.png' }
 ];
 
 /** Espacios del local (sección "Conoce nuestros espacios"). */

@@ -70,6 +70,8 @@ export class HomeComponent implements OnInit {
       .slice(0, 12)
   );
   concerts = computed(() => this.upcoming().filter(e => e.category === 'concierto'));
+  /** El primero va destacado con el mapa del salón; estos son los siguientes. */
+  otherConcerts = computed(() => this.concerts().slice(1));
   heroSlides = computed(() => this.upcoming().slice(0, 6));
 
   // ---------- Filtros ----------

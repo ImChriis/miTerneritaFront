@@ -83,8 +83,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
   idEvents!: number;
   idUser!: number;
   total = 0;
-  totalEntradas = 0;
-  totalConsumo = 0;
   /** Total en Bs a la tasa BCV del día (pago móvil). */
   totalBs = computed(() => this.tasaService.bs(this.total));
   paymentData: any;
@@ -129,8 +127,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
     }
 
     this.total = this.paymentData.total;
-    this.totalEntradas = (this.paymentData.ticket ?? []).reduce((acc: number, t: any) => acc + t.total, 0);
-    this.totalConsumo = (this.paymentData.consumo ?? []).reduce((acc: number, l: any) => acc + l.total, 0);
     const items = (this.paymentData.ticket ?? []).map((t: any) => ({
       idTicket: Number(t.id),
       cantidad: Number(t.cantidad)

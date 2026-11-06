@@ -9,6 +9,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FormEvent } from '../../../../@core/models/forms/form-events';
 import { EditorModule } from 'primeng/editor';
 import { SelectModule } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-create-events',
@@ -18,7 +19,8 @@ import { SelectModule } from 'primeng/select';
     ButtonModule,
     ReactiveFormsModule,
     EditorModule,
-    SelectModule
+    SelectModule,
+    ToggleSwitch
   ],
   templateUrl: './create-events.component.html',
   styleUrl: './create-events.component.scss'
@@ -64,6 +66,27 @@ export class CreateEventsComponent {
     consumo: new FormControl<number | null>(null),
     category: new FormControl<string>('evento', { nonNullable: true })
   });
+
+  /** Fotos del evento: el flyer es la portada; image1..3, la galería. */
+  readonly fotos = [
+    { key: 'flyer', label: 'Flyer', hint: 'Portada 4:5' },
+    { key: 'image1', label: 'Imagen 1', hint: 'Galería' },
+    { key: 'image2', label: 'Imagen 2', hint: 'Galería' },
+    { key: 'image3', label: 'Imagen 3', hint: 'Galería' }
+  ] as const;
+
+  cerrar() {
+    this.dialogRef.close();
+  }
+
+  /** Hay una foto nueva elegida (el control guarda el nombre del archivo actual mientras no se cambie). */
+  esNueva(controlName: 'flyer' | 'image1' | 'image2' | 'image3'): boolean {
+    return this.eventsForm.get(controlName)?.value instanceof File;
+  }
+
+  getPreviewSrc(controlName: 'flyer' | 'image1' | 'image2' | 'image3'): string | null {
+    return this.previewUrls[controlName];
+  }
 
   onFileSelect(event: any, controlName: 'flyer'|'image1'|'image2'|'image3') {
     const file: File | null = event?.target?.files && event.target.files.length > 0 ? event.target.files[0] : null;

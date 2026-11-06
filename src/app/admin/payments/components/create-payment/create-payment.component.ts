@@ -192,6 +192,10 @@ agregarSeleccion() {
     }
   }
 
+  cerrar() {
+    this.ref?.close();
+  }
+
   onSubmit(){
     const formData = this.paymentFom.value;
     if (!formData.idUser) {

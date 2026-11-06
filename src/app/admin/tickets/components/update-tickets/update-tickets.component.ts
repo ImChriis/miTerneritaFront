@@ -9,6 +9,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Ticket } from '../../../../@core/models/ticket.model';
 import { FormTicket } from '../../../../@core/models/forms/form-ticket';
 import { SelectModule } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { EventsService } from '../../../../@core/services/events.service';
 import { Event } from '../../../../@core/models/event.model';
 
@@ -20,6 +21,7 @@ import { Event } from '../../../../@core/models/event.model';
     InputText,
     ButtonModule,
     SelectModule,
+    ToggleSwitch,
     FormsModule
   ],
   templateUrl: './update-tickets.component.html',
@@ -57,6 +59,10 @@ export class UpdateTicketsComponent implements OnInit{
           idEvents: this.ticket.idEvents || null
         });
     });
+  }
+
+  cerrar() {
+    this.dialogRef.close();
   }
 
   onSubmit(){

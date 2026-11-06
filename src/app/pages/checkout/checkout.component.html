@@ -95,28 +95,7 @@
                     </div>
                 </div>
 
-                <ul class="lines">
-                    @for (item of selected; track item.id) {
-                        <li>
-                            <div>
-                                <strong>{{ item.name }}</strong>
-                                <small>{{ item.cantidad }} × ${{ item.total / item.cantidad | number: '1.2-2' }}</small>
-                            </div>
-                            <span>${{ item.total | number: '1.2-2' }}</span>
-                        </li>
-                    }
-                    @for (l of consumo; track l.name) {
-                        <li>
-                            <div>
-                                <strong>{{ l.name }}</strong>
-                                <small>{{ l.cantidad }} × ${{ l.total / l.cantidad | number: '1.2-2' }}</small>
-                            </div>
-                            <span>${{ l.total | number: '1.2-2' }}</span>
-                        </li>
-                    }
-                </ul>
-
-                <app-price-summary [entradas]="totalEntradas" [consumo]="totalConsumo" [personas]="count" />
+                <app-price-summary [entradas]="selected" [consumo]="consumo" />
             </div>
         </aside>
     </div>

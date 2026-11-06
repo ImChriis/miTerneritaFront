@@ -3,10 +3,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FoodsService } from '../../@core/services/foods.service';
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { CreateFoodsComponent } from './components/create-foods/create-foods.component';
-import { UpdateDrinksComponent } from '../drinks/components/update-drinks/update-drinks.component';
 import { ButtonModule } from 'primeng/button';
-import { UpdateFoodsComponent } from './components/update-foods/update-foods.component';
+import { ProductoFormComponent } from '../../shared/components/producto-form/producto-form.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Food } from '../../@core/models/foods.model';
 import { FormsModule } from '@angular/forms';
@@ -66,17 +64,13 @@ export class FoodsComponent implements OnInit{
   }
 
   openCreateModal(){
-    this.ref = this.dialogService.open(CreateFoodsComponent, {
-     header: 'Agregar Comida',
-      width: '50vw',
-      // height: '65vh',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Nueva comida',
+      width: '780px',
       modal: true,
       closable: true,
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      data: { tipo: 'comida' },
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
@@ -84,16 +78,13 @@ export class FoodsComponent implements OnInit{
   }
 
   openEditModal(foods: any){
-    this.ref = this.dialogService.open(UpdateFoodsComponent, {
-      width: '55vw',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Editar comida',
+      width: '780px',
       modal: true,
       closable: true,
-      data: { foods },
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog2'
+      data: { tipo: 'comida', producto: foods },
+      breakpoints: { '960px': '94vw' }
     });
 
     this.ref.onClose.subscribe(() => {

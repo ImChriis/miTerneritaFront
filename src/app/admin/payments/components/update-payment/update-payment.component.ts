@@ -3,10 +3,8 @@ import { TasaService } from '../../../../@core/services/tasa.service';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
 import { PaymentService } from '../../../../@core/services/payment.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Select } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import { environment } from '../../../../../environments/environment.developer';
 
@@ -14,11 +12,9 @@ import { environment } from '../../../../../environments/environment.developer';
   selector: 'app-update-payment',
   imports: [
     CommonModule,
-    InputText,
     ButtonModule,
     ReactiveFormsModule,
-    FormsModule,
-    Select
+    FormsModule
   ],
   templateUrl: './update-payment.component.html',
   styleUrl: './update-payment.component.scss'
@@ -49,6 +45,7 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
   noDocumento!: string;
   idPayment!: number;
   img!: string;
+  sinComprobante = false;
   
 
    status = [
@@ -111,6 +108,7 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
       },
       error: (err) => {
         console.error('Error al obtener el comprobante:', err);
+        this.sinComprobante = true;
       }
     });
   }
@@ -122,16 +120,20 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
     }
   }
 
+  cerrar() {
+    this.dialogRef.close();
+  }
+
   onSubmit() {
     this.paymentService.updatePayment(this.idPayment, this.updatePaymentForm.value).subscribe({
       next: (response) => {
         console.log('Payment updated successfully:', response);
-        this.messageService.add({severity:'success', summary: 'Success', detail: 'Payment updated successfully'});
+        this.messageService.add({severity:'success', summary: 'Pago actualizado', detail: `Estado: ${this.updatePaymentForm.value.status}`});
         this.dialogRef.close();
       },
       error: (error) => {
         console.error('Error updating payment:', error);
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'Failed to update payment'});
+        this.messageService.add({severity:'error', summary: 'No se pudo actualizar el pago', detail: error?.error?.message ?? 'Intenta de nuevo'});
       }
     });
   }
