@@ -641,6 +641,48 @@
   }
 }
 
+// ================= CONCIERTO: MAPA DEL SALÓN =================
+.salon-cta-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(70% 90% at 100% 50%, var(--primary-soft), transparent 70%),
+    var(--surface-2);
+
+  img {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+
+  .tm-btn {
+    text-decoration: none;
+  }
+}
+
+.salon-cta-text {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .salon-cta-card {
+    grid-template-columns: 1fr;
+
+    img {
+      order: -1;
+      max-height: 240px;
+    }
+  }
+}
+
 // ================= CONCIERTOS =================
 .concerts {
   position: relative;

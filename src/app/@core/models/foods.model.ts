@@ -4,4 +4,6 @@ export interface Food{
     price: number;
     status: number;
     image: File;
+    detalle?: string | null;
+    orden?: number;
 }

@@ -105,12 +105,18 @@
                             <span>${{ item.total | number: '1.2-2' }}</span>
                         </li>
                     }
+                    @for (l of consumo; track l.name) {
+                        <li>
+                            <div>
+                                <strong>{{ l.name }}</strong>
+                                <small>{{ l.cantidad }} × ${{ l.total / l.cantidad | number: '1.2-2' }}</small>
+                            </div>
+                            <span>${{ l.total | number: '1.2-2' }}</span>
+                        </li>
+                    }
                 </ul>
 
-                <div class="tm-summary-total">
-                    <span>Total <small class="tm-muted">({{ count }} {{ count === 1 ? 'entrada' : 'entradas' }})</small></span>
-                    <strong>${{ total | number: '1.2-2' }}</strong>
-                </div>
+                <app-price-summary [entradas]="totalEntradas" [consumo]="totalConsumo" [personas]="count" />
             </div>
         </aside>
     </div>

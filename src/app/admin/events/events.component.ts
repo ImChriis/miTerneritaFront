@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { EventsService } from '../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { Observable, startWith, switchMap } from 'rxjs';
+import { map, Observable, startWith, switchMap } from 'rxjs';
+import { CatalogoGridComponent, ItemCatalogo } from '../../shared/components/catalogo-grid/catalogo-grid.component';
+import { formatTime12, isPastEvent, parseEventDate } from '../../@core/utils/event-utils';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CreateEventsComponent } from './components/create-events/create-events.component';
 import { UpdateEventsComponent } from './components/update-events/update-events.component';
 import { Event } from '../../@core/models/event.model';
-import { InputText } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
@@ -18,11 +18,10 @@ import { LoaderComponent } from '../../@core/components/loader/loader.component'
   selector: 'app-events',
   imports: [
     CommonModule,
-    TableModule,
-    InputText,
     CheckboxModule,
     FormsModule,
-    LoaderComponent
+    LoaderComponent,
+    CatalogoGridComponent
   ],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'
@@ -33,7 +32,8 @@ export class EventsComponent implements OnInit{
   private messageService = inject(MessageService);
   ref: DynamicDialogRef | undefined;
   isModalOpen = false;
-  events$!: Observable<Event[]>;
+  items$!: Observable<ItemCatalogo<Event>[]>;
+  seleccion: ItemCatalogo<Event>[] = [];
   selectAll = false;
   selectedEvents: Event[] = [];
   isLoading = signal(false);
@@ -45,17 +45,35 @@ export class EventsComponent implements OnInit{
 
 
   ngOnInit(): void {
-    this.events$ = this.eventsService.refreshEventsObservable$.pipe(
+    this.items$ = this.eventsService.refreshEventsObservable$.pipe(
       startWith(null),
       switchMap(() => {
-        this.isLoading.set(true); // Set loading to true before fetching events
+        this.isLoading.set(true);
+        this.onSeleccion([]);
         return this.eventsService.getEvents();
-      })
+      }),
+      map((events: Event[]) =>
+        events.map(e => {
+          const dia = parseEventDate(e.date);
+          return {
+            id: e.idEvents,
+            nombre: e.name,
+            detalle: [dia.toLocaleDateString('es-VE', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }), formatTime12(e.time), e.room]
+              .filter(Boolean)
+              .join(' · '),
+            precio: null,
+            pie: `Aforo ${e.capacity} · Consumo ${e.consumo === 1 ? 'sí' : 'no'}`,
+            imagen: e.flyer || e.image1,
+            disponible: e.status === 1,
+            estado: e.status === 1 ? 'Activo' : 'Inactivo',
+            categoria: isPastEvent(e) ? 'Pasados' : 'Próximos',
+            // Los más recientes primero
+            orden: -dia.getTime(),
+            raw: e
+          };
+        })
+      )
     )
-
-    this.eventsService.getEvents().subscribe(res => {
-      console.log(res);
-    })
   }
 
   openCreateModal(){
@@ -98,6 +116,11 @@ export class EventsComponent implements OnInit{
   }
 
   
+  onSeleccion(seleccion: ItemCatalogo<Event>[]) {
+    this.seleccion = seleccion;
+    this.selectedEvents = seleccion.map(i => i.raw);
+  }
+
     showConfirmModal(event?: Event, selectedItems: Event[] = this.selectedEvents) {
       const itemsToDelete = event ? [event] : selectedItems;
     

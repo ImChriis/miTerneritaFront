@@ -1,41 +1,131 @@
-.title {
-  margin-bottom: 1.25rem !important;
-}
-
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 14px;
+  margin-bottom: 2rem;
 }
 
-.drink {
+.product {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   padding: 12px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   background: var(--surface-2);
+  transition: border-color var(--dur) var(--ease-out);
 
-  img {
-    width: 100%;
+  &.has-qty {
+    border-color: var(--primary);
+  }
+
+  .photo {
+    position: relative;
     aspect-ratio: 1;
-    object-fit: contain;
+    overflow: hidden;
     border-radius: var(--radius-md);
     background: var(--surface);
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .foto {
+      padding: 10px;
+      box-sizing: border-box;
+      object-fit: contain;
+    }
+
+    /* Misma foto ampliada y difuminada detrás: rellena el recuadro sin recortar la foto. */
+    .fondo {
+      object-fit: cover;
+      filter: blur(22px) saturate(1.15);
+      transform: scale(1.25);
+      opacity: 0.9;
+    }
   }
 
   h3 {
     margin: 0 0 0.25rem;
     font-size: 1rem;
   }
+
+  p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
 }
 
-.actions {
-  display: flex;
-  justify-content: flex-end;
+.info {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+}
 
-  a {
-    text-decoration: none;
+.access {
+  justify-self: start;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  strong {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.option-skeleton {
+  height: 120px;
+  margin-bottom: 10px;
+  border-radius: var(--radius-md);
+}
+
+.filtros {
+  position: sticky;
+  top: calc(var(--nav-h, 64px) + 8px);
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  margin: 0 0 1.5rem;
+  padding: 6px 0;
+  overflow-x: auto;
+  background: var(--surface);
+}
+
+.filtro {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+
+  small {
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+
+    small {
+      color: color-mix(in srgb, var(--bg) 70%, transparent);
+    }
   }
 }

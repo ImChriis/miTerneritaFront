@@ -27,7 +27,9 @@ export class PaymentService {
   }
 
   createPayment(data: any){
-    return this.http.post(`${this.api}/payment`, data );
+    return this.http.post(`${this.api}/payment`, data ).pipe(
+      tap(() => this.refreshPayments$.next())
+    );
   }
 
   updatePayment(id: number, body: any){

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { TasaService } from '../../../../@core/services/tasa.service';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -23,6 +24,7 @@ import { environment } from '../../../../../environments/environment.developer';
   styleUrl: './update-payment.component.scss'
 })
 export class UpdatePaymentComponent implements OnInit, OnDestroy{
+  private tasaService = inject(TasaService);
   private paymentService = inject(PaymentService);
   private dialogConfig = inject(DynamicDialogConfig);
   private messageService = inject(MessageService);
@@ -62,17 +64,21 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
   ngOnInit(){
     console.log('Payment to update:', this.payment);
     
-    this.tasaDolar = this.paymentService.getTasaDolarEuro().subscribe((tasa) => {
+    // Tasa BCV con la que se hizo el pago; los pagos viejos sin ella usan la del día.
+    const calcularBs = (tasa: number) => {
       this.tasaDolar = tasa;
-      console.log('Tasa de cambio obtenida:', this.tasaDolar);
-      const totalCalculado = this.payment.totalGeneral * this.tasaDolar;
-
       // Formato con punto en miles y coma en decimales (ej. 12.345,67)
-      this.totalBs = totalCalculado.toLocaleString('es-VE', {
+      this.totalBs = (Number(this.payment.totalGeneral) * tasa).toLocaleString('es-VE', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
-    });
+    };
+    const tasaPago = Number(this.payment.tasaDolar);
+    if (tasaPago) {
+      calcularBs(tasaPago);
+    } else {
+      this.tasaService.tasa$.subscribe(t => t.valor && calcularBs(t.valor));
+    }
     
 
     this.name = this.payment.idUser?.name;
@@ -81,7 +87,8 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
     this.event = this.payment.idEvents?.name;
     this.date = this.payment.date;
     this.idPaymentDetails = this.payment.idPaymentDetails;
-    this.cantidad = this.payment.paymentDetails.length;
+    // Suma de entradas de todas las líneas (antes contaba líneas: 3 entradas salían como 1).
+    this.cantidad = (this.payment.paymentDetails ?? []).reduce((suma: number, d: any) => suma + (d.ticketNum ?? 1), 0);
     this.total = parseFloat(this.payment.totalGeneral);
     this.banco = this.payment.banco;
     this.referencia = this.payment.referencia;

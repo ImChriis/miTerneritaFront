@@ -5,33 +5,128 @@
 }
 
 <div class="tm-container tm-flow">
+    <app-purchase-steps [current]="1" [eventId]="idEvent" />
+
     <header class="tm-flow-head">
         <div>
             <p class="tm-eyebrow">Consumo</p>
             <h1>{{ name() }}</h1>
-            <p class="meta">Selecciona lo que vas a consumir.</p>
+            <p class="meta">Aparta tu comida y bebida desde ahora. Es opcional.</p>
         </div>
     </header>
 
-    <section class="tm-card tm-card--pad">
-        <h2 class="title">Bebidas</h2>
-        @if (drinks$ | async; as drinks) {
-            <div class="grid">
-                @for (drink of drinks; track drink.idDrinks) {
-                    <article class="drink">
-                        <img src="{{ apiImg + '/' + drink.image }}" [alt]="drink.description" loading="lazy" />
-                        <div class="drink-info">
-                            <h3>{{ drink.description }}</h3>
-                            <strong>${{ drink.price | number: '1.2-2' }}</strong>
-                        </div>
-                        <button type="button" class="tm-btn tm-btn--soft tm-btn--sm tm-btn--block"><i class="pi pi-plus"></i> Agregar</button>
-                    </article>
+    <div class="tm-flow-grid">
+        <section class="tm-card tm-card--pad">
+            @if (loading()) {
+                @for (s of [0, 1, 2]; track s) {
+                    <div class="tm-skeleton option-skeleton"></div>
                 }
-            </div>
-        }
-    </section>
+            } @else {
+                <div class="filtros" role="group" aria-label="Filtrar la carta">
+                    @for (f of filtros; track f.valor) {
+                        @if (conteo()[f.valor]) {
+                            <button type="button" class="filtro" [attr.aria-pressed]="filtro() === f.valor" (click)="filtro.set(f.valor)">
+                                <i [class]="f.icono"></i> {{ f.etiqueta }} <small>{{ conteo()[f.valor] }}</small>
+                            </button>
+                        }
+                    }
+                </div>
+                @for (seccion of secciones(); track seccion.nombre) {
+                    <div class="block-head">
+                        <h2>{{ seccion.nombre }}</h2>
+                    </div>
+                    <div class="grid">
+                        @for (p of seccion.productos; track p.idFood ?? 'd' + p.idDrinks) {
+                            <article class="product" [class.has-qty]="qty(p) > 0">
+                                @if (p.imagen) {
+                                    <div class="photo">
+                                        <img class="fondo" src="{{ apiImg + '/' + p.imagen }}" alt="" aria-hidden="true" loading="lazy" />
+                                        <img class="foto" src="{{ apiImg + '/' + p.imagen }}" [alt]="p.nombre" loading="lazy" />
+                                    </div>
+                                }
+                                <div class="info">
+                                    <h3>{{ p.nombre }}</h3>
+                                    @if (p.descripcion) {
+                                        <p>{{ p.descripcion }}</p>
+                                    }
+                                    @if (p.personas) {
+                                        <span class="tm-chip access"><i class="pi pi-users"></i> Acceso General para {{ p.personas }}</span>
+                                    }
+                                </div>
+                                <div class="foot">
+                                    <strong>${{ p.precioUsd | number: '1.2-2' }}</strong>
+                                    @if (qty(p) === 0) {
+                                        <button type="button" class="tm-btn tm-btn--soft tm-btn--sm" (click)="add(p)"><i class="pi pi-plus"></i> Agregar</button>
+                                    } @else {
+                                        <div class="tm-qty">
+                                            <button type="button" [attr.aria-label]="'Quitar uno de ' + p.nombre" (click)="remove(p)"><i class="pi pi-minus"></i></button>
+                                            <output aria-live="polite">{{ qty(p) }}</output>
+                                            <button type="button" [attr.aria-label]="'Agregar uno de ' + p.nombre" [disabled]="qty(p) >= max" (click)="add(p)"><i class="pi pi-plus"></i></button>
+                                        </div>
+                                    }
+                                </div>
+                            </article>
+                        }
+                    </div>
+                } @empty {
+                    <div class="tm-empty">
+                        <span class="tm-empty-icon"><i class="pi pi-shopping-bag"></i></span>
+                        <h3>La carta aún no está disponible</h3>
+                        <p>Puedes continuar con tus entradas.</p>
+                    </div>
+                }
+            }
+        </section>
 
-    <div class="actions">
-        <a class="tm-btn tm-btn--primary tm-btn--lg" [routerLink]="['/home/event', idEvent, 'ticket', 'checkout']">Continuar <i class="pi pi-arrow-right"></i></a>
+        <aside class="summary">
+            <div class="tm-card tm-card--pad summary-card">
+                <h2>Tu compra</h2>
+
+                @if (selected.length || lineas().length) {
+                    <ul class="lines">
+                        @for (item of selected; track item.id) {
+                            <li>
+                                <div>
+                                    <strong>{{ item.name }}</strong>
+                                    <small>{{ item.cantidad }} × ${{ item.total / item.cantidad | number: '1.2-2' }}</small>
+                                </div>
+                                <span>${{ item.total | number: '1.2-2' }}</span>
+                            </li>
+                        }
+                        @for (l of lineas(); track l.name) {
+                            <li>
+                                <div>
+                                    <strong>{{ l.name }}</strong>
+                                    <small>{{ l.cantidad }} × ${{ l.total / l.cantidad | number: '1.2-2' }}</small>
+                                </div>
+                                <span>${{ l.total | number: '1.2-2' }}</span>
+                            </li>
+                        }
+                    </ul>
+                } @else {
+                    <p class="empty-lines"><i class="pi pi-shopping-cart"></i> Agrega una entrada o una botella con acceso.</p>
+                }
+
+                @if (accesos()) {
+                    <p class="tm-hint">Tus botellas incluyen acceso General para {{ accesos() }} {{ accesos() === 1 ? 'persona' : 'personas' }}.</p>
+                }
+
+                <app-price-summary [entradas]="totalEntradas()" [consumo]="totalConsumo()" [personas]="entradas()" />
+
+                <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" (click)="continue()">
+                    Continuar <i class="pi pi-arrow-right"></i>
+                </button>
+                <button type="button" class="tm-btn tm-btn--ghost tm-btn--block" (click)="back()">Volver a entradas</button>
+                <p class="tm-hint center">Precios expresados en dólares (USD).</p>
+            </div>
+        </aside>
     </div>
+</div>
+
+<div class="tm-mobile-bar" [class.is-visible]="lineas().length > 0">
+    <div>
+        <small>{{ entradas() }} {{ entradas() === 1 ? 'entrada' : 'entradas' }}</small>
+        <strong>${{ total() | number: '1.2-2' }}</strong>
+    </div>
+    <button type="button" class="tm-btn tm-btn--primary" (click)="continue()">Continuar <i class="pi pi-arrow-right"></i></button>
 </div>

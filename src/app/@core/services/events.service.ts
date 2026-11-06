@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.developer';
 import { catchError, map, Subject, tap } from 'rxjs';
 import { Event } from '../models/event.model';
+import { MenuEvento } from '../models/menu.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,11 @@ export class EventsService {
         throw error;
       })
     );
+  }
+
+  /** Comidas y bebidas que se pueden pre-ordenar con la entrada. */
+  getMenu(id: number) {
+    return this.http.get<MenuEvento>(`${this.api}/events/${id}/menu`);
   }
 
   createEvent(data: any){

@@ -33,6 +33,12 @@
                 @for (s of [0, 1, 2]; track s) {
                     <div class="tm-skeleton option-skeleton"></div>
                 }
+            } @else if (noConcert()) {
+                <div class="tm-empty">
+                    <span class="tm-empty-icon"><i class="pi pi-microphone"></i></span>
+                    <h3>Muy pronto, nuevos conciertos</h3>
+                    <p>Estamos preparando la próxima tarima. Vuelve pronto.</p>
+                </div>
             } @else if (zones().length) {
                 <ul class="options">
                     @for (zone of zones(); track zone.idTicket) {
@@ -61,11 +67,13 @@
                     }
                 </ul>
 
-                <div class="block-head map-head">
-                    <h2>Plano de zonas</h2>
-                    <span class="tm-muted">Toca una zona para agregarla</span>
-                </div>
-                <app-venue-map [zones]="mapZones()" [active]="activeZone()" (pick)="onPick($event)" />
+                @if (isConcert()) {
+                    <div class="block-head map-head">
+                        <h2>Mapa del salón</h2>
+                        <span class="tm-muted">Toca una zona para agregarla</span>
+                    </div>
+                    <app-salon-map [zones]="mapZones()" [active]="activeZone()" (pick)="onPick($event)" />
+                }
             } @else {
                 <div class="tm-empty">
                     <span class="tm-empty-icon"><i class="pi pi-ticket"></i></span>
@@ -98,12 +106,9 @@
                     <p class="empty-lines"><i class="pi pi-shopping-cart"></i> Aún no has elegido entradas.</p>
                 }
 
-                <div class="tm-summary-total">
-                    <span>Total <small class="tm-muted">({{ count() }} {{ count() === 1 ? 'entrada' : 'entradas' }})</small></span>
-                    <strong>${{ total() | number: '1.2-2' }}</strong>
-                </div>
+                <app-price-summary [entradas]="total()" [personas]="count()" />
 
-                <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" [disabled]="!count()" (click)="goToCheckout()">
+                <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" [disabled]="!canContinue()" (click)="goToCheckout()">
                     Continuar <i class="pi pi-arrow-right"></i>
                 </button>
                 <p class="tm-hint center">Precios expresados en dólares (USD).</p>

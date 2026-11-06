@@ -101,6 +101,20 @@
     width: auto;
   }
 
+  // Titulo a la izquierda y acciones a la derecha, en la misma fila
+  .catalog-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+
+    .title {
+      margin: 0;
+    }
+  }
+
   .btn,
   button.btn {
     display: inline-flex;

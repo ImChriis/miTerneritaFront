@@ -35,6 +35,13 @@ export class CreateEventsComponent {
     { label: 'No', value: 0 }
   ]
 
+  /** Tipo de evento: solo los conciertos muestran el mapa del salón. */
+  categorias = [
+    { label: 'Evento', value: 'evento' },
+    { label: 'Concierto', value: 'concierto' },
+    { label: 'Fiesta', value: 'fiesta' }
+  ];
+
   previewUrls: Record<'flyer' | 'image1' | 'image2' | 'image3', string | null> = {
     flyer: null,
     image1: null,
@@ -54,7 +61,8 @@ export class CreateEventsComponent {
     image2: new FormControl<File | null>(null),
     image3: new FormControl<File | null>(null),
     status: new FormControl<number | null>(1, { nonNullable: true }),
-    consumo: new FormControl<number | null>(null)
+    consumo: new FormControl<number | null>(null),
+    category: new FormControl<string>('evento', { nonNullable: true })
   });
 
   onFileSelect(event: any, controlName: 'flyer'|'image1'|'image2'|'image3') {

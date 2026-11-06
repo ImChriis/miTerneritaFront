@@ -34,6 +34,11 @@
                 <p-select [options]="consumo" optionLabel="label" optionValue="value" formControlName="consumo" appendTo="body"/>
         </div>
 
+        <div class="formGroup">
+                <label for="category">Tipo de evento</label>
+                <p-select inputId="category" [options]="categorias" optionLabel="label" optionValue="value" formControlName="category" appendTo="body"/>
+        </div>
+
         <div class="description">
             <label for="Descripcion">Descripción</label>
             <p-editor [style]="{ height: '320px' }" formControlName="description"></p-editor>

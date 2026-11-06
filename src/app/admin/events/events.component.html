@@ -1,141 +1,30 @@
 <body class="container">
   <div class="table">
-        <div  [class.blurred-background]="isModalOpen">
-      @if(
-        events$ | async
-        ; as state) {
-
-        <div class="title">
-          <h1>Eventos</h1>
-          <p>Crea los eventos que se veran refrejados en la pagina</p>
+    <div [class.blurred-background]="isModalOpen">
+      @if (items$ | async; as items) {
+        <div class="catalog-head">
+          <div class="title">
+            <h1>Eventos</h1>
+            <p>Crea los eventos que se verán reflejados en la página</p>
+          </div>
+          <div class="buttons">
+            @if (selectedEvents.length > 0) {
+              <button pButton pRipple class="btn-delete" (click)="showConfirmModal()" aria-label="Eliminar seleccionados"><i class="pi pi-trash"></i></button>
+            }
+            <button class="btn" (click)="openCreateModal()">Agregar Evento</button>
+          </div>
         </div>
 
-        <p-table
-          #dt1
-          [value]="state"
-          dataKey="id"
-          [rows]="5"
-          [paginator]="true"
-          [globalFilterFields]="['name', 'date', 'time', 'room', 'capacity']" 
-          >
-          <ng-template pTemplate="caption">
-            <div class="flex-row">
-              <div class="p-toolbar-group-end toolbar">
-                <span class="p-input-icon-left ml-auto">
-                  <i class=""></i>
-                  <input
-                    #searchInput
-                    pInputText
-                    type="text"
-                    placeholder="Buscar"
-                    class="searchBar"
-                    (input)="dt1.filterGlobal(searchInput.value, 'contains')"
-                    />
-                  </span>
-                </div>
-                    <div class="buttons">
-                  <button
-                  *ngIf="selectedEvents.length > 0"
-                  pButton
-                  pRipple
-                  class="btn-delete"
-                  (click)="showConfirmModal()"
-                ><i class="pi pi-trash" ></i></button>
-                  <button
-                    class="btn"
-                    icon=""
-                    (click)="openCreateModal()"
-                >Agregar Evento</button>
-                  </div>
-              </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th style="min-width: 1rem" class="border">
-                  <div class="flex thstyles"><p-checkbox [binary]="true" [(ngModel)]="selectAll" (ngModelChange)="toggleSelectAll(state, $event)" /></div>
-                </th>
-                <th class="name" style="min-width: 20rem">
-                  <div class="flex thstyles">Nombre</div>
-                </th>
-                <th style="min-width: 5rem">
-                  <div class="flex thstyles">Fecha</div>
-                </th>
-                <th style="min-width: 5rem">
-                  <div class="flex thstyles">Hora</div>
-                </th> 
-                <th class="text-center" style="min-width: 5rem">
-                  <div class="flex thstyles">Salon</div>
-                </th>               
-                <th class="text-center" style="min-width: 5rem">
-                  <div class="flex thstyles">Capacidad</div>
-                </th>
-                <th class="text-center" style="min-width: 5rem">
-                  <div class="flex thstyles">Consumo</div>
-                </th>
-                <th style="min-width: 5rem">
-                  <div class="flex thstyles">Estado</div>
-                </th>
-                <th class="text-center" style="min-width: 5rem" class="border2">
-                  <div class="flex thstyles option">Opciones</div>
-                </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-event class="p-table">
-              <tr class="table-content">
-                <td class="column-table-left mr-5">
-                   <p-checkbox [(ngModel)]="selectedEvents" [value]="event" />
-                </td>
-                <td class="name">
-                  {{ event.name }}
-                </td>
-                <td>
-                  {{ event.date }}
-                </td>
-                <td>
-                  {{ event.time }}
-                </td>
-                <td>
-                  {{ event.room }}
-                </td>
-                <td>
-                  {{ event.capacity }}
-                </td>
-                <td>
-                  @if (event.consumo === 1) {
-                    <p class="disponible">Sí</p>
-                  }  @else {
-                    <p class="noDisponible">No</p>
-                  }
-                </td>
-                <td>
-                  @if (event.status === 1) {
-                    <p class="disponible">Activo</p>
-                  }  @else {
-                    <p class="noDisponible">Inactivo</p>
-                  }
-                </td>
-                <td class="text-center column-table-right">
-                  <div class="option">
-                    <i class="pi pi-pencil btnEdit" (click)="openEditModal(event)" ></i>
-                    <i class="pi pi-trash btnDelete" (click)="showConfirmModal(event)" ></i>
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="7">No elementos encontrados.</td>
-              </tr>
-            </ng-template>
-          </p-table>
-        } @else {
-          <app-loader [isLoading]="isLoading()"></app-loader>
-        }
-      </div>
+        <app-catalogo-grid style="--photo-bg: #0d0d10"
+          [items]="items"
+          [seleccionados]="seleccion"
+          (seleccion)="onSeleccion($event)"
+          (editar)="openEditModal($event)"
+          (eliminar)="showConfirmModal($event)"
+        />
+      } @else {
+        <app-loader [isLoading]="isLoading()"></app-loader>
+      }
+    </div>
   </div>
 </body>
-    
-
-
-
-  

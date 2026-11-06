@@ -263,6 +263,26 @@
     </div>
 </section>
 
+<!-- ================= CONCIERTO: MAPA DEL SALÓN ================= -->
+@if (concerts()[0]; as next) {
+    <section class="tm-section salon-cta" id="concierto">
+        <div class="tm-container">
+            <div class="salon-cta-card" appReveal>
+                <div class="salon-cta-text">
+                    <p class="tm-eyebrow"><i class="pi pi-map"></i> Concierto · Mapa del salón</p>
+                    <h2 class="tm-h2">{{ next.name }}</h2>
+                    <p class="tm-lead">
+                        {{ next.day | date: "EEEE d 'de' MMMM" | capFirst }} · {{ next.timeLabel }}. Elige tu zona en el mapa: General, VIP, Palco A o Palco B,
+                        y aparta tu consumo desde ahora.
+                    </p>
+                    <a class="tm-btn tm-btn--primary tm-btn--lg" routerLink="/concierto">Ver mapa y precios <i class="pi pi-arrow-right"></i></a>
+                </div>
+                <img src="{{ next.flyerUrl }}" [alt]="'Flyer de ' + next.name" loading="lazy" />
+            </div>
+        </div>
+    </section>
+}
+
 <!-- ================= CONCIERTOS ================= -->
 <section class="tm-section concerts" id="conciertos">
     <div class="concerts-glow" aria-hidden="true"></div>

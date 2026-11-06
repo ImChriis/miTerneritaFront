@@ -49,6 +49,12 @@ export const routes: Routes = [
                         title: 'Elige tus entradas'
                     },
                     {
+                        // Próximo concierto: la misma página de entradas, con el mapa del salón
+                        path: 'concierto',
+                        loadComponent: () => import('./pages/ticket/ticket.component').then(m => m.TicketComponent),
+                        title: 'Concierto'
+                    },
+                    {
                         path: 'home/event/:id/ticket/consume',
                         loadComponent: () => import('./pages/consume/consume.component').then(m => m.ConsumeComponent),
                         title: 'Consumo'

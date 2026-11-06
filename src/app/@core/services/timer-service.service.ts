@@ -4,8 +4,11 @@ import { MessageService } from 'primeng/api';
 import { filter, timer } from 'rxjs';
 import { Subscription } from 'rxjs/internal/Subscription';
 
-/** Rutas del flujo de compra: /home/event/:id/ticket[/...] */
-const PURCHASE_FLOW = /^\/home\/event\/\d+\/ticket/;
+/** Rutas del flujo de compra: /home/event/:id/ticket[/...] y /concierto */
+const PURCHASE_FLOW = /^\/(home\/event\/\d+\/ticket|concierto)/;
+
+/** Hora límite guardada: recargar la página (F5) no reinicia el tiempo. */
+const DEADLINE_KEY = 'checkout_deadline';
 
 @Injectable({
   providedIn: 'root'
@@ -43,17 +46,25 @@ export class TimerServiceService {
     if (this.isRunning()) return;
 
     this.stopTimer();
-    this.timeLeft.set(this.DURATION_SECONDS);
+    let deadline = Number(sessionStorage.getItem(DEADLINE_KEY));
+    if (!deadline || deadline <= Date.now()) {
+      deadline = Date.now() + this.DURATION_SECONDS * 1000;
+      sessionStorage.setItem(DEADLINE_KEY, String(deadline));
+    }
     this.isRunning.set(true);
 
-    this.timerSub = timer(1000, 1000).subscribe(() => {
-      const current = this.timeLeft();
-      if (current > 1) {
-        this.timeLeft.set(current - 1);
+    // Se cuenta contra el reloj (no restando 1 por tick): así tampoco se
+    // atrasa si el navegador duerme la pestaña.
+    const tick = () => {
+      const left = Math.ceil((deadline - Date.now()) / 1000);
+      if (left > 0) {
+        this.timeLeft.set(left);
       } else {
         this.handleExpired();
       }
-    });
+    };
+    tick();
+    this.timerSub = timer(1000, 1000).subscribe(tick);
   }
 
   stopTimer(): void {
@@ -63,6 +74,7 @@ export class TimerServiceService {
 
   resetCheckout(): void {
     this.stopTimer();
+    sessionStorage.removeItem(DEADLINE_KEY);
     this.timeLeft.set(this.DURATION_SECONDS);
   }
 

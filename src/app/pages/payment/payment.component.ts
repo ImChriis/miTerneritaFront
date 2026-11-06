@@ -6,11 +6,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaymentService } from '../../@core/services/payment.service';
-import { SettingsService } from '../../@core/services/settings.service';
 import { TimerServiceService } from '../../@core/services/timer-service.service';
 import { eventImage, formatTime12, parseEventDate } from '../../@core/utils/event-utils';
 import { SucceededPaymentModalComponent } from '../../shared/components/succeeded-payment-modal/succeeded-payment-modal.component';
 import { PurchaseStepsComponent } from '../../shared/components/purchase-steps/purchase-steps.component';
+import { PriceSummaryComponent } from '../../shared/components/price-summary/price-summary.component';
+import { TasaService } from '../../@core/services/tasa.service';
 
 type Method = 'pagomovil' | 'zelle';
 
@@ -59,14 +60,14 @@ import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-payment',
-  imports: [CapFirstPipe, DatePipe, DecimalPipe, ReactiveFormsModule, PurchaseStepsComponent],
+  imports: [CapFirstPipe, DatePipe, DecimalPipe, ReactiveFormsModule, PurchaseStepsComponent, PriceSummaryComponent],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss'
 })
 export class PaymentComponent implements OnInit, OnDestroy {
   private paymentsService = inject(PaymentService);
   private messageService = inject(MessageService);
-  private settingsService = inject(SettingsService);
+  private tasaService = inject(TasaService);
   private timerService = inject(TimerServiceService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -82,9 +83,11 @@ export class PaymentComponent implements OnInit, OnDestroy {
   idEvents!: number;
   idUser!: number;
   total = 0;
-  totalBs!: number;
+  totalEntradas = 0;
+  totalConsumo = 0;
+  /** Total en Bs a la tasa BCV del día (pago móvil). */
+  totalBs = computed(() => this.tasaService.bs(this.total));
   paymentData: any;
-  tasaDolar!: number;
   submitting = signal(false);
   method = signal<Method>('pagomovil');
 
@@ -96,7 +99,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
   paymentfForm = this.fb.group({
     idEvents: new FormControl<number | null>(null),
-    comprobante: new FormControl<File | null>(null),
+    comprobante: new FormControl<File | null>(null, Validators.required),
     banco: new FormControl<string | null>(null, Validators.required),
     referencia: new FormControl<string | null>(null, Validators.required),
     fechaTransferencia: new FormControl<string | null>(null, Validators.required),
@@ -107,7 +110,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private amount = toSignal(this.paymentfForm.controls.totalGeneral.valueChanges, { initialValue: null });
 
   /** Monto esperado según el método elegido */
-  expected = computed(() => (this.method() === 'zelle' ? this.total : this.totalBs));
+  expected = computed(() => (this.method() === 'zelle' ? this.total : this.totalBs()));
   amountMismatch = computed(() => this.amount() !== null && this.amount() !== this.expected());
 
   ngOnInit() {
@@ -119,27 +122,21 @@ export class PaymentComponent implements OnInit, OnDestroy {
     }
 
     this.paymentData = history.state?.data;
-    if (!this.paymentData?.ticket?.length) {
+    if (!this.paymentData?.ticket?.length && !this.paymentData?.consumo?.length) {
       this.messageService.add({ severity: 'info', summary: 'Elige tus entradas', detail: 'Selecciona tus entradas para continuar.' });
       this.router.navigate(['/home/event', this.idEvents, 'ticket'], { replaceUrl: true });
       return;
     }
 
     this.total = this.paymentData.total;
-    const items = this.paymentData.ticket.map((t: any) => ({
+    this.totalEntradas = (this.paymentData.ticket ?? []).reduce((acc: number, t: any) => acc + t.total, 0);
+    this.totalConsumo = (this.paymentData.consumo ?? []).reduce((acc: number, l: any) => acc + l.total, 0);
+    const items = (this.paymentData.ticket ?? []).map((t: any) => ({
       idTicket: Number(t.id),
       cantidad: Number(t.cantidad)
     }));
     this.paymentfForm.controls.items.setValue(items);
 
-    this.settingsService.getSettings().subscribe({
-      next: (settings: any) => {
-        // TODO: calcular con la tasa real. `settings.Dolar` no existe en la API (envía `tasaDolar` y `BCV`).
-        // this.totalBs = this.total * settings.Dolar;
-        this.totalBs = 30;
-        this.tasaDolar = settings.Dolar;
-      }
-    });
   }
 
   setMethod(method: Method) {
@@ -156,7 +153,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  invalid(field: 'banco' | 'referencia' | 'fechaTransferencia' | 'totalGeneral') {
+  invalid(field: 'banco' | 'referencia' | 'fechaTransferencia' | 'totalGeneral' | 'comprobante') {
     const c = this.paymentfForm.controls[field];
     return c.invalid && (c.touched || c.dirty);
   }
@@ -215,6 +212,15 @@ export class PaymentComponent implements OnInit, OnDestroy {
         cantidad: Number(t.cantidad)
       }));
       fd.append('items', JSON.stringify(items));
+    }
+
+    // Comida y bebida apartadas: { idFood | idDrinks, cantidad }
+    const consumo = this.paymentData?.consumo ?? [];
+    if (consumo.length) {
+      fd.append(
+        'consumos',
+        JSON.stringify(consumo.map((l: any) => ({ idFood: l.idFood, idDrinks: l.idDrinks, cantidad: Number(l.cantidad) })))
+      );
     }
 
     // 2. Iterar solo los campos relevantes del formulario

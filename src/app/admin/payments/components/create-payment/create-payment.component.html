@@ -3,7 +3,7 @@
         <div class="formGroup2">
             <div class="formGroup">
                 <label for="cedula">Cédula</label>
-                <input pInputText type="text" formControlName="cedula" placeholder="Ingrese la cédula" (keydown.enter)="searchUserByCedula($event)" />
+                <input pInputText type="text" formControlName="cedula" placeholder="Ingrese la cédula" (keydown.enter)="$event.preventDefault(); searchUserByCedula($event)" (blur)="searchUserByCedula($event)" />
             </div>
 
             <div class="formGroup">

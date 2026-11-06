@@ -42,7 +42,7 @@
                             @if (method() === 'zelle') {
                                 ${{ total | number: '1.2-2' }}
                             } @else {
-                                {{ totalBs | number: '1.2-2' }} Bs
+                                {{ totalBs() | number: '1.2-2' }} Bs
                             }
                         </strong>
                     </div>
@@ -132,6 +132,9 @@
                         <strong>Adjunta tu comprobante</strong>
                         <small>Captura o foto del pago (JPG o PNG)</small>
                     </label>
+                    @if (invalid('comprobante')) {
+                        <p class="tm-error">Adjunta el comprobante del pago.</p>
+                    }
                 </div>
 
                 <button type="submit" class="tm-btn tm-btn--primary tm-btn--lg tm-btn--block" [disabled]="submitting()">
@@ -168,15 +171,18 @@
                             <span>${{ item.total | number: '1.2-2' }}</span>
                         </li>
                     }
+                    @for (l of paymentData?.consumo ?? []; track l.name) {
+                        <li>
+                            <div>
+                                <strong>{{ l.name }}</strong>
+                                <small>{{ l.cantidad }} × ${{ l.total / l.cantidad | number: '1.2-2' }}</small>
+                            </div>
+                            <span>${{ l.total | number: '1.2-2' }}</span>
+                        </li>
+                    }
                 </ul>
 
-                <div class="tm-summary-total">
-                    <span>Total</span>
-                    <strong>${{ total | number: '1.2-2' }}</strong>
-                </div>
-                @if (method() === 'pagomovil' && totalBs) {
-                    <p class="tm-hint bs">Equivale a {{ totalBs | number: '1.2-2' }} Bs</p>
-                }
+                <app-price-summary [entradas]="totalEntradas" [consumo]="totalConsumo" />
             </div>
         </aside>
     </div>
