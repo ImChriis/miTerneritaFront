@@ -5,6 +5,7 @@ import { LoginForm } from '../../models/forms/form-login';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
 
+import { puedeVerPanel } from '../roles';
 @Component({
   selector: 'app-login',
   imports: [
@@ -67,7 +68,7 @@ export class LoginComponent {
         this.loading.set(false);
         this.messageService.add({severity:'success', summary: '¡Hola!', detail: 'Inicio de sesión exitoso'});
 
-        if (res.role !== 'user') {
+        if (puedeVerPanel(res.role)) {
           this.router.navigateByUrl(this.returnUrl?.startsWith('/admin') ? this.returnUrl : '/admin/dashboard');
         } else {
           this.router.navigateByUrl(this.returnUrl && !this.returnUrl.startsWith('/admin') ? this.returnUrl : '/');

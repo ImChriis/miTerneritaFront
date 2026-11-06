@@ -14,6 +14,7 @@ interface NavItem {
   route?: string;
 }
 
+import { puedeVerPanel } from '../auth/roles';
 @Component({
   selector: 'app-layout',
   imports: [
@@ -62,7 +63,7 @@ export class LayoutComponent implements OnInit {
     const u = this.user();
     return u ? `${u.name?.[0] ?? ''}${u.lastName?.[0] ?? ''}`.toUpperCase() || 'U' : '';
   });
-  isStaff = computed(() => !!this.user()?.role && this.user()?.role !== 'user');
+  isStaff = computed(() => puedeVerPanel(this.user()?.role));
 
   constructor() {
     // Bloquea el scroll del fondo con el menú móvil abierto

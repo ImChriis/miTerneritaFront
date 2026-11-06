@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
+import { puedeVerPanel } from '../auth/roles';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class AuthGuard implements CanActivate {
   }
 }
 
-/** Solo deja pasar al panel a usuarios con rol distinto de 'user' (mismo criterio del login). */
+/** Solo el personal (`user`) y el admin entran al panel; los clientes no. */
 @Injectable({
   providedIn: 'root'
 })
@@ -30,8 +31,7 @@ export class AdminGuard implements CanActivate {
   private messageService = inject(MessageService);
 
   canActivate(): boolean | UrlTree {
-    const role = this.auth.getUser()?.role;
-    if (role && role !== 'user') return true;
+    if (puedeVerPanel(this.auth.getUser()?.role)) return true;
     this.messageService.add({severity:'warn', summary: 'Acceso restringido', detail: 'No tienes permisos para entrar al panel.'});
     return this.router.createUrlTree(['/']);
   }
