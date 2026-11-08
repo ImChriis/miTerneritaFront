@@ -233,10 +233,18 @@ export class DashboardComponent implements OnInit {
 
   refrescarTasa() {
     this.refrescandoTasa.set(true);
+    const antes = this.tasa.tasa();
     this.tasa.refrescar().subscribe({
       next: t => {
         this.refrescandoTasa.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Tasa actualizada', detail: `${t.valor} Bs/$` });
+        const fecha = t.fecha ? new Date(t.fecha).toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit' }) : '';
+        // El BCV no publica fines de semana ni feriados: entonces la vigente sigue siendo la última.
+        const igual = antes?.valor === t.valor && antes?.fecha === t.fecha;
+        this.messageService.add(
+          igual
+            ? { severity: 'info', summary: 'Ya tienes la tasa más reciente', detail: `El BCV aún no publica una nueva. Vigente del ${fecha}: ${t.valor} Bs/$` }
+            : { severity: 'success', summary: 'Tasa actualizada', detail: `${t.valor} Bs/$ · vigente del ${fecha}` }
+        );
       },
       error: err => {
         this.refrescandoTasa.set(false);
