@@ -16,3 +16,11 @@ export interface Event{
     // Opcional: 'concierto' | 'fiesta' | ... Si el backend no lo envía se deduce del nombre.
     category?: string | null;
 }
+
+/** Foto de la galería de un evento ("revive tu noche"). */
+export interface EventPhoto {
+    idPhoto: number;
+    idEvents: number;
+    /** Ruta relativa a apiImg: 'galeria/<uuid>.webp'. Usa eventImage(). */
+    image: string;
+}

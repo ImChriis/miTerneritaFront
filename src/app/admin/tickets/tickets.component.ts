@@ -1,66 +1,131 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { TicketsService } from '../../@core/services/tickets.service';
-import { Observable, startWith, switchMap, tap } from 'rxjs';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
+import { forkJoin, startWith, switchMap } from 'rxjs';
+import { TicketsService } from '../../@core/services/tickets.service';
+import { EventsService } from '../../@core/services/events.service';
 import { Ticket } from '../../@core/models/ticket.model';
+import { Event } from '../../@core/models/event.model';
+import { parseEventDate } from '../../@core/utils/event-utils';
 import { CreateTicketsComponent } from './components/create-tickets/create-tickets.component';
 import { UpdateTicketsComponent } from './components/update-tickets/update-tickets.component';
-import { ButtonModule } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { CheckboxModule } from 'primeng/checkbox';
-import { EventsService } from '../../@core/services/events.service';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
-import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
 
+/** Orden de los tipos conocidos; el resto va después, por nombre. */
+const ORDEN_TIPOS = ['general', 'vip', 'palco a', 'palco b'];
+const clave = (texto: string) => (texto ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase();
+
+interface Fila {
+  ticket: Ticket;
+  evento: string;
+  fecha: Date | null;
+}
+
+interface Grupo {
+  clave: string;
+  nombre: string;
+  filas: Fila[];
+  disponibles: number;
+}
+
+/**
+ * Entradas agrupadas por tipo (General, VIP, Palco A...). Dentro de cada tipo,
+ * los eventos que la tienen con su precio y si está a la venta.
+ */
 @Component({
   selector: 'app-tickets',
-  imports: [
-    CommonModule,
-    TableModule,
-    ButtonModule,
-    InputText,
-    CheckboxModule,
-    FormsModule,
-    LoaderComponent
-  ],
+  imports: [DatePipe, DecimalPipe, FormsModule, LoaderComponent],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.scss'
 })
-export class TicketsComponent implements OnInit{
+export class TicketsComponent {
   private ticketsService = inject(TicketsService);
-  private dialogService = inject(DialogService);
   private eventsService = inject(EventsService);
+  private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   ref: DynamicDialogRef | undefined;
-  isModalOpen = false;
-  tickets$!: Observable<Ticket[]>;
-  eventNames = new Map<number, string>();
-  selectAll = false;
-  selectedTickets: Ticket[] = [];
-  isLoading = signal(false);
 
-  ngOnInit() {
-    this.tickets$ = this.ticketsService.refreshTicketsObservable$.pipe(
+  private tickets = toSignal(
+    this.ticketsService.refreshTicketsObservable$.pipe(
       startWith(null),
-      switchMap(() => {
-        this.isLoading.set(true); 
-        return this.ticketsService.getTickets();
-      })
-    )
+      switchMap(() => this.ticketsService.getTickets())
+    ),
+    { initialValue: null }
+  );
+  private eventos = toSignal(this.eventsService.getEvents(), { initialValue: [] as Event[] });
 
-     this.eventsService.getEvents().subscribe(events => {
-      events.forEach(event => {
-        this.eventNames.set(event.idEvents, event.name);
-      });
+  busqueda = signal('');
+  cerrados = signal(new Set<string>());
+  /** Clave del grupo que se está renombrando. */
+  renombrando = signal<string | null>(null);
+  nuevoNombre = '';
+  private renombre = viewChild<ElementRef<HTMLInputElement>>('renombre');
+
+  cargando = computed(() => this.tickets() === null);
+
+  grupos = computed<Grupo[]>(() => {
+    const eventos = new Map(this.eventos().map(e => [e.idEvents, e]));
+    const q = clave(this.busqueda());
+    const grupos = new Map<string, Grupo>();
+
+    for (const ticket of this.tickets() ?? []) {
+      const ev = eventos.get(ticket.idEvents);
+      const fila: Fila = { ticket, evento: ev?.name ?? 'Sin evento', fecha: ev ? parseEventDate(ev.date) : null };
+      if (q && !clave(`${ticket.name} ${fila.evento}`).includes(q)) continue;
+
+      const k = clave(ticket.name);
+      const grupo = grupos.get(k) ?? { clave: k, nombre: ticket.name, filas: [], disponibles: 0 };
+      grupo.filas.push(fila);
+      if (ticket.status === 1) grupo.disponibles++;
+      grupos.set(k, grupo);
+    }
+
+    const orden = (k: string) => (ORDEN_TIPOS.includes(k) ? ORDEN_TIPOS.indexOf(k) : ORDEN_TIPOS.length);
+    // Dentro de cada tipo, el evento más reciente primero.
+    for (const g of grupos.values()) g.filas.sort((a, b) => (b.fecha?.getTime() ?? 0) - (a.fecha?.getTime() ?? 0));
+    return [...grupos.values()].sort((a, b) => orden(a.clave) - orden(b.clave) || a.nombre.localeCompare(b.nombre));
+  });
+
+  alternarGrupo(k: string) {
+    const cerrados = new Set(this.cerrados());
+    cerrados.has(k) ? cerrados.delete(k) : cerrados.add(k);
+    this.cerrados.set(cerrados);
+  }
+
+  /** Todas a la venta si alguna no lo está; si ya lo están todas, ninguna. */
+  alternarDisponible(grupo: Grupo) {
+    const status = grupo.disponibles === grupo.filas.length ? 0 : 1;
+    this.actualizarGrupo(grupo, { status }, status ? `${grupo.nombre} a la venta en todos sus eventos` : `${grupo.nombre} retirada de la venta`);
+  }
+
+  empezarRenombre(grupo: Grupo) {
+    this.nuevoNombre = grupo.nombre;
+    this.renombrando.set(grupo.clave);
+    // El input aparece en el siguiente ciclo de render.
+    setTimeout(() => this.renombre()?.nativeElement.select());
+  }
+
+  guardarNombre(grupo: Grupo) {
+    // Enter quita el input y eso dispara blur: solo cuenta la primera llamada.
+    if (this.renombrando() !== grupo.clave) return;
+    const name = this.nuevoNombre.trim();
+    this.renombrando.set(null);
+    if (!name || name === grupo.nombre) return;
+    this.actualizarGrupo(grupo, { name }, `Ahora se llama ${name}`);
+  }
+
+  private actualizarGrupo(grupo: Grupo, cambios: Partial<Pick<Ticket, 'name' | 'status'>>, ok: string) {
+    forkJoin(grupo.filas.map(f => this.ticketsService.updateTicket(f.ticket.idTicket, cambios))).subscribe({
+      next: () => this.messageService.add({ severity: 'success', summary: 'Entradas', detail: ok }),
+      error: err => this.messageService.add({ severity: 'error', summary: 'Entradas', detail: err?.error?.message ?? 'No se pudieron actualizar' })
     });
   }
 
-  openCreateModal(){
-    this.isModalOpen = true;
+  openCreateModal() {
     this.ref = this.dialogService.open(CreateTicketsComponent, {
       header: 'Nueva entrada',
       width: '520px',
@@ -70,8 +135,7 @@ export class TicketsComponent implements OnInit{
     });
   }
 
-  openEditModal(ticket: Ticket){
-    this.isModalOpen = true;
+  openEditModal(ticket: Ticket) {
     this.ref = this.dialogService.open(UpdateTicketsComponent, {
       header: 'Editar entrada',
       width: '520px',
@@ -82,45 +146,34 @@ export class TicketsComponent implements OnInit{
     });
   }
 
-  getEventName(id: number){
-    return this.eventNames.get(id) ?? '';
+  eliminarGrupo(grupo: Grupo) {
+    this.showConfirmModal(grupo.filas.map(f => f.ticket), grupo.nombre);
   }
 
-  showConfirmModal(ticket?: Ticket, selectedItems: Ticket[] = this.selectedTickets) {
-      const itemsToDelete = ticket ? [ticket] : selectedItems;
-    
-      this.ref = this.dialogService.open(ConfirmDeleteModalComponent, {
-        header: 'Confirmar Eliminación',
-        width: '40vw',
-        modal: true,
-        data: {
-          message: itemsToDelete.length === 1
-            ? `¿Estás seguro de que deseas eliminar ${itemsToDelete[0].name || 'este ticket'}?`
-            : `¿Estás seguro de que deseas eliminar ${itemsToDelete.length} tickets?`,
-          selectedItems: itemsToDelete
-        }
-      });
-    
-      this.ref.onClose.subscribe((confirmed: boolean) => {
-        if (confirmed) {
-          itemsToDelete.forEach(item => this.executeDeleteTicket(item.idTicket));
-        }
-      });
-    }
+  /** Borra una entrada o todas las de un tipo. Las que ya tienen ventas no se borran. */
+  showConfirmModal(tickets: Ticket[], nombre: string) {
+    this.ref = this.dialogService.open(ConfirmDeleteModalComponent, {
+      header: 'Confirmar eliminación',
+      width: '40vw',
+      modal: true,
+      breakpoints: { '960px': '94vw' },
+      data: {
+        message:
+          tickets.length === 1
+            ? `¿Eliminar la entrada ${nombre}?`
+            : `¿Eliminar ${nombre} de sus ${tickets.length} eventos? Las que ya tienen ventas se conservan.`,
+        selectedItems: tickets
+      }
+    });
 
-   private executeDeleteTicket(id: number){
-      this.ticketsService.deleteTicket(id).subscribe({
-        next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Ticket eliminado correctamente' });
-        },
-        error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Ocurrió un error al eliminar el ticket' });
-        }
-      })
-    }
-  
-    toggleSelectAll(tickets: Ticket[], checked: boolean) {
-      this.selectAll = checked;
-      this.selectedTickets = checked ? [...tickets] : [];
-    }
+    this.ref.onClose.subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      for (const t of tickets) {
+        this.ticketsService.deleteTicket(t.idTicket).subscribe({
+          next: () => this.messageService.add({ severity: 'success', summary: 'Éxito', detail: `${t.name} eliminada` }),
+          error: err => this.messageService.add({ severity: 'error', summary: 'No se eliminó', detail: err?.error?.message ?? 'Ocurrió un error al eliminar la entrada' })
+        });
+      }
+    });
+  }
 }

@@ -13,10 +13,12 @@ export interface Partner {
   /** Ruta del logo, p. ej. 'assets/img/partners/polar.png'. Si está vacío se muestra el nombre. */
   logo?: string;
   url?: string;
+  /** Logo con partes negras que desaparecen en modo oscuro: ahí se pinta blanco. */
+  invertDark?: boolean;
 }
 
 /**
- * Empresas aliadas / patrocinadores del carrusel blanco de la página de inicio.
+ * Empresas aliadas / patrocinadores del carrusel de la página de inicio.
  * Logos en src/assets/img/partners/ (PNG/SVG recortado, fondo transparente).
  * Sin `logo` se muestra el nombre como texto.
  */
@@ -24,7 +26,8 @@ export const PARTNERS: Partner[] = [
   { name: 'Loop', logo: 'assets/img/partners/loop.svg' },
   { name: 'Santa Teresa' },
   { name: 'Smirnoff', logo: 'assets/img/partners/smirnoff.png' },
-  { name: 'Old Parr', logo: 'assets/img/partners/old-parr.png' }
+  { name: 'Old Parr', logo: 'assets/img/partners/old-parr.png', invertDark: true },
+  { name: "Buchanan's", logo: 'assets/img/partners/buchanans.png' }
 ];
 
 /** Espacios del local (sección "Conoce nuestros espacios"). */

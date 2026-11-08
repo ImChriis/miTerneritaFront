@@ -19,6 +19,8 @@ export interface ItemCatalogo<T = unknown> {
   estado?: string;
   categoria?: string | null;
   personas?: number;
+  /** Eventos: entradas a la venta ("General $10.00"). */
+  entradas?: string[];
   orden?: number;
   raw: T;
 }
@@ -67,6 +69,13 @@ const normalizar = (s: string) =>
               }
               @if (item.personas) {
                 <span class="access"><i class="pi pi-users"></i> Acceso General para {{ item.personas }}</span>
+              }
+              @if (item.entradas?.length) {
+                <ul class="entradas" aria-label="Entradas a la venta">
+                  @for (e of item.entradas; track e) {
+                    <li class="access"><i class="pi pi-ticket"></i> {{ e }}</li>
+                  }
+                </ul>
               }
             </div>
             <div class="foot">
@@ -278,6 +287,15 @@ const normalizar = (s: string) =>
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
+    }
+
+    .entradas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
     }
 
     .access {

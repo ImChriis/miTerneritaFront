@@ -1,7 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { EventsService } from '../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
-import { map, Observable, startWith, switchMap } from 'rxjs';
+import { debounceTime, defaultIfEmpty, forkJoin, map, merge, Observable, startWith, switchMap } from 'rxjs';
+import { TicketsService } from '../../@core/services/tickets.service';
+import { Ticket } from '../../@core/models/ticket.model';
 import { CatalogoGridComponent, ItemCatalogo } from '../../shared/components/catalogo-grid/catalogo-grid.component';
 import { formatTime12, isPastEvent, parseEventDate } from '../../@core/utils/event-utils';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -28,6 +30,7 @@ import { LoaderComponent } from '../../@core/components/loader/loader.component'
 })
 export class EventsComponent implements OnInit{
   private eventsService = inject(EventsService);
+  private ticketsService = inject(TicketsService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   ref: DynamicDialogRef | undefined;
@@ -45,16 +48,22 @@ export class EventsComponent implements OnInit{
 
 
   ngOnInit(): void {
-    this.items$ = this.eventsService.refreshEventsObservable$.pipe(
+    // Las entradas se guardan después del evento: se recarga también cuando cambian.
+    this.items$ = merge(this.eventsService.refreshEventsObservable$, this.ticketsService.refreshTicketsObservable$).pipe(
+      debounceTime(150),
       startWith(null),
       switchMap(() => {
         this.isLoading.set(true);
         this.onSeleccion([]);
-        return this.eventsService.getEvents();
+        // getTickets() no emite si falla: sin el default el forkJoin no emitiría nada.
+        return forkJoin({ events: this.eventsService.getEvents(), tickets: this.ticketsService.getTickets().pipe(defaultIfEmpty([] as Ticket[])) });
       }),
-      map((events: Event[]) =>
+      map(({ events, tickets }) =>
         events.map(e => {
           const dia = parseEventDate(e.date);
+          const entradas = tickets
+            .filter(t => t.idEvents === e.idEvents && t.status === 1)
+            .map(t => `${t.name} $${Number(t.price).toFixed(2)}`);
           return {
             id: e.idEvents,
             nombre: e.name,
@@ -63,6 +72,7 @@ export class EventsComponent implements OnInit{
               .join(' · '),
             precio: null,
             pie: `Aforo ${e.capacity} · Consumo ${e.consumo === 1 ? 'sí' : 'no'}`,
+            entradas,
             imagen: e.flyer || e.image1,
             disponible: e.status === 1,
             estado: e.status === 1 ? 'Activo' : 'Inactivo',

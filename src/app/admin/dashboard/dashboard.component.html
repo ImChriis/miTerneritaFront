@@ -7,6 +7,15 @@
             <p class="tm-muted">Este es el resumen de ventas y actividad de Mi Ternerita House.</p>
         </div>
         <div class="quick">
+            <div class="tasa">
+                <span>
+                    <small>Tasa BCV{{ tasa.tasa()?.fecha ? ' · ' + (tasa.tasa()!.fecha | date: 'dd/MM h:mm a') : '' }}</small>
+                    <strong>{{ tasa.tasa()?.valor ? (tasa.tasa()!.valor | number: '1.2-4') + ' Bs/$' : 'Sin tasa' }}</strong>
+                </span>
+                <button type="button" class="tm-icon-btn" (click)="refrescarTasa()" [disabled]="refrescandoTasa()" aria-label="Actualizar la tasa del día" title="Actualizar la tasa del día">
+                    <i class="pi pi-refresh" [class.pi-spin]="refrescandoTasa()"></i>
+                </button>
+            </div>
             <a routerLink="/admin/payments" class="tm-btn tm-btn--ghost">
                 <i class="pi pi-wallet"></i> Revisar pagos
                 @if (statusCounts().Pendiente) {

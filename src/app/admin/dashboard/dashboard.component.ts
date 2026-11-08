@@ -1,4 +1,6 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { TasaService } from '../../@core/services/tasa.service';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +27,7 @@ import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CapFirstPipe, ChartModule, DatePipe, FormsModule, RouterLink, SelectButtonModule],
+  imports: [CapFirstPipe, ChartModule, DatePipe, DecimalPipe, FormsModule, RouterLink, SelectButtonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -35,7 +37,10 @@ export class DashboardComponent implements OnInit {
   private eventsService = inject(EventsService);
   private dialogService = inject(DialogService);
   private theme = inject(ThemeService);
+  private messageService = inject(MessageService);
+  readonly tasa = inject(TasaService);
   ref: DynamicDialogRef | undefined;
+  refrescandoTasa = signal(false);
 
   readonly today = new Date();
   readonly userName = (JSON.parse(localStorage.getItem('user') || '{}').name as string) ?? '';
@@ -122,7 +127,7 @@ export class DashboardComponent implements OnInit {
 
   usersChart = computed(() => {
     const c = this.palette();
-    const { labels, data } = this.groupByPeriod(this.allUsers(), this.selectedUserFilter(), 'createdAt');
+    const { labels, data } = this.groupByPeriod(this.allUsers(), this.selectedUserFilter(), 'fechaRegistro');
     return {
       labels,
       datasets: [
@@ -204,6 +209,20 @@ export class DashboardComponent implements OnInit {
     });
 
     this.eventsService.getEvents().subscribe(events => this.events.set(events ?? []));
+  }
+
+  refrescarTasa() {
+    this.refrescandoTasa.set(true);
+    this.tasa.refrescar().subscribe({
+      next: t => {
+        this.refrescandoTasa.set(false);
+        this.messageService.add({ severity: 'success', summary: 'Tasa actualizada', detail: `${t.valor} Bs/$` });
+      },
+      error: err => {
+        this.refrescandoTasa.set(false);
+        this.messageService.add({ severity: 'error', summary: 'Tasa BCV', detail: err?.error?.message ?? 'No se pudo actualizar la tasa' });
+      }
+    });
   }
 
   statusClass(status: string) {

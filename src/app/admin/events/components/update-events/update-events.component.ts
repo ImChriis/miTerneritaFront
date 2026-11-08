@@ -1,4 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, viewChild } from '@angular/core';
+import { switchMap } from 'rxjs';
+import { EventTicketsComponent } from '../event-tickets/event-tickets.component';
+import { EventPhotosComponent } from '../event-photos/event-photos.component';
+import { parseEventDate } from '../../../../@core/utils/event-utils';
 import { EventsService } from '../../../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
 import { InputText } from 'primeng/inputtext';
@@ -22,7 +26,9 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
     ReactiveFormsModule,
     SelectModule,
     ToggleSwitch,
-    FormsModule
+    FormsModule,
+    EventTicketsComponent,
+    EventPhotosComponent
   ],
   templateUrl: './update-events.component.html',
   styleUrl: './update-events.component.scss'
@@ -33,8 +39,11 @@ export class UpdateEventsComponent implements OnInit{
   private fb = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
   private dialogConfig = inject(DynamicDialogConfig);
+  private entradas = viewChild.required(EventTicketsComponent);
   previewUrlL: string | null = null;
   event = this.dialogConfig.data.event;
+  /** Las fotos de la noche se suben desde el día del evento. */
+  readonly conGaleria = parseEventDate(this.event.date) <= new Date();
   apiImg = environment.apiImg;
   selectedStatus = this.event.status;
   selectedConsumo = this.event.consumo;
@@ -208,7 +217,7 @@ onSubmit() {
       console.log('FormData', pair[0], pair[1]);
     }
 
-    this.eventsService.updateEvent(this.event.idEvents, formData).subscribe({
+    this.eventsService.updateEvent(this.event.idEvents, formData).pipe(this.guardarEntradas()).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -222,7 +231,7 @@ onSubmit() {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar el evento'
+          detail: error?.error?.message ?? 'No se pudo actualizar el evento'
         });
       }
     });
@@ -243,7 +252,7 @@ onSubmit() {
 
     console.log('JSON body', jsonBody);
 
-    this.eventsService.updateEventJson(this.event.idEvents, jsonBody).subscribe({
+    this.eventsService.updateEventJson(this.event.idEvents, jsonBody).pipe(this.guardarEntradas()).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -257,10 +266,15 @@ onSubmit() {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar el evento'
+          detail: error?.error?.message ?? 'No se pudo actualizar el evento'
         });
       }
     });
   }
 }
+
+  /** Tras guardar el evento, sus entradas (crea las que falten). */
+  private guardarEntradas() {
+    return switchMap(() => this.entradas().guardar(this.event.idEvents));
+  }
 }

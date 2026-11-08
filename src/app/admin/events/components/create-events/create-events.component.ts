@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
+import { switchMap } from 'rxjs';
+import { EventTicketsComponent } from '../event-tickets/event-tickets.component';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
@@ -20,7 +22,8 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
     ReactiveFormsModule,
     EditorModule,
     SelectModule,
-    ToggleSwitch
+    ToggleSwitch,
+    EventTicketsComponent
   ],
   templateUrl: './create-events.component.html',
   styleUrl: './create-events.component.scss'
@@ -30,6 +33,7 @@ export class CreateEventsComponent {
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
+  private entradas = viewChild.required(EventTicketsComponent);
   previewUrlL: string | null = null;
 
   consumo = [
@@ -187,15 +191,16 @@ onSubmit() {
     console.log(pair[0], pair[1]);
   }
 
-  this.eventsService.createEvent(fd).subscribe({
-    next: (res: any) => {
+  // Las entradas necesitan el id del evento recién creado.
+  this.eventsService.createEvent(fd).pipe(switchMap((ev: any) => this.entradas().guardar(ev.idEvents))).subscribe({
+    next: () => {
       this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento creado correctamente.' });
       Object.values(this.previewUrls).forEach(url => { if (url && url.startsWith('blob:')) URL.revokeObjectURL(url); });
       this.dialogRef.close(true);
     },
     error: (err: any) => {
       console.error('Error al crear evento:', err);
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el evento.' });
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message ?? 'No se pudo crear el evento.' });
     }
   });
 }

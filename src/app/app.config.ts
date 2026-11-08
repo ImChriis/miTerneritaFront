@@ -1,4 +1,4 @@
-import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, Injectable, LOCALE_ID, provideZoneChangeDetection, Type } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEsVe from '@angular/common/locales/es-VE';
 import { provideRouter, TitleStrategy, withInMemoryScrolling, withViewTransitions } from '@angular/router';
@@ -6,7 +6,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { DialogService } from "primeng/dynamicdialog";
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { providePrimeNG } from 'primeng/config';
 import { definePreset } from '@primeng/themes';
 import Material from '@primeng/themes/material';
@@ -14,6 +14,14 @@ import { tokenInterceptor } from './@core/interceptor/token.interceptor';
 import { PageTitleStrategy } from './@core/services/page-title.strategy';
 
 registerLocaleData(localeEsVe);
+
+/** Todos los modales se cierran al tocar fuera de ellos, salvo que la llamada diga otra cosa. */
+@Injectable()
+class DialogServiceCerrable extends DialogService {
+  override open<T>(componentType: Type<T>, config: DynamicDialogConfig): DynamicDialogRef<T> {
+    return super.open(componentType, { dismissableMask: true, ...config });
+  }
+}
 
 // Paleta de PrimeNG alineada con los tokens de src/styles/_tokens.scss
 const TerneritaPreset = definePreset(Material, {
@@ -93,7 +101,7 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'es-VE' },
     { provide: TitleStrategy, useExisting: PageTitleStrategy },
     MessageService,
-    DialogService,
+    { provide: DialogService, useClass: DialogServiceCerrable },
     providePrimeNG({
       theme: {
         preset: TerneritaPreset,

@@ -2,3 +2,15 @@
 :host {
   display: block;
 }
+
+// Nombre y apellido en una sola celda, apellido debajo.
+.persona {
+  strong,
+  small {
+    display: block;
+  }
+
+  small {
+    color: var(--text-muted);
+  }
+}

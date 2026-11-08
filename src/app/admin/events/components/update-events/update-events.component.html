@@ -54,6 +54,8 @@
         </div>
     </section>
 
+    <app-event-tickets #entradas [idEvents]="event.idEvents" [category]="updateEventsForm.controls.category.value" />
+
     <section class="adm-section">
         <h3>Descripción</h3>
         <p-editor [style]="{ height: '220px' }" formControlName="description" />
@@ -86,8 +88,12 @@
         <p class="adm-hint">El flyer es la portada en la cartelera; las imágenes 1 a 3 forman la galería del evento.</p>
     </section>
 
+    @if (conGaleria) {
+        <app-event-photos [idEvents]="event.idEvents" />
+    }
+
     <div class="adm-actions">
         <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
-        <button type="submit" class="adm-btn" [disabled]="updateEventsForm.invalid">Guardar cambios</button>
+        <button type="submit" class="adm-btn" [disabled]="updateEventsForm.invalid || !entradas.valido()">Guardar cambios</button>
     </div>
 </form>

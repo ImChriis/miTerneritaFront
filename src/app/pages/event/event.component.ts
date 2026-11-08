@@ -7,7 +7,8 @@ import { MessageService } from 'primeng/api';
 import { catchError, of } from 'rxjs';
 import { EventsService } from '../../@core/services/events.service';
 import { TicketsService } from '../../@core/services/tickets.service';
-import { Event } from '../../@core/models/event.model';
+import { Event, EventPhoto } from '../../@core/models/event.model';
+import { EventGalleryComponent } from '../../shared/components/event-gallery/event-gallery.component';
 import { Ticket } from '../../@core/models/ticket.model';
 import { VENUE } from '../../@core/data/site';
 import {
@@ -24,7 +25,7 @@ import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-event',
-  imports: [CapFirstPipe, DatePipe, DecimalPipe, RouterLink],
+  imports: [CapFirstPipe, DatePipe, DecimalPipe, EventGalleryComponent, RouterLink],
   templateUrl: './event.component.html',
   styleUrl: './event.component.scss'
 })
@@ -43,6 +44,8 @@ export class EventComponent implements OnInit {
 
   event = signal<Event | null>(null);
   tickets = signal<Ticket[]>([]);
+  /** Galería "revive tu noche" (la sube el admin después del evento). */
+  fotos = signal<EventPhoto[]>([]);
   loading = signal(true);
   notFound = signal(false);
 
@@ -82,6 +85,12 @@ export class EventComponent implements OnInit {
         this.loading.set(false);
       }
     });
+
+    this.fotos.set([]);
+    this.eventsService
+      .getPhotos(id)
+      .pipe(catchError(() => of([] as EventPhoto[])))
+      .subscribe(fotos => this.fotos.set(fotos));
 
     this.ticketsService
       .getTicktesByEvent(id)

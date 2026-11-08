@@ -86,6 +86,10 @@
         </div>
     </section>
 
+    @if (fotos().length) {
+        <app-event-gallery [fotos]="fotos()" [nombre]="ev.name" />
+    }
+
     <section class="tm-container event-body">
         <div class="main-col">
             @if (isPast()) {

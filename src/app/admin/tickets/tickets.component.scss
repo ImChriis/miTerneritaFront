@@ -2,3 +2,163 @@
 :host {
   display: block;
 }
+
+.barra {
+  margin-bottom: 1rem;
+}
+
+.vacio {
+  margin: 0;
+  padding: 2rem 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.grupos,
+.filas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grupos {
+  display: grid;
+  gap: 0.75rem;
+}
+
+// Un tipo de entrada (boceto: cabecera con el tipo y, dentro, sus eventos)
+.grupo {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.grupo-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.chevron,
+.icono {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.chevron {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+
+  &:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+}
+
+.tipo,
+.renombre {
+  height: 36px;
+  padding: 0 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+}
+
+.tipo {
+  display: inline-flex;
+  align-items: center;
+}
+
+.renombre {
+  width: min(240px, 50vw);
+  outline: none;
+
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-soft);
+  }
+}
+
+.cuenta {
+  color: var(--text-subtle);
+  font-size: 0.8rem;
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.estado {
+  margin-right: 0.25rem !important;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+// Eventos que venden este tipo
+.filas {
+  display: grid;
+  margin: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-soft);
+
+  li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 7rem 8.5rem auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 0.6rem 0.6rem 1rem;
+
+    + li {
+      border-top: 1px solid var(--border);
+    }
+  }
+}
+
+.evento {
+  min-width: 0;
+
+  strong,
+  small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--text-subtle);
+    font-size: 0.78rem;
+  }
+}
+
+.precio {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .grupo-head {
+    flex-wrap: wrap;
+  }
+
+  .filas li {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem 1rem;
+  }
+}

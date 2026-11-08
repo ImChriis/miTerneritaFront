@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { PARTNERS } from '../../../@core/data/site';
 
 /**
- * Carrusel infinito de logos con fondo blanco.
+ * Carrusel infinito de logos; el fondo sigue el tema (blanco en claro).
  * Los logos se agregan en PARTNERS (@core/data/site.ts).
  */
 @Component({

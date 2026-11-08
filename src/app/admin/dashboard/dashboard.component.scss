@@ -34,8 +34,40 @@
   }
 }
 
+// Tasa BCV del día con botón para refrescarla.
+.tasa {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.3rem 0.3rem 0.3rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+
+  small,
+  strong {
+    display: block;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--text-subtle);
+    font-size: 0.72rem;
+  }
+
+  strong {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tm-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
 .quick {
   display: flex;
+  align-items: center;
   gap: 0.6rem;
   flex-wrap: wrap;
 
