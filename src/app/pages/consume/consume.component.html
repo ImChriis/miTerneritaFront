@@ -1,49 +1,103 @@
-<div class="container">
-    <div class="sections">
-    <p>Detalles del evento ></p> <p>Espacios ></p> <p class="selected">Consumo ></p> <p>Confirmar datos ></p> <p>Pagar</p>
+@if (wallpaper()) {
+    <div class="tm-page-backdrop" aria-hidden="true">
+        <img src="{{ wallpaper() }}" alt="" />
+    </div>
+}
+
+<div class="tm-container tm-flow">
+    <app-purchase-steps [current]="1" [eventId]="idEvent" />
+
+    <header class="tm-flow-head">
+        <div>
+            <p class="tm-eyebrow">Consumo</p>
+            <h1>{{ name() }}</h1>
+            <p class="meta">Aparta tu comida y bebida desde ahora. Es opcional.</p>
+        </div>
+    </header>
+
+    <div class="tm-flow-grid">
+        <section class="tm-card tm-card--pad">
+            @if (loading()) {
+                @for (s of [0, 1, 2]; track s) {
+                    <div class="tm-skeleton option-skeleton"></div>
+                }
+            } @else {
+                <div class="filtros" role="group" aria-label="Filtrar la carta">
+                    @for (f of filtros; track f.valor) {
+                        @if (conteo()[f.valor]) {
+                            <button type="button" class="filtro" [attr.aria-pressed]="filtro() === f.valor" (click)="filtro.set(f.valor)">
+                                <i [class]="f.icono"></i> {{ f.etiqueta }} <small>{{ conteo()[f.valor] }}</small>
+                            </button>
+                        }
+                    }
+                </div>
+                @for (seccion of secciones(); track seccion.nombre) {
+                    <div class="block-head">
+                        <h2>{{ seccion.nombre }}</h2>
+                    </div>
+                    <div class="grid">
+                        @for (p of seccion.productos; track p.idFood ?? 'd' + p.idDrinks) {
+                            <article class="product" [class.has-qty]="qty(p) > 0">
+                                @if (p.imagen) {
+                                    <div class="photo">
+                                        <img class="fondo" src="{{ apiImg + '/' + p.imagen }}" alt="" aria-hidden="true" loading="lazy" />
+                                        <img class="foto" src="{{ apiImg + '/' + p.imagen }}" [alt]="p.nombre" loading="lazy" />
+                                    </div>
+                                }
+                                <div class="info">
+                                    <h3>{{ p.nombre }}</h3>
+                                    @if (p.descripcion) {
+                                        <p>{{ p.descripcion }}</p>
+                                    }
+                                    @if (p.personas) {
+                                        <span class="tm-chip access"><i class="pi pi-users"></i> Acceso General para {{ p.personas }}</span>
+                                    }
+                                </div>
+                                <div class="foot">
+                                    <strong>${{ p.precioUsd | number: '1.2-2' }}</strong>
+                                    @if (qty(p) === 0) {
+                                        <button type="button" class="tm-btn tm-btn--soft tm-btn--sm" (click)="add(p)"><i class="pi pi-plus"></i> Agregar</button>
+                                    } @else {
+                                        <div class="tm-qty">
+                                            <button type="button" [attr.aria-label]="'Quitar uno de ' + p.nombre" (click)="remove(p)"><i class="pi pi-minus"></i></button>
+                                            <output aria-live="polite">{{ qty(p) }}</output>
+                                            <button type="button" [attr.aria-label]="'Agregar uno de ' + p.nombre" [disabled]="qty(p) >= max" (click)="add(p)"><i class="pi pi-plus"></i></button>
+                                        </div>
+                                    }
+                                </div>
+                            </article>
+                        }
+                    </div>
+                } @empty {
+                    <div class="tm-empty">
+                        <span class="tm-empty-icon"><i class="pi pi-shopping-bag"></i></span>
+                        <h3>La carta aún no está disponible</h3>
+                        <p>Puedes continuar con tus entradas.</p>
+                    </div>
+                }
+            }
+        </section>
+
+        <aside class="summary">
+            <div class="tm-card tm-card--pad summary-card">
+                <h2>Tu compra</h2>
+
+                <app-price-summary [entradas]="selected" [consumo]="lineas()" vacio="Agrega una entrada o una botella con acceso." />
+
+                <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" (click)="continue()">
+                    Continuar <i class="pi pi-arrow-right"></i>
+                </button>
+                <button type="button" class="tm-btn tm-btn--ghost tm-btn--block" (click)="back()">Volver a entradas</button>
+                <p class="tm-hint center">Precios expresados en dólares (USD).</p>
+            </div>
+        </aside>
+    </div>
 </div>
 
-<div class="content">
-  <div class="details">
-        <div class="title">
-            <h1>{{ name }}</h1>
-            <h3>Selecciona lo que vas a consumir</h3>
-        </div>
-
-        <div class="list">
-            <p-tabs value="0">
-                <p-tablist>
-                    <p-tab value="0">Bebidas</p-tab>
-                </p-tablist>
-                <p-tabpanels>
-
-                    <p-tabpanel value="0" *ngIf="drinks$ | async as drinks">
-                        <div class="grid">
-                            <div class="card2" *ngFor="let drink of drinks">
-                                <div class="cardImg">
-                                    <img class="imgCard" [src]="apiImg + '/' + drink.image" >
-                                </div>
-
-                                <div class="cardInfo">
-                                    <h3>{{ drink.description }}</h3>
-                                    <h4>{{ drink.price }}$</h4>
-                                </div>
-                                <div class="cardBtn">
-                                    <button class="btn1">Agregar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </p-tabpanel>
-                </p-tabpanels>
-            </p-tabs>
-        </div>
-   
-
-    
-        <div class="btnDetails">
-            <button class="btn2" routerLink="/home/event/ticket/consume/checkout">Continuar</button>
-        </div>
-  </div>
-  
-</div>
+<div class="tm-mobile-bar" [class.is-visible]="lineas().length > 0">
+    <div>
+        <small>{{ entradas() }} {{ entradas() === 1 ? 'entrada' : 'entradas' }}</small>
+        <strong>${{ total() | number: '1.2-2' }}</strong>
+    </div>
+    <button type="button" class="tm-btn tm-btn--primary" (click)="continue()">Continuar <i class="pi pi-arrow-right"></i></button>
 </div>

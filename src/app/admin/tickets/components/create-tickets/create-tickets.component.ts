@@ -8,6 +8,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { FormTicket } from '../../../../@core/models/forms/form-ticket';
 import { SelectModule } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { EventsService } from '../../../../@core/services/events.service';
 import { Event } from '../../../../@core/models/event.model';
 
@@ -19,6 +20,7 @@ import { Event } from '../../../../@core/models/event.model';
     InputText,
     ButtonModule,
     SelectModule,
+    ToggleSwitch,
     FormsModule
   ],
   templateUrl: './create-tickets.component.html',
@@ -47,6 +49,10 @@ export class CreateTicketsComponent implements OnInit{
     idEvents: this.fb.control<number | null>(null),
     status: this.fb.control<number | null>(1),
   });
+
+  cerrar() {
+    this.dialogRef.close();
+  }
 
   onSubmit(){
     const formData = this.ticketForm.value;

@@ -45,6 +45,10 @@ export class EditUserComponent implements OnInit {
     this.editUserForm.patchValue(this.user);
   }
 
+  cerrar() {
+    this.dialogRef.close();
+  }
+
   onSubmit() {
     this.userService.updateUser(this.user.id, this.editUserForm.value).subscribe({
       next: (res) => {

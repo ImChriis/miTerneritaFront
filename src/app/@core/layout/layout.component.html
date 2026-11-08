@@ -1,124 +1,180 @@
-<div class="app-container">
-    <nav>  
-        <div class="items">
-            <a routerLink="/">Inicio</a>
-            <a (click)="goToEvents()">Eventos</a>
-            <a routerLink="/home/contact">Contacto</a>
-        </div>
-        
-        <div class="navLogo">
-            <img src="../../../assets/img/logo.png" alt="">
-            <h2>Mi Ternerita House</h2>
-        </div>
-        
-        <div class="auth">
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-        <a routerLink="/admin/dashboard" *ngIf="authService.isAuthenticated() && user?.role === 'admin'">Dashboard</a>
-            <a href="#" *ngIf="authService.isAuthenticated()">Mis Compras</a>
-            <button *ngIf="!authService.isAuthenticated()" routerLink="/login" class="login">Login</button>
+<header
+    class="site-header tm-vt-header"
+    [class.is-scrolled]="scrolled()"
+    [class.over-hero]="overHero()"
+    [class.menu-open]="mobileOpen()"
+>
+    <div class="nav-inner tm-container">
+        <a routerLink="/" class="brand" aria-label="Mi Ternerita House, ir al inicio" (click)="goTo(nav[0], $event)">
+            <img src="assets/img/logo.png" alt="" class="tm-logo-img" width="44" height="37" />
+            <span class="brand-text">
+                <strong>Mi Ternerita</strong>
+                <small>House</small>
+            </span>
+        </a>
 
-            <div  routerLink="/home/profile" class="user" *ngIf="authService.isAuthenticated()">
-                <i class="pi pi-user"></i>
-            </div>
+        <nav class="nav-links" aria-label="Principal">
+            @for (item of nav; track item.label) {
+                @if (item.route) {
+                    <a [routerLink]="item.route" routerLinkActive="is-active" class="nav-link">{{ item.label }}</a>
+                } @else {
+                    <a href="/#{{ item.section }}" class="nav-link" [class.is-active]="isActive(item)" (click)="goTo(item, $event)">
+                        {{ item.label }}
+                    </a>
+                }
+            }
+        </nav>
+
+        <div class="nav-actions">
+            <app-theme-toggle />
+
+            @if (user(); as u) {
+                <div class="user-menu">
+                    <button
+                        type="button"
+                        class="avatar-btn"
+                        [attr.aria-expanded]="userMenuOpen()"
+                        aria-haspopup="menu"
+                        (click)="userMenuOpen.set(!userMenuOpen())"
+                    >
+                        <span class="avatar">{{ initials() }}</span>
+                        <span class="avatar-name">{{ u.name }}</span>
+                        <i class="pi pi-chevron-down"></i>
+                    </button>
+
+                    @if (userMenuOpen()) {
+                        <div class="dropdown" role="menu">
+                            <div class="dropdown-head">
+                                <strong>{{ u.name }} {{ u.lastName }}</strong>
+                                <span>{{ u.email }}</span>
+                            </div>
+                            <a routerLink="/home/profile" role="menuitem"><i class="pi pi-user"></i> Mi perfil</a>
+                            @if (isStaff()) {
+                                <a routerLink="/admin/dashboard" role="menuitem"><i class="pi pi-chart-bar"></i> Panel de control</a>
+                            }
+                            <button type="button" role="menuitem" class="danger" (click)="logout()">
+                                <i class="pi pi-sign-out"></i> Cerrar sesión
+                            </button>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <a routerLink="/login" class="tm-btn tm-btn--primary tm-btn--sm login-btn">
+                    <i class="pi pi-user"></i> Ingresar
+                </a>
+            }
+
+            <button
+                type="button"
+                class="menu-btn"
+                [class.is-open]="mobileOpen()"
+                [attr.aria-expanded]="mobileOpen()"
+                aria-controls="mobile-drawer"
+                aria-label="Abrir menú"
+                (click)="mobileOpen.set(!mobileOpen())"
+            >
+                <span></span><span></span>
+            </button>
         </div>
-        
-        <div class="info">
-            <div class="logo">
-                <img src="../../../assets/img/logo.png" alt="">
-                <h2>Mi Ternerita House</h2>
-            </div>
+    </div>
+</header>
 
-            <div class="menu">
-                <button class="menu-toggle" (click)="showMobileMenu = !showMobileMenu">
-                    <i class="pi pi-bars menuBtn"></i>
-                </button>
-            </div>
-
-            <div class="mobile-menu" *ngIf="showMobileMenu" [class.open]="showMobileMenu">
-                <a routerLink="/">Inicio</a>
-                <a routerLink="/home/events">Eventos</a>
-                <a routerLink="/home/contact">Contacto</a>
-                <a routerLink="/admin/dashboard" *ngIf="authService.isAuthenticated() && user?.role === 'admin'">Dashboard</a>
-                <a routerLink="#">Mis Compras</a>
-                <a routerLink="/home/profile">Perfil</a>
-            </div>
-        </div>
+<!-- Menú móvil -->
+<div class="drawer-scrim" [class.is-open]="mobileOpen()" (click)="mobileOpen.set(false)"></div>
+<aside id="mobile-drawer" class="drawer" [class.is-open]="mobileOpen()" [attr.aria-hidden]="!mobileOpen()">
+    <nav class="drawer-links" aria-label="Menú móvil">
+        @for (item of nav; track item.label; let i = $index) {
+            <a
+                [attr.href]="item.route ?? '/#' + item.section"
+                [style.--i]="i"
+                [class.is-active]="isActive(item)"
+                (click)="goTo(item, $event)"
+            >
+                {{ item.label }}
+                <i class="pi pi-arrow-right"></i>
+            </a>
+        }
     </nav>
-    
-    
 
-    <div class="content">
-        <router-outlet></router-outlet>
+    <div class="drawer-foot">
+        @if (user(); as u) {
+            <a routerLink="/home/profile" class="tm-btn tm-btn--ghost tm-btn--block"><i class="pi pi-user"></i> Mi perfil</a>
+            @if (isStaff()) {
+                <a routerLink="/admin/dashboard" class="tm-btn tm-btn--ghost tm-btn--block"><i class="pi pi-chart-bar"></i> Panel de control</a>
+            }
+            <button type="button" class="tm-btn tm-btn--danger tm-btn--block" (click)="logout()">
+                <i class="pi pi-sign-out"></i> Cerrar sesión
+            </button>
+        } @else {
+            <a routerLink="/login" class="tm-btn tm-btn--primary tm-btn--block">Iniciar sesión</a>
+            <a routerLink="/register" class="tm-btn tm-btn--ghost tm-btn--block">Crear cuenta</a>
+        }
     </div>
+</aside>
 
-    <footer>
-        <div class="footerLogo">
-            <img class="footerImg" src="../../../assets/img/logo.png" alt="">
-        </div>
+<main id="contenido" class="content" [class.has-hero]="isHome()">
+    <router-outlet></router-outlet>
+</main>
 
-        <div class="footerInfo">
-            <p>© 2026 Mi Ternerita. Todos los derechos reservados, Desarrollado por <a class="netsolca" href="">Netsolca</a></p>
+<footer class="site-footer">
+    <div class="tm-container footer-grid">
+        <div class="footer-brand">
+            <a routerLink="/" class="brand">
+                <img src="assets/img/logo.png" alt="" class="tm-logo-img" width="44" height="37" />
+                <span class="brand-text">
+                    <strong>Mi Ternerita</strong>
+                    <small>House</small>
+                </span>
+            </a>
+            <p>Bar &amp; Grill y casa de eventos en Maracaibo. Compra tus entradas en línea, de forma rápida y segura.</p>
 
-            <div class="policy">
-                <a href="">Política de Privacidad</a>
-                <a href="">Términos y Condiciones</a>
-                <a href="">Política de compras</a>
+            <div class="socials">
+                @if (instagram()) {
+                    <a [href]="instagram()" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="pi pi-instagram"></i></a>
+                }
+                @if (tiktok()) {
+                    <a [href]="tiktok()" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="pi pi-tiktok"></i></a>
+                }
+                @if (whatsapp()) {
+                    <a [href]="whatsapp()" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="pi pi-whatsapp"></i></a>
+                }
+                @if (email()) {
+                    <a [href]="email()" aria-label="Correo electrónico"><i class="pi pi-envelope"></i></a>
+                }
             </div>
         </div>
 
-        <div class="socialMedia">
-            <a *ngIf="whatsapp" [href]="whatsapp" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
-            </a>
-
-            <a *ngIf="instagram" [href]="instagram" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
-            </a>
-
-            <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
-            </a>
-
-            <a *ngIf="email" [href]="email" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-envelope" style="font-size: 2.5rem"></i>
-            </a>
-        </div>
-    </footer>
-
-    <div class="mobileFooter">
-        <div class="footerLogo">
-            <img class="footerImg" src="../../../assets/img/logo.png" alt="">
-         </div>
-
-
-        <div class="socialMedia">
-            <a *ngIf="whatsapp" [href]="whatsapp" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-whatsapp" style="font-size: 2.5rem"></i>
-            </a>
-
-            <a *ngIf="instagram" [href]="instagram" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-instagram" style="font-size: 2.5rem"></i>
-            </a>
-
-            <a *ngIf="tiktok" [href]="tiktok" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-tiktok" style="font-size: 2.5rem"></i>
-            </a>
-
-            <a *ngIf="email" [href]="email" target="_blank" rel="noopener noreferrer">
-                <i class="pi pi-envelope" style="font-size: 2.5rem"></i>
-            </a>
+        <div class="footer-col">
+            <h4>Explora</h4>
+            @for (item of nav.slice(0, 4); track item.label) {
+                <a href="/#{{ item.section }}" (click)="goTo(item, $event)">{{ item.label === 'Pasados' ? 'Eventos pasados' : item.label }}</a>
+            }
         </div>
 
-        <div class="policy">
-            <a href="">Política de Privacidad</a>
-            <a href="">Términos y Condiciones</a>
-            <a href="">Política de compras</a>
+        <div class="footer-col">
+            <h4>Tu cuenta</h4>
+            @if (user()) {
+                <a routerLink="/home/profile">Mi perfil</a>
+            } @else {
+                <a routerLink="/login">Iniciar sesión</a>
+                <a routerLink="/register">Crear cuenta</a>
+            }
+            <a routerLink="/home/contact">Ayuda y contacto</a>
         </div>
 
-        <hr>
-
-         <div class="footerInfo">
-            <p>© 2026 Mi Ternerita. Todos los derechos reservados, Desarrollado por <a class="netsolca" href="">Netsolca</a></p>
+        <div class="footer-col">
+            <h4>Visítanos</h4>
+            <p class="address"><i class="pi pi-map-marker"></i> {{ venue.address }}</p>
+            <a [href]="venue.mapsUrl" target="_blank" rel="noopener noreferrer" class="tm-link">
+                Cómo llegar <i class="pi pi-arrow-right"></i>
+            </a>
         </div>
     </div>
-</div>
+
+    <div class="tm-container footer-bottom">
+        <p>© {{ year }} Mi Ternerita House. Todos los derechos reservados.</p>
+        <p>Desarrollado por <a class="netsolca" href="https://www.netsolca.com.ve/" target="_blank" rel="noopener noreferrer">Netsolca</a></p>
+    </div>
+</footer>

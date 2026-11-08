@@ -1,0 +1,87 @@
+<form class="adm-form" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+    <div class="adm-layout">
+        <div class="adm-photo-wrap">
+            <input #fileInput type="file" accept="image/*" hidden (change)="elegirFoto($event)" />
+            <button type="button" class="adm-photo" [class.has-img]="preview()" (click)="fileInput.click()" [attr.aria-label]="preview() ? 'Cambiar foto' : 'Subir foto'">
+                @if (preview(); as src) {
+                    <img class="fondo" [src]="src" alt="" aria-hidden="true" />
+                    <img class="foto" [src]="src" alt="Foto del producto" />
+                } @else {
+                    <span class="vacio"><i class="pi pi-image"></i> Subir foto <small>JPG, PNG o WebP</small></span>
+                }
+            </button>
+            <div class="adm-photo-actions">
+                <button type="button" (click)="fileInput.click()">{{ preview() ? 'Cambiar foto' : 'Elegir archivo' }}</button>
+                @if (archivo()) {
+                    <button type="button" class="quitar" (click)="descartarFoto(fileInput)">Descartar</button>
+                }
+            </div>
+        </div>
+
+        <div class="adm-section">
+            <div class="adm-field">
+                <label for="pf-nombre">Nombre</label>
+                <input pInputText id="pf-nombre" formControlName="description" [placeholder]="esBebida ? 'Ej. Ron Santa Teresa 1796' : 'Ej. Tequeños'" />
+                @if (invalido('description')) {
+                    <p class="adm-error">Escribe el nombre (máx. 150 caracteres).</p>
+                }
+            </div>
+
+            <div class="adm-field">
+                <div class="adm-field-head">
+                    <label for="pf-detalle">Descripción corta</label>
+                    <small class="adm-hint">{{ form.controls.detalle.value.length }}/{{ maxDetalle }}</small>
+                </div>
+                <input pInputText id="pf-detalle" formControlName="detalle" [attr.maxlength]="maxDetalle" [placeholder]="esBebida ? 'Ej. Botella 0,75 L' : 'Ej. 12 unidades con salsa de ajo'" />
+                <p class="adm-hint">Aparece debajo del nombre en la carta.</p>
+            </div>
+
+            <div class="adm-grid">
+                <div class="adm-field">
+                    <label for="pf-precio">Precio</label>
+                    <div class="adm-prefix">
+                        <span>$</span>
+                        <input pInputText id="pf-precio" type="number" min="0" step="0.01" inputmode="decimal" formControlName="price" />
+                    </div>
+                    @if (invalido('price')) {
+                        <p class="adm-error">Indica un precio en dólares.</p>
+                    }
+                </div>
+
+                <div class="adm-field">
+                    <label for="pf-orden">Orden en la carta</label>
+                    <input pInputText id="pf-orden" type="number" min="0" max="9999" step="1" formControlName="orden" />
+                    <p class="adm-hint">Menor número, más arriba.</p>
+                </div>
+
+                @if (esBebida) {
+                    <div class="adm-field">
+                        <label for="pf-cat">Categoría</label>
+                        <p-select inputId="pf-cat" [options]="categorias" optionLabel="label" optionValue="value" formControlName="categoria" appendTo="body" />
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="pf-personas">Acceso General incluido</label>
+                        <input pInputText id="pf-personas" type="number" min="0" max="50" step="1" formControlName="personas" />
+                        <p class="adm-hint">Personas que entran con la botella. 0 = sin acceso.</p>
+                    </div>
+                }
+            </div>
+
+            <label class="adm-switch" for="pf-estado">
+                <span>
+                    <strong>Disponible</strong>
+                    <small>{{ form.controls.status.value === 1 ? 'Se puede pedir en la carta.' : 'No se puede pedir por ahora.' }}</small>
+                </span>
+                <p-toggleswitch inputId="pf-estado" formControlName="status" [trueValue]="1" [falseValue]="0" />
+            </label>
+        </div>
+    </div>
+
+    <div class="adm-actions">
+        <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando…' : producto ? 'Guardar cambios' : esBebida ? 'Crear bebida' : 'Crear comida' }}
+        </button>
+    </div>
+</form>

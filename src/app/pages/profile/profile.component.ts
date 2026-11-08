@@ -1,8 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
-import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../@core/services/auth.service';
 import { RegisterForm } from '../../@core/models/forms/form-register';
@@ -10,19 +9,20 @@ import { RegisterForm } from '../../@core/models/forms/form-register';
 @Component({
   selector: 'app-profile',
   imports: [
-    CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent {
- private authService = inject(AuthService);
+export class ProfileComponent implements OnInit {
+  private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
-  private dialogService = inject(DialogService);
   private router = inject(Router);
   id!: number;
+  showPass = signal(false);
+  saving = signal(false);
 
     private passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
       const password = group.get('password')?.value;
@@ -36,8 +36,6 @@ export class ProfileComponent {
       email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
       password: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
       phone: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/^(?!\s*$).+/)]}),
-      // idRol: new FormControl(1, {nonNullable: true}),
-      // status: new FormControl(1, {nonNullable: true}),
       tipo: new FormControl('V', {nonNullable: true , validators: [Validators.required]}),
       cedula: new FormControl('', {nonNullable: true, validators: [Validators.required,]}),
       confirmPassword: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
@@ -46,17 +44,21 @@ export class ProfileComponent {
     { validators: this.passwordsMatchValidator }
   );
 
+  private values = toSignal(this.registerForm.valueChanges, { initialValue: this.registerForm.value });
+  fullName = computed(() => `${this.values().name ?? ''} ${this.values().lastName ?? ''}`.trim());
+  initials = computed(() => `${this.values().name?.[0] ?? ''}${this.values().lastName?.[0] ?? ''}`.toUpperCase() || 'U');
+
   ngOnInit(): void {
     this.registerForm.get('tipo')?.valueChanges.subscribe(() => this.updateIdentificacion());
     this.registerForm.get('noCedula')?.valueChanges.subscribe(() => this.updateIdentificacion());
-  
+
     const user = localStorage.getItem('user');
     if (user) {
       const userData = JSON.parse(user);
-      this.id = userData.id; 
+      this.id = userData.id;
       if (userData.cedula && userData.cedula.includes('-')) {
         const [tipo, noCedula] = userData.cedula.split('-');
-        
+
         userData.tipo = tipo;
         userData.noCedula = noCedula;
       }
@@ -70,30 +72,29 @@ export class ProfileComponent {
     if (!control || !control.errors) {
       return ''; // Si el control no existe o no tiene errores, retorna una cadena vacía
     }
-  
+
     if (control.errors['required']) {
-      // return `El campo ${field} es obligatorio.`;
       return `El campo es obligatorio.`;
     }
     if (control.errors['minlength']) {
-      return `El campo ${field} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
+      return `Debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
     }
     if (control.errors['maxlength']) {
-      return `El campo ${field} no puede exceder los ${control.errors['maxlength'].requiredLength} caracteres.`;
+      return `No puede exceder los ${control.errors['maxlength'].requiredLength} caracteres.`;
     }
     if (control.errors['email']) {
       return 'El correo electrónico no tiene un formato válido.';
     }
     if (control.errors['pattern']) {
-      if (field === 'cedula') {
+      if (field === 'cedula' || field === 'noCedula') {
         return 'Solo se permiten números en la cédula.';
       }
-      return `El campo ${field} debe incluir al menos un carácter especial.`;
+      return 'El formato no es válido.';
     }
-  
+
     return 'Error desconocido en el campo.'; // Mensaje genérico para errores no manejados
   }
-  
+
   isValidField(field: string): boolean {
     const control = this.registerForm.get(field);
     return control ? control.invalid && (control.touched || control.dirty) : false;
@@ -105,39 +106,12 @@ export class ProfileComponent {
     this.registerForm.patchValue({ cedula: `${tipo}-${numero}` });
   }
 
-     showPassword() {
-    const passwordField = document.querySelector('#password') as HTMLInputElement;
-    const eyeIcon = document.querySelector('.btn-Pass i') as HTMLElement;
-    if (passwordField) {
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        eyeIcon.classList.remove('pi-eye-slash');
-        eyeIcon.classList.add('pi-eye');
-      } else {
-        passwordField.type = 'password';
-        eyeIcon.classList.remove('pi-eye');
-        eyeIcon.classList.add('pi-eye-slash');
-      }
-    }
-  }
-
-     showPassword2() {
-    const passwordField = document.querySelector('#password2') as HTMLInputElement;
-    const eyeIcon = document.querySelector('.btn-Pass i') as HTMLElement;
-    if (passwordField) {
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        eyeIcon.classList.remove('pi-eye-slash');
-        eyeIcon.classList.add('pi-eye');
-      } else {
-        passwordField.type = 'password';
-        eyeIcon.classList.remove('pi-eye');
-        eyeIcon.classList.add('pi-eye-slash');
-      }
-    }
-  }
-
     onSubmit(){
+      if (this.registerForm.hasError('passwordsMismatch')) {
+        this.registerForm.controls.confirmPassword.markAsTouched();
+        return;
+      }
+
       const tipoIdentificacion = this.registerForm.get('tipo')?.value;
       const numeroIdentificacion = this.registerForm.get('noCedula')?.value;
       const cedula = `${tipoIdentificacion}-${numeroIdentificacion}`;
@@ -149,14 +123,15 @@ export class ProfileComponent {
       delete formData.noCedula;
       delete formData.confirmPassword;
 
-      console.log(formData);
+      this.saving.set(true);
       this.authService.editProfile(this.id, formData).subscribe({
-        next: (response) => {
-          console.log('Perfil actualizado exitosamente:', formData);
-          this.messageService.add({severity:'success', summary: 'Registro Exitoso', detail: 'Usuario registrado correctamente'});
+        next: () => {
+          this.saving.set(false);
+          this.messageService.add({severity:'success', summary: 'Perfil actualizado', detail: 'Tus datos se guardaron correctamente'});
         },
         error: (err) => {
-          this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});
+          this.saving.set(false);
+          this.messageService.add({severity:'error', summary: 'Error', detail: err.error?.message || 'No se pudo actualizar el perfil'});
         }
       })
     }

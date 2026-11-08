@@ -1,30 +1,184 @@
-<div class="container">
-  <div class="sections">
-    <p>Detalles del evento ></p> 
-    <p  class="selected">Espacios ></p> 
-    <p>Consumo ></p> 
-    <p>Confirmar datos ></p> 
-    <p>Pagar</p>
-</div>
+@if (loading()) {
+    <div class="tm-container event-skeleton">
+        <div class="tm-skeleton sk-poster"></div>
+        <div class="sk-lines">
+            <div class="tm-skeleton sk-line w40"></div>
+            <div class="tm-skeleton sk-line w80 tall"></div>
+            <div class="tm-skeleton sk-line w60"></div>
+            <div class="tm-skeleton sk-line w50"></div>
+        </div>
+    </div>
+} @else if (notFound() || !event()) {
+    <div class="tm-container not-found">
+        <div class="tm-empty">
+            <span class="tm-empty-icon"><i class="pi pi-calendar-times"></i></span>
+            <h3>No encontramos este evento</h3>
+            <p>Puede que el enlace esté mal escrito o que el evento ya no esté disponible.</p>
+            <a routerLink="/" fragment="eventos" class="tm-btn tm-btn--primary tm-btn--sm">Ver cartelera</a>
+        </div>
+    </div>
+} @else {
+    @let ev = event()!;
 
-<div class="content">
-  <div class="details">
-    <div class="title">
-      <h1>{{ name }}</h1>
+    <div class="tm-page-backdrop" aria-hidden="true">
+        <img src="{{ backdrop() }}" alt="" />
     </div>
 
-    <div class="date">
-      <p><i class="pi pi-calendar"></i> {{ date }}</p>
-      <p><i class="pi pi-clock"></i> {{ time }}</p>
-    </div>
+    <section class="tm-container event-hero">
+        <nav class="crumbs" aria-label="Ruta de navegación">
+            <a routerLink="/">Inicio</a>
+            <i class="pi pi-angle-right"></i>
+            <a routerLink="/" [fragment]="isPast() ? 'pasados' : 'eventos'">{{ isPast() ? 'Eventos pasados' : 'Eventos' }}</a>
+            <i class="pi pi-angle-right"></i>
+            <span aria-current="page">{{ ev.name }}</span>
+        </nav>
 
-    <div class="description">
-      <p [innerHTML]="description"></p>
-    </div>
+        <div class="hero-grid">
+            <figure class="poster">
+                <img src="{{ flyer() }}" [alt]="'Flyer de ' + ev.name" />
+                @if (isPast()) {
+                    <span class="poster-badge">Finalizado</span>
+                }
+            </figure>
 
-    <div class="btnDetails">
-      <button type="button" class="event" (click)="goToEventTicket(idEvents)">Reservar</button>
-    </div>
-  </div>
-</div>
-</div>
+            <div class="head">
+                <div class="chips">
+                    <span class="tm-chip tm-chip--primary"><i [class]="categoryIcon()"></i>{{ categoryLabel() }}</span>
+                    @if (ev.consumo === 1) {
+                        <span class="tm-chip"><i class="pi pi-shopping-bag"></i>Incluye consumo</span>
+                    }
+                </div>
+
+                <h1 class="tm-h1">{{ ev.name }}</h1>
+
+                <ul class="facts">
+                    <li>
+                        <span class="fact-icon"><i class="pi pi-calendar"></i></span>
+                        <span><small>Fecha</small><strong>{{ day() | date: "EEEE d 'de' MMMM, y" | capFirst }}</strong></span>
+                    </li>
+                    <li>
+                        <span class="fact-icon"><i class="pi pi-clock"></i></span>
+                        <span><small>Hora</small><strong>{{ time() }}</strong></span>
+                    </li>
+                    @if (ev.room) {
+                        <li>
+                            <span class="fact-icon"><i class="pi pi-building"></i></span>
+                            <span><small>Salón</small><strong>{{ ev.room }}</strong></span>
+                        </li>
+                    }
+                    <li>
+                        <span class="fact-icon"><i class="pi pi-map-marker"></i></span>
+                        <span><small>Lugar</small><strong>{{ venue.name }}</strong></span>
+                    </li>
+                </ul>
+
+                <div class="head-actions">
+                    @if (!isPast()) {
+                        <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" (click)="goToEventTicket(ev.idEvents)">
+                            <i class="pi pi-ticket"></i> Comprar entradas
+                        </button>
+                    }
+                    <button type="button" class="tm-btn tm-btn--ghost tm-btn--lg" (click)="share()">
+                        <i class="pi pi-share-alt"></i> Compartir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @if (fotos().length) {
+        <app-event-gallery [fotos]="fotos()" [nombre]="ev.name" />
+    }
+
+    <section class="tm-container event-body">
+        <div class="main-col">
+            @if (isPast()) {
+                <div class="past-note">
+                    <i class="pi pi-history"></i>
+                    <div>
+                        <strong>Este evento ya finalizó</strong>
+                        <p>Gracias a todos los que nos acompañaron. Mira lo que viene en la cartelera.</p>
+                    </div>
+                    <a routerLink="/" fragment="eventos" class="tm-btn tm-btn--soft tm-btn--sm">Próximos eventos</a>
+                </div>
+            }
+
+            <article class="tm-card tm-card--pad block">
+                <h2>Acerca del evento</h2>
+                <div class="rich" [innerHTML]="ev.description"></div>
+            </article>
+
+            @if (!isPast()) {
+                <article class="tm-card tm-card--pad block">
+                    <h2>Entradas disponibles</h2>
+                    @if (tickets().length) {
+                        <ul class="ticket-list">
+                            @for (t of tickets(); track t.idTicket) {
+                                <li>
+                                    <span class="ticket-icon"><i class="pi pi-ticket"></i></span>
+                                    <div class="ticket-name">
+                                        <strong>{{ t.name }}</strong>
+                                        <small>Precio por persona</small>
+                                    </div>
+                                    <strong class="ticket-price">${{ price(t) | number: '1.2-2' }}</strong>
+                                </li>
+                            }
+                        </ul>
+                        <button type="button" class="tm-btn tm-btn--primary tm-btn--block" (click)="goToEventTicket(ev.idEvents)">
+                            Elegir entradas <i class="pi pi-arrow-right"></i>
+                        </button>
+                    } @else {
+                        <p class="tm-muted">Las entradas para este evento estarán disponibles muy pronto.</p>
+                    }
+                </article>
+            }
+
+            <article class="tm-card block location">
+                <div class="location-head">
+                    <div>
+                        <h2>Ubicación</h2>
+                        <p class="tm-muted"><i class="pi pi-map-marker"></i> {{ venue.address }}</p>
+                    </div>
+                    <a [href]="venue.mapsUrl" target="_blank" rel="noopener noreferrer" class="tm-btn tm-btn--ghost tm-btn--sm">
+                        Cómo llegar <i class="pi pi-external-link"></i>
+                    </a>
+                </div>
+                <iframe [src]="mapUrl" title="Mapa de Mi Ternerita House" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </article>
+        </div>
+
+        @if (!isPast()) {
+            <aside class="side-col">
+                <div class="tm-card tm-card--pad buy-card">
+                    <small class="tm-muted">Entradas desde</small>
+                    <p class="buy-price">
+                        @if (minPrice() !== null) {
+                            ${{ minPrice() | number: '1.2-2' }}
+                        } @else {
+                            Muy pronto
+                        }
+                    </p>
+                    <p class="buy-date">{{ day() | date: "EEE d 'de' MMM" | capFirst }} · {{ time() }}</p>
+                    <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg" (click)="goToEventTicket(ev.idEvents)">
+                        <i class="pi pi-ticket"></i> Comprar entradas
+                    </button>
+                    <ul class="assurances">
+                        <li><i class="pi pi-shield"></i> Pago verificado por nuestro equipo</li>
+                        <li><i class="pi pi-envelope"></i> Recibes tus entradas por correo</li>
+                        <li><i class="pi pi-clock"></i> Tienes 20 minutos para completar la compra</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <div class="mobile-buy">
+                <div>
+                    <small>Desde</small>
+                    <strong>{{ minPrice() !== null ? '$' + (minPrice() | number: '1.0-2') : 'Muy pronto' }}</strong>
+                </div>
+                <button type="button" class="tm-btn tm-btn--primary" (click)="goToEventTicket(ev.idEvents)">
+                    <i class="pi pi-ticket"></i> Comprar entradas
+                </button>
+            </div>
+        }
+    </section>
+}

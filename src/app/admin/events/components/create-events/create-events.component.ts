@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
+import { switchMap } from 'rxjs';
+import { EventTicketsComponent } from '../event-tickets/event-tickets.component';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
@@ -9,6 +11,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FormEvent } from '../../../../@core/models/forms/form-events';
 import { EditorModule } from 'primeng/editor';
 import { SelectModule } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-create-events',
@@ -18,7 +21,9 @@ import { SelectModule } from 'primeng/select';
     ButtonModule,
     ReactiveFormsModule,
     EditorModule,
-    SelectModule
+    SelectModule,
+    ToggleSwitch,
+    EventTicketsComponent
   ],
   templateUrl: './create-events.component.html',
   styleUrl: './create-events.component.scss'
@@ -28,12 +33,20 @@ export class CreateEventsComponent {
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
+  private entradas = viewChild.required(EventTicketsComponent);
   previewUrlL: string | null = null;
 
   consumo = [
     { label: 'Sí', value: 1 },
     { label: 'No', value: 0 }
   ]
+
+  /** Tipo de evento: solo los conciertos muestran el mapa del salón. */
+  categorias = [
+    { label: 'Evento', value: 'evento' },
+    { label: 'Concierto', value: 'concierto' },
+    { label: 'Fiesta', value: 'fiesta' }
+  ];
 
   previewUrls: Record<'flyer' | 'image1' | 'image2' | 'image3', string | null> = {
     flyer: null,
@@ -54,8 +67,30 @@ export class CreateEventsComponent {
     image2: new FormControl<File | null>(null),
     image3: new FormControl<File | null>(null),
     status: new FormControl<number | null>(1, { nonNullable: true }),
-    consumo: new FormControl<number | null>(null)
+    consumo: new FormControl<number | null>(null),
+    category: new FormControl<string>('evento', { nonNullable: true })
   });
+
+  /** Fotos del evento: el flyer es la portada; image1..3, la galería. */
+  readonly fotos = [
+    { key: 'flyer', label: 'Flyer', hint: 'Portada 4:5' },
+    { key: 'image1', label: 'Imagen 1', hint: 'Galería' },
+    { key: 'image2', label: 'Imagen 2', hint: 'Galería' },
+    { key: 'image3', label: 'Imagen 3', hint: 'Galería' }
+  ] as const;
+
+  cerrar() {
+    this.dialogRef.close();
+  }
+
+  /** Hay una foto nueva elegida (el control guarda el nombre del archivo actual mientras no se cambie). */
+  esNueva(controlName: 'flyer' | 'image1' | 'image2' | 'image3'): boolean {
+    return this.eventsForm.get(controlName)?.value instanceof File;
+  }
+
+  getPreviewSrc(controlName: 'flyer' | 'image1' | 'image2' | 'image3'): string | null {
+    return this.previewUrls[controlName];
+  }
 
   onFileSelect(event: any, controlName: 'flyer'|'image1'|'image2'|'image3') {
     const file: File | null = event?.target?.files && event.target.files.length > 0 ? event.target.files[0] : null;
@@ -156,15 +191,16 @@ onSubmit() {
     console.log(pair[0], pair[1]);
   }
 
-  this.eventsService.createEvent(fd).subscribe({
-    next: (res: any) => {
+  // Las entradas necesitan el id del evento recién creado.
+  this.eventsService.createEvent(fd).pipe(switchMap((ev: any) => this.entradas().guardar(ev.idEvents))).subscribe({
+    next: () => {
       this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento creado correctamente.' });
       Object.values(this.previewUrls).forEach(url => { if (url && url.startsWith('blob:')) URL.revokeObjectURL(url); });
       this.dialogRef.close(true);
     },
     error: (err: any) => {
       console.error('Error al crear evento:', err);
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el evento.' });
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message ?? 'No se pudo crear el evento.' });
     }
   });
 }

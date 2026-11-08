@@ -1,16 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LoginForm } from '../../models/forms/form-login';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
-import { CommonModule } from '@angular/common';
 
+import { puedeVerPanel } from '../roles';
 @Component({
   selector: 'app-login',
   imports: [
     ReactiveFormsModule,
-    CommonModule,
     RouterLink
   ],
   templateUrl: './login.component.html',
@@ -18,9 +17,15 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
+
+  /** Ruta a la que volver después de iniciar sesión (la pone el AuthGuard). */
+  readonly returnUrl: string | null = this.route.snapshot.queryParamMap.get('returnUrl');
+  showPass = signal(false);
+  loading = signal(false);
 
   loginForm: FormGroup<LoginForm> = this.fb.group({
     email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
@@ -32,7 +37,7 @@ export class LoginComponent {
     if (!control || !control.errors) {
       return ''; // Si el control no existe o no tiene errores, retorna una cadena vacía
     }
-  
+
     if (control.errors['required']) {
       return 'El campo es requerido';
     }
@@ -42,7 +47,7 @@ export class LoginComponent {
     if (control.errors['email']) {
       return 'El correo es inválido';
     }
-  
+
     return ''; // Retorna una cadena vacía si no hay errores específicos
   }
 
@@ -51,49 +56,29 @@ export class LoginComponent {
     return control ? control.touched && control.invalid : false;
   }
 
-  showPassword() {
-    const passwordField = document.querySelector('#password') as HTMLInputElement;
-    const eyeIcon = document.querySelector('.btn-Pass i') as HTMLElement;
-    if (passwordField) {
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        eyeIcon.classList.remove('pi-eye-slash');
-        eyeIcon.classList.add('pi-eye');
-      } else {
-        passwordField.type = 'password';
-        eyeIcon.classList.remove('pi-eye');
-        eyeIcon.classList.add('pi-eye-slash');
-      }
-    }
-  }
-
   onSubmit(){
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.loading.set(true);
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
+        this.loading.set(false);
+        this.messageService.add({severity:'success', summary: '¡Hola!', detail: 'Inicio de sesión exitoso'});
 
-        console.log(res);
-
-        this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Inicio de sesión exitoso'});
-        
-        const role = res.role;
-
-        if(role !== 'user') {
-          this.router.navigateByUrl('/admin/dashboard');
+        if (puedeVerPanel(res.role)) {
+          this.router.navigateByUrl(this.returnUrl?.startsWith('/admin') ? this.returnUrl : '/admin/dashboard');
         } else {
-          this.router.navigateByUrl('');
+          this.router.navigateByUrl(this.returnUrl && !this.returnUrl.startsWith('/admin') ? this.returnUrl : '/');
         }
-
       },
 
       error: (err) => {
-        this.messageService.add({severity:'error', summary: 'Error', detail: err.error.mensaje || 'Error en el inicio de sesión'});
+        this.loading.set(false);
+        this.messageService.add({severity:'error', summary: 'Error', detail: err.error?.mensaje || 'Correo o contraseña incorrectos'});
       },
     });
   }
-
-  register(){
-    this.router.navigateByUrl('/register');
-  }
-
-
 }

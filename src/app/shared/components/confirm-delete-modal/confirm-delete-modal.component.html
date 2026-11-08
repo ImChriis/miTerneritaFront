@@ -1,10 +1,10 @@
-<div class="container">
-        <div class="message">
-        <p>{{ message }}</p>
-        </div>
+<div class="confirm">
+    <span class="icon"><i class="pi pi-trash"></i></span>
+    <p class="message">{{ message }}</p>
+    <p class="hint">Esta acción no se puede deshacer.</p>
 
     <div class="buttons">
-        <button pButton label="Cancelar" class="p-button-text cancel" (click)="cancel()"></button>
-        <button pButton label="Eliminar" class="p-button-danger confirm" (click)="confirm()"></button>
+        <button type="button" class="tm-btn tm-btn--ghost" (click)="cancel()">Cancelar</button>
+        <button type="button" class="tm-btn danger" (click)="confirm()">Eliminar</button>
     </div>
 </div>

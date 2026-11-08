@@ -1,0 +1,92 @@
+// =============================================================
+//  Transiciones entre páginas y cambio de tema (View Transitions API)
+// =============================================================
+
+// ---- Navegación entre rutas (provideRouter + withViewTransitions) ----
+@keyframes tm-vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes tm-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(root) {
+  animation: 180ms cubic-bezier(0.65, 0, 0.35, 1) both tm-vt-out;
+}
+
+::view-transition-new(root) {
+  animation: 340ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both tm-vt-in;
+}
+
+// La barra de navegación queda fija mientras cambia el contenido.
+// (Se desactiva durante el cambio de tema para que el círculo la cubra.)
+html:not(.theme-vt) .tm-vt-header {
+  view-transition-name: site-header;
+}
+
+html:not(.theme-vt) .tm-vt-sidebar {
+  view-transition-name: admin-sidebar;
+}
+
+// ---- Cambio de tema: revelado circular desde el botón ----
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html.theme-vt::view-transition-old(root) {
+  z-index: 1;
+}
+
+html.theme-vt::view-transition-new(root) {
+  z-index: 2;
+}
+
+// Sin soporte de View Transitions: transición de color suave.
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition:
+    background-color 0.45s var(--ease-out),
+    border-color 0.45s var(--ease-out),
+    color 0.45s var(--ease-out),
+    fill 0.45s var(--ease-out) !important;
+}
+
+// ---- Accesibilidad: respetar "reducir movimiento" ----
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  .tm-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

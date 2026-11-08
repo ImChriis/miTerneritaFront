@@ -1,311 +1,283 @@
-import { AsyncPipe, DatePipe, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { BadgeModule } from 'primeng/badge';
-import { ChartModule } from 'primeng/chart';
-import { TableModule } from 'primeng/table';
-import { DashboardService } from '../../@core/services/dashboard.service';
-import { finalize, forkJoin, map, Observable, startWith, switchMap, tap } from 'rxjs';
-import { PaymentService } from '../../@core/services/payment.service';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { TasaService } from '../../@core/services/tasa.service';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ChartModule } from 'primeng/chart';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { forkJoin, startWith, switchMap } from 'rxjs';
+import { DashboardService } from '../../@core/services/dashboard.service';
+import { PaymentService } from '../../@core/services/payment.service';
+import { EventsService } from '../../@core/services/events.service';
+import { ThemeService } from '../../@core/services/theme.service';
 import { UpdatePaymentComponent } from '../payments/components/update-payment/update-payment.component';
 import { Payment } from '../../@core/models/payment.model';
+import { Event } from '../../@core/models/event.model';
+import { byDateAsc, eventImage, formatTime12, isPastEvent, parseEventDate } from '../../@core/utils/event-utils';
 
 type Filter = 'day' | 'week' | 'month' | 'year';
 
+const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+/** Cuántos períodos recientes mostrar en los gráficos */
+const LIMIT: Record<Filter, number> = { day: 14, week: 12, month: 12, year: 6 };
+
+import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
+
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    ChartModule,
-    BadgeModule,
-    DatePipe,
-    TableModule,
-    AsyncPipe,
-    FormsModule,
-    SelectButtonModule
-  ],
+  imports: [CapFirstPipe, ChartModule, DatePipe, DecimalPipe, FormsModule, RouterLink, SelectButtonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit{
-    private dashboardService = inject(DashboardService); 
-    private paymentsService = inject(PaymentService);
-    private cd = inject(ChangeDetectorRef);
-    private dialogService = inject(DialogService);
-    ref: DynamicDialogRef | undefined;
-    platformId = inject(PLATFORM_ID);
-    
-    userChartData: any;
-    usersChartOptions: any;
-    basicData: any;
-    basicOptions: any;
-    payments$!: Observable<any[]>;
-    allPayments: any[] = [];
-    allUsers: any[] = [];
+export class DashboardComponent implements OnInit {
+  private dashboardService = inject(DashboardService);
+  private paymentsService = inject(PaymentService);
+  private eventsService = inject(EventsService);
+  private dialogService = inject(DialogService);
+  private theme = inject(ThemeService);
+  private messageService = inject(MessageService);
+  readonly tasa = inject(TasaService);
+  ref: DynamicDialogRef | undefined;
+  refrescandoTasa = signal(false);
 
-    totalUser!: number;
-    usersToday!: number;
-    totalPayments!: number;
-    totalTickets!: number;
-    
-    isModalOpen!: false;
+  readonly today = new Date();
+  readonly userName = (JSON.parse(localStorage.getItem('user') || '{}').name as string) ?? '';
 
-    selectedFilter: Filter = 'month';
-    selectedUserFilter: Filter = 'month';
-    filterOptions = [
-        { label: 'Día', value: 'day' },
-        { label: 'Semana', value: 'week' },
-        { label: 'Mes', value: 'month' },
-        { label: 'Año', value: 'year' }
-    ]
+  loadingKpis = signal(true);
+  loadingPayments = signal(true);
 
-    ngOnInit() {
-        this.initChart();
+  totalUser = signal(0);
+  usersToday = signal(0);
+  totalPayments = signal(0);
+  totalTickets = signal(0);
 
-        this.payments$ = this.paymentsService.refreshPaymentsObservable$.pipe(
+  private allPayments = signal<any[]>([]);
+  private allUsers = signal<any[]>([]);
+  private events = signal<Event[]>([]);
+
+  selectedFilter = signal<Filter>('month');
+  selectedUserFilter = signal<Filter>('month');
+  filterOptions = [
+    { label: 'Día', value: 'day' },
+    { label: 'Semana', value: 'week' },
+    { label: 'Mes', value: 'month' },
+    { label: 'Año', value: 'year' }
+  ];
+
+  // ---------- Derivados ----------
+  latestPayments = computed(() =>
+    [...this.allPayments()].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 6)
+  );
+
+  allPaymentsCount = computed(() => this.allPayments().length);
+
+  statusCounts = computed(() => {
+    const counts = { Aprobado: 0, Pendiente: 0, Rechazado: 0 };
+    for (const p of this.allPayments()) {
+      if (p.status === 'Aprobado') counts.Aprobado++;
+      else if (p.status === 'Pendiente') counts.Pendiente++;
+      else counts.Rechazado++;
+    }
+    return counts;
+  });
+
+  upcoming = computed(() =>
+    this.events()
+      .filter(e => e.status === 1 && !isPastEvent(e))
+      .sort(byDateAsc)
+      .slice(0, 4)
+      .map(e => ({ ...e, day: parseEventDate(e.date), timeLabel: formatTime12(e.time), flyerUrl: eventImage(e.flyer) }))
+  );
+
+  // ---------- Colores según el tema ----------
+  private palette = computed(() => {
+    this.theme.theme(); // dependencia: recalcula al cambiar de tema
+    const css = getComputedStyle(document.documentElement);
+    const v = (name: string) => css.getPropertyValue(name).trim();
+    return {
+      text: v('--text-muted'),
+      grid: v('--border'),
+      primary: v('--primary'),
+      success: v('--success'),
+      warning: v('--warning'),
+      danger: v('--danger'),
+      surface: v('--surface')
+    };
+  });
+
+  paymentsChart = computed(() => {
+    const c = this.palette();
+    const { labels, data } = this.groupByPeriod(this.allPayments(), this.selectedFilter(), 'date');
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Pagos',
+          data,
+          backgroundColor: c.primary,
+          hoverBackgroundColor: c.primary,
+          borderRadius: 8,
+          maxBarThickness: 36
+        }
+      ]
+    };
+  });
+
+  usersChart = computed(() => {
+    const c = this.palette();
+    const { labels, data } = this.groupByPeriod(this.allUsers(), this.selectedUserFilter(), 'fechaRegistro');
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Nuevos usuarios',
+          data,
+          borderColor: c.success,
+          backgroundColor: c.success + '22',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3,
+          pointBackgroundColor: c.success
+        }
+      ]
+    };
+  });
+
+  statusChart = computed(() => {
+    const c = this.palette();
+    const s = this.statusCounts();
+    return {
+      labels: ['Aprobados', 'Pendientes', 'Rechazados'],
+      datasets: [
+        {
+          data: [s.Aprobado, s.Pendiente, s.Rechazado],
+          backgroundColor: [c.success, c.warning, c.danger],
+          borderColor: c.surface,
+          borderWidth: 4,
+          hoverOffset: 6
+        }
+      ]
+    };
+  });
+
+  axisOptions = computed(() => {
+    const c = this.palette();
+    return {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: c.text }, grid: { display: false }, border: { display: false } },
+        y: { beginAtZero: true, ticks: { color: c.text, precision: 0 }, grid: { color: c.grid }, border: { display: false } }
+      }
+    };
+  });
+
+  doughnutOptions = computed(() => ({
+    maintainAspectRatio: false,
+    cutout: '72%',
+    plugins: { legend: { display: false } }
+  }));
+
+  ngOnInit() {
+    this.paymentsService.refreshPaymentsObservable$
+      .pipe(
         startWith(null),
-        switchMap(() => {
-            // this.isLoading.set(true);
-            
-            return this.paymentsService.getAllPayments().pipe(
-            tap((payments: any[]) => {
-                // Guardamos todos los pagos para los gráficos
-                this.allPayments = payments || [];
-                this.updateChartData(this.selectedFilter);
-            }),
-            map((payments: any[]) => {
-                // Filtramos para la tabla los últimos 5
-                return (payments || [])
-                .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                .slice(0, 5);
-            }),
-            finalize(() => {
-                // Apaga el estado de carga al finalizar la petición HTTP
-                // this.isLoading.set(false);
-            })
-            );
-        })
-        );
+        switchMap(() => this.paymentsService.getAllPayments())
+      )
+      .subscribe(payments => {
+        this.allPayments.set(payments || []);
+        this.loadingPayments.set(false);
+      });
 
-        forkJoin({
-            totalUser: this.dashboardService.getTotalUsers(),
-            usersToday: this.dashboardService.getNewUsers(),
-            totalPayments: this.dashboardService.getTotalInvoices(),
-            totalTickets: this.dashboardService.getTotalTickets()
-        }).subscribe({
-            next: (results: any) => {
-                console.log('Dashboard data:', results);
-                this.totalUser = results.totalUser.length;
-                this.totalPayments = results.totalPayments.length;
-                this.totalTickets = results.totalTickets.count;
-                this.usersToday = results.usersToday.length || 0;
-                this.allUsers = results.totalUser || [];
-
-                this.updateUsersChart(this.selectedFilter);
-
-                console.log('Total Payments:', this.totalPayments);
-                console.log('Total Tickets:', this.totalTickets);
-                console.log('Users Today:', this.usersToday);
-            }
-        })
-    }
-
-    initChart() {
-        if (isPlatformBrowser(this.platformId)) {
-            const documentStyle = getComputedStyle(document.documentElement);
-            const textColor = documentStyle.getPropertyValue('--p-text-color');
-            const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color');
-            const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color');
-
-            this.basicData = {
-                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-                datasets: [
-                    {
-                        label: 'Sales',
-                        data: [540, 325, 702, 620],
-                        backgroundColor: [
-                            'rgba(249, 115, 22, 0.2)',
-                            'rgba(6, 182, 212, 0.2)',
-                            'rgb(107, 114, 128, 0.2)',
-                            'rgba(139, 92, 246, 0.2)',
-                        ],
-                        borderColor: ['rgb(249, 115, 22)', 'rgb(6, 182, 212)', 'rgb(107, 114, 128)', 'rgb(139, 92, 246)'],
-                        borderWidth: 1,
-                    },
-                ],
-            };
-
-            this.basicOptions = {
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: 'white',
-                        },
-                    },
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: 'white',
-                        },
-                        grid: {
-                            color: surfaceBorder,
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            color: 'white',
-                        },
-                        grid: {
-                            color: surfaceBorder,
-                        },
-                    },
-                },
-            };
-            this.cd.markForCheck()
-        }
-    }
-  
-    onPeriodChange(period: Filter) {
-    this.selectedFilter = period;
-    this.updateChartData(period);
-  }
-
-  onUserPeriodChange(period: Filter) {
-    this.selectedUserFilter = period;
-    this.updateUsersChart(period);
-  }
-
-  private updateChartData(period: Filter) {
-    if (!this.allPayments || this.allPayments.length === 0) return;
-
-    const groupedData: { [key: string]: number } = {};
-
-    this.allPayments.forEach((payment) => {
-      const pDate = new Date(payment.date);
-      let key = '';
-
-      switch (period) {
-        case 'day':
-          // Formato: YYYY-MM-DD
-          key = pDate.toISOString().split('T')[0];
-          break;
-        case 'week': {
-          // Obtener número de semana del año
-          const firstDayOfYear = new Date(pDate.getFullYear(), 0, 1);
-          const pastDaysOfYear = (pDate.getTime() - firstDayOfYear.getTime()) / 86400000;
-          const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-          key = `Sem ${weekNum} (${pDate.getFullYear()})`;
-          break;
-        }
-        case 'month': {
-          // Formato: Mes Año (ej. "Ene 2026")
-          const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-          key = `${months[pDate.getMonth()]} ${pDate.getFullYear()}`;
-          break;
-        }
-        case 'year':
-          key = `${pDate.getFullYear()}`;
-          break;
-      }
-
-      // Sumar monto de pago o conteo (ajusta 'payment.amount' si tu API usa otro campo)
-      const value = payment.amount ? Number(payment.amount) : 1;
-      groupedData[key] = (groupedData[key] || 0) + value;
+    forkJoin({
+      totalUser: this.dashboardService.getTotalUsers(),
+      usersToday: this.dashboardService.getNewUsers(),
+      totalPayments: this.dashboardService.getTotalInvoices(),
+      totalTickets: this.dashboardService.getTotalTickets()
+    }).subscribe({
+      next: (results: any) => {
+        this.totalUser.set(results.totalUser?.length ?? 0);
+        this.totalPayments.set(results.totalPayments?.length ?? 0);
+        this.totalTickets.set(results.totalTickets?.count ?? 0);
+        this.usersToday.set(results.usersToday?.length || 0);
+        this.allUsers.set(results.totalUser || []);
+        this.loadingKpis.set(false);
+      },
+      error: () => this.loadingKpis.set(false)
     });
 
-    const labels = Object.keys(groupedData);
-    const data = Object.values(groupedData);
-
-    this.basicData = {
-      labels: labels,
-      datasets: [
-        {
-          label: `Pagos`,
-          data: data,
-          backgroundColor: 'rgba(249, 115, 22, 0.4)',
-          borderColor: 'rgb(249, 115, 22)',
-          borderWidth: 1
-        }
-      ]
-    };
-
-    this.cd.markForCheck();
+    this.eventsService.getEvents().subscribe(events => this.events.set(events ?? []));
   }
 
-  private updateUsersChart(period: Filter) {
-    if (!this.allUsers || this.allUsers.length === 0) return;
-    // Si tu modelo usa 'createdAt' u otra propiedad de fecha para el usuario, ajústala aquí:
-    const grouped = this.groupDataByDate(this.allUsers, period, 'createdAt');
-
-    this.userChartData = {
-      labels: Object.keys(grouped),
-      datasets: [
-        {
-          label: `Nuevos Usuarios`,
-          data: Object.values(grouped),
-          backgroundColor: 'rgba(6, 182, 212, 0.4)',
-          borderColor: 'rgb(6, 182, 212)',
-          borderWidth: 1
-        }
-      ]
-    };
-    this.cd.markForCheck();
+  refrescarTasa() {
+    this.refrescandoTasa.set(true);
+    this.tasa.refrescar().subscribe({
+      next: t => {
+        this.refrescandoTasa.set(false);
+        this.messageService.add({ severity: 'success', summary: 'Tasa actualizada', detail: `${t.valor} Bs/$` });
+      },
+      error: err => {
+        this.refrescandoTasa.set(false);
+        this.messageService.add({ severity: 'error', summary: 'Tasa BCV', detail: err?.error?.message ?? 'No se pudo actualizar la tasa' });
+      }
+    });
   }
 
-  private groupDataByDate(items: any[], period: Filter, dateField: string) {
-    const groupedData: { [key: string]: number } = {};
+  statusClass(status: string) {
+    return status === 'Aprobado' ? 'tm-badge--success' : status === 'Pendiente' ? 'tm-badge--warning' : 'tm-badge--danger';
+  }
 
-    items.forEach((item) => {
-      const rawDate = item[dateField] ? new Date(item[dateField]) : new Date();
-      let key = '';
+  /** Agrupa por período, ordena cronológicamente y deja solo los últimos N. */
+  private groupByPeriod(items: any[], period: Filter, dateField: string) {
+    const buckets = new Map<number, { label: string; count: number }>();
 
+    for (const item of items) {
+      const raw = item?.[dateField];
+      if (!raw) continue;
+      const d = new Date(raw);
+      if (Number.isNaN(d.getTime())) continue;
+
+      let start: Date;
+      let label: string;
       switch (period) {
         case 'day':
-          key = rawDate.toISOString().split('T')[0];
+          start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+          label = `${start.getDate()} ${MONTHS[start.getMonth()]}`;
           break;
         case 'week': {
-          const firstDayOfYear = new Date(rawDate.getFullYear(), 0, 1);
-          const pastDaysOfYear = (rawDate.getTime() - firstDayOfYear.getTime()) / 86400000;
-          const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-          key = `Sem ${weekNum} (${rawDate.getFullYear()})`;
+          start = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+          label = `${start.getDate()} ${MONTHS[start.getMonth()]}`;
           break;
         }
-        case 'month': {
-          const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-          key = `${months[rawDate.getMonth()]} ${rawDate.getFullYear()}`;
+        case 'month':
+          start = new Date(d.getFullYear(), d.getMonth(), 1);
+          label = `${MONTHS[start.getMonth()]} ${String(start.getFullYear()).slice(2)}`;
           break;
-        }
-        case 'year':
-          key = `${rawDate.getFullYear()}`;
-          break;
+        default:
+          start = new Date(d.getFullYear(), 0, 1);
+          label = `${start.getFullYear()}`;
       }
 
-      groupedData[key] = (groupedData[key] || 0) + 1;
-    });
+      const key = start.getTime();
+      const bucket = buckets.get(key) ?? { label, count: 0 };
+      bucket.count += item.amount ? Number(item.amount) : 1;
+      buckets.set(key, bucket);
+    }
 
-    return groupedData;
+    const sorted = [...buckets.entries()].sort((a, b) => a[0] - b[0]).slice(-LIMIT[period]);
+    return { labels: sorted.map(([, b]) => b.label), data: sorted.map(([, b]) => b.count) };
   }
 
   openUpdateModal(payment: Payment) {
-    //   this.isModalOpen = true;
-      this.ref = this.dialogService.open(UpdatePaymentComponent, {
-        header: 'Actualizar pago',
-        width: '90%',
-        // height: '65vh',
-        modal: true,
-        closable: true,
-        data: { payment },
-         breakpoints: {
-          '960px': '75vw',
-          '640px': '90vw'
-        },
-        styleClass: 'custom-dialog'
-      });
-      this.ref.onClose.subscribe(() => {
-        this.isModalOpen = false;
-      });
-    }
+    this.ref = this.dialogService.open(UpdatePaymentComponent, {
+      header: 'Revisar pago',
+      width: '820px',
+      modal: true,
+      closable: true,
+      data: { payment },
+      breakpoints: { '960px': '94vw' }
+    });
+  }
 }

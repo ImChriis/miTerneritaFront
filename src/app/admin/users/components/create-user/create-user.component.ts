@@ -5,12 +5,14 @@ import { RegisterForm } from '../../../../@core/models/forms/form-register';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CommonModule } from '@angular/common';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-create-user',
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    InputText
   ],
   templateUrl: './create-user.component.html',
   styleUrl: './create-user.component.scss'
@@ -52,19 +54,19 @@ export class CreateUserComponent {
       return `El campo es obligatorio.`;
     }
     if (control.errors['minlength']) {
-      return `El campo ${field} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
+      return `Mínimo ${control.errors['minlength'].requiredLength} caracteres.`;
     }
     if (control.errors['maxlength']) {
-      return `El campo ${field} no puede exceder los ${control.errors['maxlength'].requiredLength} caracteres.`;
+      return `Máximo ${control.errors['maxlength'].requiredLength} caracteres.`;
     }
     if (control.errors['email']) {
       return 'El correo electrónico no tiene un formato válido.';
     }
     if (control.errors['pattern']) {
-      if (field === 'cedula') {
-        return 'Solo se permiten números en la cédula.';
+      if (field === 'noCedula') {
+        return 'Solo números, sin puntos ni letras.';
       }
-      return `El campo ${field} debe incluir al menos un carácter especial.`;
+      return 'El formato no es válido.';
     }
   
     return 'Error desconocido en el campo.'; // Mensaje genérico para errores no manejados
@@ -81,7 +83,20 @@ export class CreateUserComponent {
         this.registerForm.patchValue({ cedula: `${tipo}-${numero}` });
       }
 
+  passwordsDistintas(): boolean {
+    const c = this.registerForm.controls.confirmPassword;
+    return (c.touched || c.dirty) && c.value !== this.registerForm.controls.password.value;
+  }
+
+  cerrar() {
+    this.ref?.close();
+  }
+
       onSubmit(){
+      if (this.registerForm.invalid || this.passwordsDistintas()) {
+        this.registerForm.markAllAsTouched();
+        return;
+      }
       const tipoIdentificacion = this.registerForm.get('tipo')?.value;
       const numeroIdentificacion = this.registerForm.get('noCedula')?.value;
       const cedula = `${tipoIdentificacion}-${numeroIdentificacion}`;

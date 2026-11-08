@@ -1,88 +1,72 @@
-<div class="container">
-    <form [formGroup]="updatePaymentForm" (ngSubmit)="onSubmit()">
-        <div class="formGroup2">
-            <div class="formGroupItem">
-                <label for="Nombre">Nombre</label>
-                <input pInputText readonly id="Nombre" type="text" [value]="name" />
-            </div>
-
-            <div class="formGroupItem">
-                <label for="lastName">Apellido</label>
-                <input pInputText readonly id="lastName" type="text" [value]="lastName" />
-            </div>
-            
-            <div class="formGroupItem">
-                <label for="cedula">Cedula</label>
-                <input pInputText readonly id="cedula" type="text" [value]="cedula" />
-            </div>
+<form class="adm-form" [formGroup]="updatePaymentForm" (ngSubmit)="onSubmit()" novalidate>
+    <dl class="adm-dl">
+        <div>
+            <dt>Cliente</dt>
+            <dd>{{ name }} {{ lastName }}<small>{{ cedula }}</small></dd>
         </div>
-
-        <div class="formGroup2">
-            <div class="formGroupItem">
-                <label for="event">Evento</label>
-                <input pInputText readonly id="event" type="text" [value]="event" />
-            </div>
-
-             <div class="formGroupItem">
-                <label for="date">Fecha</label>
-                <input pInputText readonly id="date" type="text" [value]="date | date:'shortDate'" />
-            </div>
+        <div>
+            <dt>Evento</dt>
+            <dd>{{ event }}<small>Pagado el {{ date | date: 'dd/MM/yyyy' }}</small></dd>
         </div>
-
-        <div class="formGroup2">
-            <div class="formGroupItem">
-                <label for="idPaymentDetails">No. Documento</label>
-                <input pInputText readonly id="idPaymentDetails" type="text" [value]="noDocumento" />
-            </div>
-
-            <div class="formGroupItem">
-                <label for="cantidad">Cantidad de entradas</label>
-                <input pInputText readonly id="cantidad" type="text" [value]="cantidad" />
-            </div>
-
-            <div class="formGroupItem">
-                <label for="total">Total</label>
-                <input pInputText readonly id="total" type="text" [value]="total + ' $' +' / ' + totalBs + ' Bs'" />
-            </div>
+        <div>
+            <dt>Documento</dt>
+            <dd>{{ noDocumento }}</dd>
         </div>
+        <div>
+            <dt>Entradas</dt>
+            <dd>{{ cantidad }}</dd>
+        </div>
+        <div>
+            <dt>Total</dt>
+            <dd>${{ total | number: '1.2-2' }}
+                @if (totalBs) {
+                    <small>Bs {{ totalBs }}@if (tasaDolar) { · tasa {{ tasaDolar | number: '1.2-4' }}}</small>
+                }
+            </dd>
+        </div>
+        <div>
+            <dt>Método</dt>
+            <dd>{{ banco === 'Efectivo' ? 'Efectivo' : 'Transferencia a ' + banco }}
+                @if (banco !== 'Efectivo' && referencia) {
+                    <small>Ref. {{ referencia }}</small>
+                }
+            </dd>
+        </div>
+    </dl>
 
-        <div class="formGroup2">
-            @if(banco !== "Efectivo"){
-            <div class="formGroupItem">
-                <label for="banco">Método de pago</label>
-                <input pInputText readonly id="banco" type="text" [value]="'Transferencia a: ' + banco" />
+    @if (banco !== 'Efectivo') {
+        <section class="adm-section">
+            <h3>Comprobante</h3>
+            <div class="adm-receipt">
+                @if (img) {
+                    <img [src]="img" alt="Comprobante de pago" />
+                } @else if (sinComprobante) {
+                    <p>No se pudo cargar el comprobante.</p>
+                } @else {
+                    <p>Cargando comprobante…</p>
+                }
             </div>
-            }@else{
-            <div class="formGroupItem">
-                <label for="banco">Método de pago</label>
-                <input pInputText readonly id="banco" type="text" [value]="banco" />
-            </div>
+            @if (img) {
+                <a class="adm-link" [href]="img" target="_blank" rel="noopener">Abrir en grande <i class="pi pi-external-link"></i></a>
             }
+        </section>
+    }
 
-            @if(banco !== "Efectivo"){
-                <div class="formGroupItem">
-                    <label for="referencia">Referencia</label>
-                    <input pInputText readonly id="referencia" type="text" [value]="referencia" />
-                </div>
+    <section class="adm-section">
+        <h3>Estado del pago</h3>
+        <div class="adm-segment" role="radiogroup" aria-label="Estado del pago">
+            @for (s of status; track s.value) {
+                <label [class]="'seg-' + s.value.toLowerCase()">
+                    <input type="radio" formControlName="status" [value]="s.value" />
+                    <span>{{ s.label }}</span>
+                </label>
             }
         </div>
+        <p class="adm-hint">Al aprobarlo se envían las entradas con el QR al correo del cliente.</p>
+    </section>
 
-        <div class="formGroup">
-            <label for="Estado">Estado</label>
-            <p-select [options]="status"  optionLabel="label" optionValue="value" formControlName="status"  appendTo="body"/>
-        </div>
-
-        @if(banco !== "Efectivo"){
-            <div class="image">
-                <img
-                    [src]=" this.img"
-                    alt="Vista previa"
-                    class="preview" />
-            </div>
-        }
-
-        <div class="btnContainer">
-            <button class="btn" pButton type="submit" label="Actualizar" ></button>
-        </div>
-    </form>
-</div>
+    <div class="adm-actions">
+        <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn">Guardar estado</button>
+    </div>
+</form>

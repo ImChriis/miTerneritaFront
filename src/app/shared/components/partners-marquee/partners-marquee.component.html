@@ -1,0 +1,22 @@
+<section class="partners" aria-label="Empresas aliadas">
+    <div class="tm-container partners-head">
+        <p class="tm-eyebrow">Nos acompañan</p>
+        <h2>Empresas y marcas aliadas</h2>
+    </div>
+
+    <div class="marquee">
+        @for (copy of [0, 1]; track copy) {
+            <ul class="marquee-track" [attr.aria-hidden]="copy === 1">
+                @for (p of partners; track $index) {
+                    <li>
+                        @if (p.logo) {
+                            <img src="{{ p.logo }}" [alt]="p.name" [class.invert-dark]="p.invertDark" loading="lazy" />
+                        } @else {
+                            <span class="logo-text">{{ p.name }}</span>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</section>

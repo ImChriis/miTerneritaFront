@@ -1,22 +1,37 @@
-<div class="container">
-    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
-        <div class="formGroup">
-            <label for="Nombre">Nombre</label>
-            <input pInputText id="Nombre" formControlName="name" type="text" />
+<form class="adm-form" [formGroup]="ticketForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="adm-section">
+        <div class="adm-field">
+            <label for="tk-evento">Evento</label>
+            <p-select inputId="tk-evento" [options]="events" optionLabel="name" optionValue="idEvents" formControlName="idEvents" [filter]="true" filterBy="name" placeholder="Elige el evento" appendTo="body" />
         </div>
 
-        <div class="formGroup">
-            <label for="Precio">Precio</label>
-            <input pInputText id="Precio" formControlName="price" type="number" />
+        <div class="adm-grid">
+            <div class="adm-field">
+                <label for="tk-nombre">Zona o tipo</label>
+                <input pInputText id="tk-nombre" formControlName="name" placeholder="Ej. General, VIP, Palco A" />
+                <p class="adm-hint">En conciertos el nombre ubica la zona en el mapa.</p>
+            </div>
+
+            <div class="adm-field">
+                <label for="tk-precio">Precio</label>
+                <div class="adm-prefix">
+                    <span>$</span>
+                    <input pInputText id="tk-precio" type="number" min="0" step="0.01" inputmode="decimal" formControlName="price" />
+                </div>
+            </div>
         </div>
 
-        <div class="formGroup">
-            <label for="Estado">Seleccionar Evento</label>
-            <p-select [options]="events" [(ngModel)]="selectedEvent" optionLabel="name" optionValue="idEvents" formControlName="idEvents" appendTo="body"/>
-        </div>
+        <label class="adm-switch" for="tk-estado">
+            <span>
+                <strong>A la venta</strong>
+                <small>{{ ticketForm.controls.status.value === 1 ? 'Los clientes pueden comprarla.' : 'No aparece en la compra.' }}</small>
+            </span>
+            <p-toggleswitch inputId="tk-estado" formControlName="status" [trueValue]="1" [falseValue]="0" />
+        </label>
+    </div>
 
-        <div class="btnContainer">
-            <button class="btn" pButton type="submit" label="Crear" [disabled]="ticketForm.invalid"></button>
-        </div>
-    </form>
-</div>
+    <div class="adm-actions">
+        <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn" [disabled]="!ticketForm.value.name || ticketForm.value.price === null || !ticketForm.value.idEvents">Crear entrada</button>
+    </div>
+</form>

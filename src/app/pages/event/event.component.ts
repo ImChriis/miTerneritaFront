@@ -1,73 +1,124 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { catchError, of } from 'rxjs';
 import { EventsService } from '../../@core/services/events.service';
-import { environment } from '../../../environments/environment.developer';
+import { TicketsService } from '../../@core/services/tickets.service';
+import { Event, EventPhoto } from '../../@core/models/event.model';
+import { EventGalleryComponent } from '../../shared/components/event-gallery/event-gallery.component';
+import { Ticket } from '../../@core/models/ticket.model';
+import { VENUE } from '../../@core/data/site';
+import {
+  CATEGORY_ICON,
+  CATEGORY_LABEL,
+  eventCategory,
+  eventImage,
+  formatTime12,
+  isPastEvent,
+  parseEventDate
+} from '../../@core/utils/event-utils';
+
+import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-event',
-  imports: [],
+  imports: [CapFirstPipe, DatePipe, DecimalPipe, EventGalleryComponent, RouterLink],
   templateUrl: './event.component.html',
   styleUrl: './event.component.scss'
 })
-export class EventComponent implements OnInit{
+export class EventComponent implements OnInit {
   private eventsService = inject(EventsService);
+  private ticketsService = inject(TicketsService);
+  private messageService = inject(MessageService);
+  private sanitizer = inject(DomSanitizer);
+  private title = inject(Title);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  idEvent!: number;
-  wallpaper: string = '';
-  description!: string;
-  date!: Date;
-  time!: string;
-  name!: string;
-  idEvents!: number;
+  private destroyRef = inject(DestroyRef);
+
+  readonly venue = VENUE;
+  readonly mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(VENUE.mapsEmbed);
+
+  event = signal<Event | null>(null);
+  tickets = signal<Ticket[]>([]);
+  /** Galería "revive tu noche" (la sube el admin después del evento). */
+  fotos = signal<EventPhoto[]>([]);
+  loading = signal(true);
+  notFound = signal(false);
+
+  day = computed(() => parseEventDate(this.event()?.date));
+  time = computed(() => formatTime12(this.event()?.time));
+  isPast = computed(() => !!this.event() && isPastEvent(this.event()!));
+  category = computed(() => (this.event() ? eventCategory(this.event()!) : 'evento'));
+  categoryLabel = computed(() => CATEGORY_LABEL[this.category()]);
+  categoryIcon = computed(() => CATEGORY_ICON[this.category()]);
+  flyer = computed(() => eventImage(this.event()?.flyer || this.event()?.image1) || 'assets/img/optimized/fondo1.webp');
+  backdrop = computed(() => eventImage(this.event()?.image1 || this.event()?.image3 || this.event()?.flyer) || this.flyer());
+  minPrice = computed(() => {
+    const prices = this.tickets().map(t => Number(t.price)).filter(p => !Number.isNaN(p));
+    return prices.length ? Math.min(...prices) : null;
+  });
 
   ngOnInit() {
-    this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
-
-    this.setBodyBackground('');
-
-    this.eventsService.getEventById(this.idEvent).subscribe({
-      next: (event) => {
-        this.description = event.description;
-        this.date = event.date;
-        this.time = event.time;
-        this.name = event.name;
-        this.idEvents = event.idEvents;
-
-        const candidate =
-          (event as any).image1 ??
-          (event as any).flyer ??
-          (event as any).image ??
-          (event as any).imagen ??
-          '';
-
-        this.wallpaper = this.getFullUrl(candidate);
-        this.setBodyBackground(this.wallpaper);
-      }
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      const id = Number(params.get('id'));
+      this.load(id);
     });
   }
 
-   ngOnDestroy() {
-    this.setBodyBackground('');
+  private load(id: number) {
+    this.loading.set(true);
+    this.notFound.set(false);
+    this.tickets.set([]);
+
+    this.eventsService.getEventById(id).subscribe({
+      next: event => {
+        this.event.set(event);
+        this.title.setTitle(`${event.name} · Mi Ternerita House`);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.notFound.set(true);
+        this.loading.set(false);
+      }
+    });
+
+    this.fotos.set([]);
+    this.eventsService
+      .getPhotos(id)
+      .pipe(catchError(() => of([] as EventPhoto[])))
+      .subscribe(fotos => this.fotos.set(fotos));
+
+    this.ticketsService
+      .getTicktesByEvent(id)
+      .pipe(catchError(() => of([] as Ticket[])))
+      .subscribe(tickets => this.tickets.set((tickets ?? []).filter(t => t.status === 1)));
   }
 
-  private setBodyBackground(url: string) {
-    document.body.style.backgroundImage = url ? `url(${url})` : '';
-    document.body.style.backgroundSize = url ? 'cover' : '';
-    document.body.style.backgroundPosition = url ? 'center' : '';
-    document.body.style.backgroundRepeat = url ? 'no-repeat' : '';
+  price(t: Ticket) {
+    return Number(t.price);
   }
 
-  private getFullUrl(path: string): string {
-    if (!path) return '';
-    // absolute URL
-    if (/^https?:\/\//i.test(path)) return path;
-    if (/^(assets\/|\/)/.test(path)) return path;
-    return `${environment.apiImg}/${path}`;
+  goToEventTicket(idEvents: number) {
+    this.router.navigate(['/home/event', idEvents, 'ticket']);
   }
 
-  goToEventTicket(idEvents: number){
-    console.log("click")
-    this.router.navigate(['/home/event/' + idEvents + '/ticket']);
+  async share() {
+    const ev = this.event();
+    const url = window.location.href;
+    const data = { title: ev?.name ?? 'Mi Ternerita House', text: `¡Vamos a ${ev?.name}!`, url };
+    try {
+      if (navigator.share) {
+        await navigator.share(data);
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      this.messageService.add({ severity: 'success', summary: 'Enlace copiado', detail: 'Compártelo con tus amigos.' });
+    } catch {
+      // el usuario canceló el diálogo de compartir
+    }
   }
 }

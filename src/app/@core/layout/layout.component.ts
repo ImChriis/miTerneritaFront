@@ -1,47 +1,153 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
+import { Component, computed, effect, HostListener, inject, OnInit, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { SettingsService } from '../services/settings.service';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
+import { VENUE } from '../data/site';
 
+interface NavItem {
+  label: string;
+  /** id de sección en la página de inicio */
+  section?: string;
+  route?: string;
+}
 
+import { puedeVerPanel } from '../auth/roles';
 @Component({
   selector: 'app-layout',
   imports: [
     RouterOutlet,
     RouterLink,
-    CommonModule
-],
+    RouterLinkActive,
+    ThemeToggleComponent
+  ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent implements OnInit {
-  private ruoter = inject(Router);
+  private router = inject(Router);
+  private document = inject(DOCUMENT);
   private settingsService = inject(SettingsService);
-  showMobileMenu = false;
   authService = inject(AuthService);
-  instagram!: string;
-  tiktok!: string;
-  whatsapp!: string;
-  email!: string;
 
-  ngOnInit(){
-        this.settingsService.getSettings().subscribe((data: any) => {
-        this.instagram = data.instagram;
-        this.tiktok = data.tiktok;
-        this.whatsapp = 'https://wa.me/+58' + data.phone;
-        this.email = data.email;
+  readonly venue = VENUE;
+  readonly year = new Date().getFullYear();
 
-        console.log('settings', this.instagram, this.tiktok, this.whatsapp, this.email); 
-      })
+  readonly nav: NavItem[] = [
+    { label: 'Inicio', section: 'inicio' },
+    { label: 'Eventos', section: 'eventos' },
+    { label: 'Conciertos', section: 'conciertos' },
+    { label: 'Pasados', section: 'pasados' },
+    { label: 'Contacto', route: '/home/contact' }
+  ];
 
+  mobileOpen = signal(false);
+  userMenuOpen = signal(false);
+  scrolled = signal(false);
+  activeSection = signal('inicio');
+  private url = signal(this.router.url);
+
+  isHome = computed(() => this.url().split(/[?#]/)[0] === '/');
+  /** Sobre el hero de la home la barra es transparente con texto claro. */
+  overHero = computed(() => this.isHome() && !this.scrolled() && !this.mobileOpen());
+
+  instagram = signal('');
+  tiktok = signal('');
+  whatsapp = signal('');
+  email = signal('');
+
+  user = computed(() => (this.authService.isAuthenticated() ? this.authService.getUser() : null));
+  initials = computed(() => {
+    const u = this.user();
+    return u ? `${u.name?.[0] ?? ''}${u.lastName?.[0] ?? ''}`.toUpperCase() || 'U' : '';
+  });
+  isStaff = computed(() => puedeVerPanel(this.user()?.role));
+
+  constructor() {
+    // Bloquea el scroll del fondo con el menú móvil abierto
+    effect(() => this.document.body.classList.toggle('tm-no-scroll', this.mobileOpen()));
   }
 
-  get user(){
-    return this.authService.getUser();
+  ngOnInit() {
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(e => {
+      this.url.set((e as NavigationEnd).urlAfterRedirects);
+      this.mobileOpen.set(false);
+      this.userMenuOpen.set(false);
+      this.onScroll();
+    });
+
+    this.settingsService.getSettings().subscribe((data: any) => {
+      this.instagram.set(data?.instagram ?? '');
+      this.tiktok.set(data?.tiktok ?? '');
+      this.email.set(data?.email ? `mailto:${data.email}` : '');
+      const phone = String(data?.phone ?? '').replace(/\D/g, '').replace(/^0/, '');
+      this.whatsapp.set(phone.length >= 10 ? `https://wa.me/58${phone}` : '');
+    });
+
+    this.onScroll();
   }
 
-  goToEvents(){
-    this.ruoter.navigate(['/'], { fragment: 'events-section' });
+  @HostListener('window:scroll')
+  onScroll() {
+    const win = this.document.defaultView;
+    if (!win) return;
+    this.scrolled.set(win.scrollY > 24);
+
+    if (!this.isHome()) return;
+    // Scroll-spy: la sección cuyo borde superior pasó la mitad superior de la pantalla
+    let current = 'inicio';
+    for (const id of ['eventos', 'conciertos', 'pasados']) {
+      const el = this.document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < win.innerHeight * 0.35) current = id;
+    }
+    this.activeSection.set(current);
+  }
+
+  @HostListener('document:keydown.escape')
+  closeMenus() {
+    this.mobileOpen.set(false);
+    this.userMenuOpen.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!(event.target as HTMLElement).closest('.user-menu')) {
+      this.userMenuOpen.set(false);
+    }
+  }
+
+  isActive(item: NavItem) {
+    if (item.section) return this.isHome() && this.activeSection() === item.section;
+    return false;
+  }
+
+  goTo(item: NavItem, event?: Event) {
+    event?.preventDefault();
+    this.mobileOpen.set(false);
+
+    if (item.route) {
+      this.router.navigateByUrl(item.route);
+      return;
+    }
+
+    const id = item.section!;
+    if (this.isHome()) {
+      if (id === 'inicio') {
+        this.document.defaultView?.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        this.document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
+    this.router.navigate(['/'], { fragment: id === 'inicio' ? undefined : id });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.userMenuOpen.set(false);
+    this.mobileOpen.set(false);
+    this.router.navigateByUrl('/');
   }
 }

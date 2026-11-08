@@ -1,0 +1,75 @@
+// ================= ALIADOS (sigue el tema: blanco en claro, superficie en oscuro) =================
+.partners {
+  padding-block: clamp(48px, 6vw, 72px);
+  background: var(--surface);
+  color: var(--text);
+  border-block: 1px solid var(--border);
+}
+
+// Logos con letras negras (Old Parr): en oscuro se pintan blancos; invertir solo la luz los dejaba rosados.
+:host-context([data-theme='dark']) .invert-dark {
+  filter: brightness(0) invert(1);
+}
+
+.partners-head {
+  margin-bottom: 2rem;
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  }
+}
+
+.marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+
+  &:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+.marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: clamp(40px, 6vw, 80px);
+  margin: 0;
+  padding: 0 clamp(20px, 3vw, 40px);
+  list-style: none;
+  animation: marquee 38s linear infinite;
+
+  li {
+    display: grid;
+    place-items: center;
+    width: 180px;
+    height: 80px;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 64px;
+    object-fit: contain;
+  }
+}
+
+// Marca sin logo todavía: nombre como texto.
+.logo-text {
+  color: var(--text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+

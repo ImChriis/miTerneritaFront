@@ -1,122 +1,404 @@
-<div class="banner">
-  <div class="bannerInfo">
-    <div class="txt"></div>
+<!-- ================= HERO / CARRUSEL ================= -->
+<section
+    class="hero"
+    id="inicio"
+    aria-roledescription="carrusel"
+    aria-label="Eventos destacados"
+    [class.is-paused]="heroPaused()"
+    (mouseenter)="heroPaused.set(true)"
+    (mouseleave)="heroPaused.set(false)"
+    (focusin)="heroPaused.set(true)"
+    (focusout)="heroPaused.set(false)"
+    (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)"
+    (keydown.arrowRight)="nextSlide()"
+    (keydown.arrowLeft)="prevSlide()"
+>
+    @if (loading()) {
+        <div class="hero-loading tm-skeleton"></div>
+    } @else if (heroSlides().length) {
+        @for (ev of heroSlides(); track ev.idEvents; let i = $index) {
+            <article
+                class="slide"
+                [class.is-active]="i === slide()"
+                [attr.aria-hidden]="i !== slide()"
+                [attr.inert]="i !== slide() ? '' : null"
+                aria-roledescription="diapositiva"
+            >
+                <img
+                    class="slide-bg"
+                    src="{{ ev.bannerUrl }}"
+                    alt=""
+                    [attr.loading]="i === 0 ? 'eager' : 'lazy'"
+                    [attr.fetchpriority]="i === 0 ? 'high' : null"
+                />
+                <div class="slide-scrim"></div>
 
-    <div class="carousel" *ngIf="events$ | async as events">
-      <div
-        class="carousel-item"
-        *ngFor="let event of events; let i = index"
-        [class.active]="i === slideIndex()"
-        [style.backgroundImage]="'url(' + apiImg + '/' + event.image3 + ')'"
-      >
-        <div class="carousel-content" *ngIf="i === slideIndex()">
-          <h2>{{ event.name }}</h2>
-            <div class="date2">
-            <p>
-              <i class="pi pi-calendar"></i> {{ event.date | date:'dd/MM/yyyy' }}
-            </p>
-            <p>
-              <i class="pi pi-clock"></i> {{ event.time }}
-            </p>
-          </div>
-          <button class="btn2" (click)="goToEvent(event.idEvents)">Ver más</button>
-        </div>  
-      </div>
-      <button
-        *ngIf="testEvents.length > 1"
-        class="carousel-control prev"
-        (click)="prevSlide()"
-      >
-        &#10094;
-      </button>
-      <button
-        *ngIf="testEvents.length > 1"
-        class="carousel-control next"
-        (click)="nextSlide()"
-      >
-        &#10095;
-      </button>
+                <div class="slide-inner tm-container">
+                    <div class="slide-copy">
+                        <div class="slide-chips">
+                            <span class="tm-chip tm-chip--media"><i [class]="ev.categoryIcon"></i>{{ ev.categoryLabel }}</span>
+                            @if (ev.room) {
+                                <span class="tm-chip tm-chip--media"><i class="pi pi-map-marker"></i>{{ ev.room }}</span>
+                            }
+                        </div>
+
+                        <h1 class="slide-title">{{ ev.name }}</h1>
+
+                        <p class="slide-meta">
+                            <span><i class="pi pi-calendar"></i>{{ ev.day | date: "EEEE d 'de' MMMM" | capFirst }}</span>
+                            <span><i class="pi pi-clock"></i>{{ ev.timeLabel }}</span>
+                        </p>
+
+                        <div class="slide-cta">
+                            <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" (click)="buy(ev.idEvents)">
+                                <i class="pi pi-ticket"></i> Comprar entradas
+                            </button>
+                            <button type="button" class="tm-btn tm-btn--glass tm-btn--lg" (click)="goToEvent(ev.idEvents)">
+                                Ver detalles
+                            </button>
+                        </div>
+
+                        @if (ev.minPrice !== null) {
+                            <p class="slide-price">Entradas desde <strong>${{ ev.minPrice | number: '1.0-2' }}</strong></p>
+                        }
+                    </div>
+
+                    <figure class="slide-poster">
+                        <img src="{{ ev.flyerUrl }}" [alt]="'Flyer de ' + ev.name" loading="lazy" />
+                    </figure>
+                </div>
+            </article>
+        }
+
+        <div class="hero-controls tm-container">
+            <div class="hero-progress" role="tablist" aria-label="Elegir evento destacado">
+                @for (ev of heroSlides(); track ev.idEvents; let i = $index) {
+                    <button
+                        type="button"
+                        role="tab"
+                        class="progress-item"
+                        [class.is-active]="i === slide()"
+                        [class.is-done]="i < slide()"
+                        [attr.aria-selected]="i === slide()"
+                        [attr.aria-label]="'Ver ' + ev.name"
+                        (click)="goToSlide(i)"
+                    >
+                        <span class="bar"><span class="fill" (animationend)="onProgressEnd()"></span></span>
+                        <span class="label"><small>{{ i + 1 | number: '2.0-0' }}</small>{{ ev.name }}</span>
+                    </button>
+                }
+            </div>
+
+            @if (heroSlides().length > 1) {
+                <div class="hero-arrows">
+                    <button type="button" class="tm-icon-btn glass" aria-label="Anterior" (click)="prevSlide()">
+                        <i class="pi pi-arrow-left"></i>
+                    </button>
+                    <button type="button" class="tm-icon-btn glass" aria-label="Siguiente" (click)="nextSlide()">
+                        <i class="pi pi-arrow-right"></i>
+                    </button>
+                </div>
+            }
+        </div>
+    } @else {
+        <!-- Sin eventos próximos: portada de marca -->
+        <article class="slide is-active">
+            <img class="slide-bg" src="assets/img/optimized/fondo1.webp" alt="" />
+            <div class="slide-scrim"></div>
+            <div class="slide-inner tm-container">
+                <div class="slide-copy">
+                    <span class="tm-chip tm-chip--media"><i class="pi pi-sparkles"></i> Mi Ternerita House</span>
+                    <h1 class="slide-title">Vive la noche en Maracaibo</h1>
+                    <p class="slide-meta"><span>Muy pronto anunciaremos nuevos eventos. ¡Mantente atento!</span></p>
+                    <div class="slide-cta">
+                        <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" (click)="scrollToSection('pasados')">Eventos pasados</button>
+                        <a routerLink="/home/contact" class="tm-btn tm-btn--glass tm-btn--lg">Contáctanos</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    }
+</section>
+
+<!-- ================= BUSCADOR ================= -->
+<section class="finder tm-container" aria-label="Buscar eventos">
+    <form class="finder-card" role="search" (submit)="submitSearch($event)">
+        <label class="finder-search">
+            <i class="pi pi-search"></i>
+            <span class="sr-only">Buscar eventos</span>
+            <input
+                type="search"
+                placeholder="Busca un evento, artista o salón"
+                autocomplete="off"
+                [value]="query()"
+                (input)="onSearch($any($event.target).value)"
+            />
+        </label>
+
+        <div class="finder-chips" role="group" aria-label="Filtrar por categoría">
+            <button type="button" class="filter-chip" [class.is-active]="category() === 'todos'" [attr.aria-pressed]="category() === 'todos'" (click)="setCategory('todos')">
+                Todos
+            </button>
+            @for (c of categories(); track c.value) {
+                <button type="button" class="filter-chip" [class.is-active]="category() === c.value" [attr.aria-pressed]="category() === c.value" (click)="setCategory(c.value)">
+                    <i [class]="c.icon"></i>{{ c.label }}s
+                </button>
+            }
+        </div>
+
+        <button type="submit" class="tm-btn tm-btn--primary finder-submit">Buscar</button>
+    </form>
+</section>
+
+<!-- ================= PRÓXIMOS EVENTOS (tarjetas ampliables) ================= -->
+<section class="tm-section events" id="eventos" #eventsSection>
+    <div class="tm-container">
+        <header class="tm-section-head" appReveal>
+            <div>
+                <p class="tm-eyebrow"><i class="pi pi-ticket"></i> Cartelera</p>
+                <h2 class="tm-h2">Próximos eventos</h2>
+                <p class="tm-lead">Toca una tarjeta para ampliarla, ver los detalles y comprar tus entradas.</p>
+            </div>
+            @if (!loading() && filtered().length) {
+                <span class="tm-chip">{{ filtered().length }} {{ filtered().length === 1 ? 'evento' : 'eventos' }}</span>
+            }
+        </header>
+
+        @if (loading()) {
+            <div class="panels is-loading">
+                @for (s of skeletons; track s) {
+                    <div class="panel tm-skeleton" [class.is-active]="s === 0"></div>
+                }
+            </div>
+        } @else if (filtered().length) {
+            <div class="panels" [style.--n]="filtered().length" appReveal>
+                @for (ev of filtered(); track ev.idEvents) {
+                    @let active = activeEvent()?.idEvents === ev.idEvents;
+                    <article class="panel" #panelEl [class.is-active]="active">
+                        <img class="panel-bg" src="{{ ev.flyerUrl }}" alt="" loading="lazy" />
+
+                        <button
+                            type="button"
+                            class="panel-tab"
+                            [attr.aria-expanded]="active"
+                            [attr.aria-controls]="'ev-panel-' + ev.idEvents"
+                            (click)="active ? activeId.set(-1) : expand(ev, panelEl)"
+                        >
+                            <span class="panel-date">
+                                <strong>{{ ev.day | date: 'dd' }}</strong>
+                                <small>{{ ev.day | date: 'MMM' }}</small>
+                            </span>
+                            <span class="panel-tab-title">{{ ev.name }}</span>
+                            <span class="panel-tab-meta">{{ ev.timeLabel }} · {{ ev.room }}</span>
+                            <i class="pi pi-plus panel-tab-icon"></i>
+                        </button>
+
+                        <div class="panel-body" [id]="'ev-panel-' + ev.idEvents" [attr.inert]="active ? null : ''">
+                            <div class="panel-body-inner">
+                                <img class="panel-poster" src="{{ ev.flyerUrl }}" [alt]="'Flyer de ' + ev.name" />
+
+                                <div class="panel-info">
+                                    <div class="panel-chips">
+                                        <span class="tm-chip tm-chip--media"><i [class]="ev.categoryIcon"></i>{{ ev.categoryLabel }}</span>
+                                        @if (ev.consumo === 1) {
+                                            <span class="tm-chip tm-chip--media"><i class="pi pi-shopping-bag"></i>Incluye consumo</span>
+                                        }
+                                    </div>
+
+                                    <h3>{{ ev.name }}</h3>
+
+                                    <ul class="panel-meta">
+                                        <li><i class="pi pi-calendar"></i>{{ ev.day | date: "EEEE d 'de' MMMM, y" | capFirst }}</li>
+                                        <li><i class="pi pi-clock"></i>{{ ev.timeLabel }}</li>
+                                        @if (ev.room) {
+                                            <li><i class="pi pi-map-marker"></i>{{ ev.room }}</li>
+                                        }
+                                    </ul>
+
+                                    @if (ev.excerpt) {
+                                        <p class="panel-excerpt">{{ ev.excerpt }}</p>
+                                    }
+
+                                    <div class="panel-foot">
+                                        <div class="panel-price">
+                                            @if (ev.minPrice !== null) {
+                                                <small>Desde</small>
+                                                <strong>${{ ev.minPrice | number: '1.0-2' }}</strong>
+                                            } @else {
+                                                <small>Entradas</small>
+                                                <strong>Muy pronto</strong>
+                                            }
+                                        </div>
+                                        <div class="panel-actions">
+                                            <button type="button" class="tm-btn tm-btn--primary" (click)="buy(ev.idEvents)">
+                                                <i class="pi pi-ticket"></i> Comprar
+                                            </button>
+                                            <button type="button" class="tm-btn tm-btn--glass" (click)="goToEvent(ev.idEvents)">
+                                                Detalles
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        } @else if (upcoming().length) {
+            <div class="tm-empty">
+                <span class="tm-empty-icon"><i class="pi pi-filter-slash"></i></span>
+                <h3>No hay eventos con esos filtros</h3>
+                <p>Prueba con otra búsqueda o revisa toda la cartelera.</p>
+                <button type="button" class="tm-btn tm-btn--ghost tm-btn--sm" (click)="clearFilters()">Limpiar filtros</button>
+            </div>
+        } @else {
+            <div class="tm-empty">
+                <span class="tm-empty-icon"><i class="pi pi-calendar"></i></span>
+                <h3>Pronto anunciaremos nuevos eventos</h3>
+                <p>Mientras tanto, revive lo que pasó en nuestras últimas noches.</p>
+                <button type="button" class="tm-btn tm-btn--ghost tm-btn--sm" (click)="scrollToSection('pasados')">Ver eventos pasados</button>
+            </div>
+        }
     </div>
-  </div>
-</div>
+</section>
 
-<div class="content" id="events-section">
-  <div class="events"  #eventsGrid [style.background-image]="selectedBackground">
-    <div class="title">
-      <h1>Eventos</h1>
+<!-- ================= CONCIERTOS =================
+     El próximo concierto va destacado con el mapa del salón; los demás, en la fila de abajo. -->
+<section class="tm-section concerts" id="conciertos">
+    <div class="concerts-glow" aria-hidden="true"></div>
+    <div class="tm-container">
+        <header class="tm-section-head" appReveal>
+            <div>
+                <p class="tm-eyebrow"><i class="pi pi-microphone"></i> En vivo</p>
+                <h2 class="tm-h2">Conciertos</h2>
+                <p class="tm-lead">Artistas y bandas en vivo en nuestros salones.</p>
+            </div>
+        </header>
+
+        @if (concerts()[0]; as next) {
+            <div class="salon-cta-card" appReveal>
+                <div class="salon-cta-text">
+                    <p class="tm-eyebrow"><i class="pi pi-map"></i> Próximo concierto · Mapa del salón</p>
+                    <h3 class="tm-h2">{{ next.name }}</h3>
+                    <p class="tm-lead">
+                        {{ next.day | date: "EEEE d 'de' MMMM" | capFirst }} · {{ next.timeLabel }}. Elige tu zona en el mapa: General, VIP, Palco A o Palco B,
+                        y aparta tu consumo desde ahora.
+                    </p>
+                    <div class="salon-cta-foot">
+                        <a class="tm-btn tm-btn--primary tm-btn--lg" routerLink="/concierto">Ver mapa y precios <i class="pi pi-arrow-right"></i></a>
+                        @if (next.minPrice !== null) {
+                            <span>Desde <strong>${{ next.minPrice | number: '1.0-2' }}</strong></span>
+                        }
+                    </div>
+                </div>
+                <img src="{{ next.flyerUrl }}" [alt]="'Flyer de ' + next.name" loading="lazy" />
+            </div>
+        }
+
+        @if (otherConcerts().length) {
+            <div class="concerts-more">
+                <h3>Más conciertos</h3>
+                @if (otherConcerts().length > 1) {
+                    <div class="tm-scroller-nav">
+                        <button type="button" class="tm-icon-btn" aria-label="Anterior" (click)="scrollRow('concerts', -1)"><i class="pi pi-arrow-left"></i></button>
+                        <button type="button" class="tm-icon-btn" aria-label="Siguiente" (click)="scrollRow('concerts', 1)"><i class="pi pi-arrow-right"></i></button>
+                    </div>
+                }
+            </div>
+            <div class="tm-scroller concert-row" #concertScroller>
+                @for (ev of otherConcerts(); track ev.idEvents; let i = $index) {
+                    <article class="concert-card" appReveal [revealDelay]="i * 70">
+                        <img src="{{ ev.flyerUrl }}" [alt]="'Flyer de ' + ev.name" loading="lazy" />
+                        <div class="concert-info">
+                            <span class="tm-chip tm-chip--media">{{ ev.day | date: "EEE d MMM" | capFirst }} · {{ ev.timeLabel }}</span>
+                            <h3>{{ ev.name }}</h3>
+                            <div class="concert-foot">
+                                @if (ev.minPrice !== null) {
+                                    <span>Desde <strong>${{ ev.minPrice | number: '1.0-2' }}</strong></span>
+                                } @else {
+                                    <span>{{ ev.room }}</span>
+                                }
+                                <button type="button" class="tm-btn tm-btn--primary tm-btn--sm" (click)="buy(ev.idEvents)">Entradas</button>
+                            </div>
+                        </div>
+                        <a class="card-link" [routerLink]="['/home/event', ev.idEvents]" [attr.aria-label]="'Ver ' + ev.name"></a>
+                    </article>
+                }
+            </div>
+        } @else if (!loading() && !concerts().length) {
+            <div class="concerts-empty" appReveal>
+                <div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                <div>
+                    <h3>Muy pronto, nuevos conciertos</h3>
+                    <p>Estamos preparando la próxima tarima. Mientras tanto, mira el resto de la cartelera.</p>
+                </div>
+                <button type="button" class="tm-btn tm-btn--ghost" (click)="scrollToSection('eventos')">Ver cartelera</button>
+            </div>
+        }
     </div>
-     <div class="eventsCarousel" *ngIf="events$ | async as events">
-        <div class="card" *ngFor="let event of events; let i = index" [class.active]="i === selectedIndex" (click)="selectEvent(i)">
-        <img [src]='apiImg + "/" + event.flyer' [alt]="event.name">
-        <div class="info">
-          <h2>{{ event.name }}</h2>
-          <div class="infoDate">
-            <p>
-              <i class="pi pi-calendar"></i> {{ event.date | date:'dd/MM/yyyy' }}
-            </p>
-            <p>
-              <i class="pi pi-clock"></i> {{ event.time }}
-            </p>
-          </div>
-          <a (click)="goToEvent(event.idEvents)">Ver más</a>
-        </div>
-        </div>
-     </div>
-  </div>
-</div>
+</section>
 
-<div class="zones">
-  <div class="zonesTitle">
-    <h1>Conoce nuestros espacios</h1>
-  </div>
+<!-- ================= EVENTOS PASADOS ================= -->
+<section class="tm-section past" id="pasados">
+    <div class="tm-container">
+        <header class="tm-section-head" appReveal>
+            <div>
+                <p class="tm-eyebrow"><i class="pi pi-history"></i> Lo que vivimos</p>
+                <h2 class="tm-h2">Eventos pasados</h2>
+                <p class="tm-lead">Revive las noches que ya pasaron por Mi Ternerita House.</p>
+            </div>
+            @if (past().length > 2) {
+                <div class="tm-scroller-nav">
+                    <button type="button" class="tm-icon-btn" aria-label="Anterior" (click)="scrollRow('past', -1)"><i class="pi pi-arrow-left"></i></button>
+                    <button type="button" class="tm-icon-btn" aria-label="Siguiente" (click)="scrollRow('past', 1)"><i class="pi pi-arrow-right"></i></button>
+                </div>
+            }
+        </header>
 
-  <div class="zonesImages"  #zones>
-    <div class="bento-grid">
-      <div class="bento-item bento-vertical">
-        <img src="../../../assets/img/zona3.jpg" alt="Imagen 1" />
-          <div class="bento-overlay">Bar</div>
-      </div>
-      <div class="bento-item bento-top-right">
-        <img src="../../../assets/img/zona1.jpg" alt="Imagen 2" />
-          <div class="bento-overlay">Lobby</div>
-      </div>
-      <div class="bento-item bento-bottom-right">
-        <img src="../../../assets/img/zona2.jpg" alt="Imagen 3" />
-          <div class="bento-overlay">Barra</div>
-      </div>
-      
-      <!-- bottom full-width row inside the bento grid with two images side-by-side -->
-      <div class="bento-bottom-row">
-        <div class="pair-item-small">
-          <img src="../../../assets/img/sillas1.jpg" alt="Imagen abajo 1" />
-          <div class="bento-overlay">Sala</div>
-        </div>
-        <div class="pair-item-small">
-          <img src="../../../assets/img/sillas2.jpg" alt="Imagen abajo 2" />
-          <div class="bento-overlay">Terraza</div>
-        </div>
-      </div>
+        @if (past().length) {
+            <div class="tm-scroller past-row" #pastScroller>
+                @for (ev of past(); track ev.idEvents; let i = $index) {
+                    <a class="past-card" [routerLink]="['/home/event', ev.idEvents]" appReveal [revealDelay]="i * 60">
+                        <div class="past-media">
+                            <img src="{{ ev.flyerUrl }}" [alt]="'Flyer de ' + ev.name" loading="lazy" />
+                            <span class="past-badge">Finalizado</span>
+                        </div>
+                        <div class="past-info">
+                            <small>{{ ev.day | date: "d 'de' MMMM, y" }}</small>
+                            <h3>{{ ev.name }}</h3>
+                            <span>{{ ev.room }}</span>
+                        </div>
+                    </a>
+                }
+            </div>
+        } @else if (!loading()) {
+            <div class="tm-empty">
+                <span class="tm-empty-icon"><i class="pi pi-images"></i></span>
+                <h3>Aún no hay eventos pasados</h3>
+                <p>Aquí aparecerán los eventos una vez que se realicen.</p>
+            </div>
+        }
     </div>
-  </div>
+</section>
 
-    <!-- <div class="imageGrid"  #zones2>
-      <div class="imageItem">
-        <img src="../../../assets/img/sillas2.jpg" alt="Imagen 1" />
-        <div class="overlay">Lobby</div>
-      </div>
-      <div class="imageItem">
-        <img src="../../../assets/img/sillas1.jpg" alt="Imagen 2" />
-        <div class="overlay">Barra</div>
-      </div>
-      <div class="imageItem">
-        <img src="../../../assets/img/jordan.jpg" alt="Imagen 3" />
-        <div class="overlay">Bar</div>
-      </div>
-      <div class="imageItem">
-        <img src="../../../assets/img/chicago.jpg" alt="Imagen 4" />
-        <div class="overlay">Terraza</div>
-      </div>
-    </div> -->
-</div>
+<!-- ================= ESPACIOS ================= -->
+<app-spaces-gallery />
 
+<!-- ================= ALIADOS (carrusel blanco) ================= -->
+<app-partners-marquee />
 
+<!-- ================= CTA ================= -->
+<section class="tm-container cta" appReveal>
+    <div class="cta-card">
+        <img src="assets/img/optimized/fondo1.webp" alt="" class="cta-bg" loading="lazy" />
+        <div class="cta-copy">
+            <p class="tm-eyebrow">Organiza con nosotros</p>
+            <h2>¿Tienes un evento en mente?</h2>
+            <p>Escríbenos y armamos juntos tu próxima noche en Mi Ternerita House.</p>
+        </div>
+        <a routerLink="/home/contact" class="tm-btn tm-btn--primary tm-btn--lg">
+            Contáctanos <i class="pi pi-arrow-right"></i>
+        </a>
+    </div>
+</section>

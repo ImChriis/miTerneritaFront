@@ -1,4 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, viewChild } from '@angular/core';
+import { switchMap } from 'rxjs';
+import { EventTicketsComponent } from '../event-tickets/event-tickets.component';
+import { EventPhotosComponent } from '../event-photos/event-photos.component';
+import { parseEventDate } from '../../../../@core/utils/event-utils';
 import { EventsService } from '../../../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
 import { InputText } from 'primeng/inputtext';
@@ -10,6 +14,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FormEvent } from '../../../../@core/models/forms/form-events';
 import { environment } from '../../../../../environments/environment.developer';
 import { SelectModule } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-update-events',
@@ -20,7 +25,10 @@ import { SelectModule } from 'primeng/select';
     EditorModule,
     ReactiveFormsModule,
     SelectModule,
-    FormsModule
+    ToggleSwitch,
+    FormsModule,
+    EventTicketsComponent,
+    EventPhotosComponent
   ],
   templateUrl: './update-events.component.html',
   styleUrl: './update-events.component.scss'
@@ -31,8 +39,11 @@ export class UpdateEventsComponent implements OnInit{
   private fb = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
   private dialogConfig = inject(DynamicDialogConfig);
+  private entradas = viewChild.required(EventTicketsComponent);
   previewUrlL: string | null = null;
   event = this.dialogConfig.data.event;
+  /** Las fotos de la noche se suben desde el día del evento. */
+  readonly conGaleria = parseEventDate(this.event.date) <= new Date();
   apiImg = environment.apiImg;
   selectedStatus = this.event.status;
   selectedConsumo = this.event.consumo;
@@ -45,6 +56,13 @@ export class UpdateEventsComponent implements OnInit{
   consumo = [
     { label: 'Sí', value: 1 },
     { label: 'No', value: 0 }
+  ];
+
+  /** Tipo de evento: solo los conciertos muestran el mapa del salón. */
+  categorias = [
+    { label: 'Evento', value: 'evento' },
+    { label: 'Concierto', value: 'concierto' },
+    { label: 'Fiesta', value: 'fiesta' }
   ];
 
   previewUrls: Record<'flyer' | 'image1' | 'image2' | 'image3', string | null> = {
@@ -73,7 +91,8 @@ export class UpdateEventsComponent implements OnInit{
     image2: new FormControl<File | null>(null),
     image3: new FormControl<File | null>(null),
     status: new FormControl<number | null>(1, { nonNullable: true }),
-    consumo: new FormControl<number | null>(null)
+    consumo: new FormControl<number | null>(null),
+    category: new FormControl<string>('evento', { nonNullable: true })
   });
 
   ngOnInit() {
@@ -88,6 +107,23 @@ export class UpdateEventsComponent implements OnInit{
       // si hay valor del servidor, asignarlo a preview para mostrar inicialmente
       this.previewUrls[key] = serverVal ?? null;
     });
+  }
+
+  /** Fotos del evento: el flyer es la portada; image1..3, la galería. */
+  readonly fotos = [
+    { key: 'flyer', label: 'Flyer', hint: 'Portada 4:5' },
+    { key: 'image1', label: 'Imagen 1', hint: 'Galería' },
+    { key: 'image2', label: 'Imagen 2', hint: 'Galería' },
+    { key: 'image3', label: 'Imagen 3', hint: 'Galería' }
+  ] as const;
+
+  cerrar() {
+    this.dialogRef.close();
+  }
+
+  /** Hay una foto nueva elegida (el control guarda el nombre del archivo actual mientras no se cambie). */
+  esNueva(controlName: 'flyer' | 'image1' | 'image2' | 'image3'): boolean {
+    return this.updateEventsForm.get(controlName)?.value instanceof File;
   }
 
   getPreviewSrc(controlName: 'flyer'|'image1'|'image2'|'image3'): string | null {
@@ -122,12 +158,13 @@ export class UpdateEventsComponent implements OnInit{
   }
 
   removeSelectedFile(controlName: 'flyer'|'image1'|'image2'|'image3') {
+    // Descarta la foto nueva y vuelve a la que ya tiene el evento.
     this.updateEventsForm.get(controlName)?.setValue(null);
     const prev = this.previewUrls[controlName];
     if (prev && prev.startsWith('blob:')) {
      URL.revokeObjectURL(prev);
     }
-    this.previewUrls[controlName] = null;
+    this.previewUrls[controlName] = this.initialServerUrls[controlName] ?? null;
   }
 
 
@@ -180,7 +217,7 @@ onSubmit() {
       console.log('FormData', pair[0], pair[1]);
     }
 
-    this.eventsService.updateEvent(this.event.idEvents, formData).subscribe({
+    this.eventsService.updateEvent(this.event.idEvents, formData).pipe(this.guardarEntradas()).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -194,7 +231,7 @@ onSubmit() {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar el evento'
+          detail: error?.error?.message ?? 'No se pudo actualizar el evento'
         });
       }
     });
@@ -215,7 +252,7 @@ onSubmit() {
 
     console.log('JSON body', jsonBody);
 
-    this.eventsService.updateEventJson(this.event.idEvents, jsonBody).subscribe({
+    this.eventsService.updateEventJson(this.event.idEvents, jsonBody).pipe(this.guardarEntradas()).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -229,10 +266,15 @@ onSubmit() {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar el evento'
+          detail: error?.error?.message ?? 'No se pudo actualizar el evento'
         });
       }
     });
   }
 }
+
+  /** Tras guardar el evento, sus entradas (crea las que falten). */
+  private guardarEntradas() {
+    return switchMap(() => this.entradas().guardar(this.event.idEvents));
+  }
 }

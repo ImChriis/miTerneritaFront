@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
+import { TasaService } from '../../../../@core/services/tasa.service';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
 import { PaymentService } from '../../../../@core/services/payment.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Select } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import { environment } from '../../../../../environments/environment.developer';
 
@@ -13,16 +12,15 @@ import { environment } from '../../../../../environments/environment.developer';
   selector: 'app-update-payment',
   imports: [
     CommonModule,
-    InputText,
     ButtonModule,
     ReactiveFormsModule,
-    FormsModule,
-    Select
+    FormsModule
   ],
   templateUrl: './update-payment.component.html',
   styleUrl: './update-payment.component.scss'
 })
 export class UpdatePaymentComponent implements OnInit, OnDestroy{
+  private tasaService = inject(TasaService);
   private paymentService = inject(PaymentService);
   private dialogConfig = inject(DynamicDialogConfig);
   private messageService = inject(MessageService);
@@ -47,6 +45,7 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
   noDocumento!: string;
   idPayment!: number;
   img!: string;
+  sinComprobante = false;
   
 
    status = [
@@ -62,17 +61,21 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
   ngOnInit(){
     console.log('Payment to update:', this.payment);
     
-    this.tasaDolar = this.paymentService.getTasaDolarEuro().subscribe((tasa) => {
+    // Tasa BCV con la que se hizo el pago; los pagos viejos sin ella usan la del día.
+    const calcularBs = (tasa: number) => {
       this.tasaDolar = tasa;
-      console.log('Tasa de cambio obtenida:', this.tasaDolar);
-      const totalCalculado = this.payment.totalGeneral * this.tasaDolar;
-
       // Formato con punto en miles y coma en decimales (ej. 12.345,67)
-      this.totalBs = totalCalculado.toLocaleString('es-VE', {
+      this.totalBs = (Number(this.payment.totalGeneral) * tasa).toLocaleString('es-VE', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
-    });
+    };
+    const tasaPago = Number(this.payment.tasaDolar);
+    if (tasaPago) {
+      calcularBs(tasaPago);
+    } else {
+      this.tasaService.tasa$.subscribe(t => t.valor && calcularBs(t.valor));
+    }
     
 
     this.name = this.payment.idUser?.name;
@@ -81,7 +84,8 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
     this.event = this.payment.idEvents?.name;
     this.date = this.payment.date;
     this.idPaymentDetails = this.payment.idPaymentDetails;
-    this.cantidad = this.payment.paymentDetails.length;
+    // Suma de entradas de todas las líneas (antes contaba líneas: 3 entradas salían como 1).
+    this.cantidad = (this.payment.paymentDetails ?? []).reduce((suma: number, d: any) => suma + (d.ticketNum ?? 1), 0);
     this.total = parseFloat(this.payment.totalGeneral);
     this.banco = this.payment.banco;
     this.referencia = this.payment.referencia;
@@ -104,6 +108,7 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
       },
       error: (err) => {
         console.error('Error al obtener el comprobante:', err);
+        this.sinComprobante = true;
       }
     });
   }
@@ -115,16 +120,20 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
     }
   }
 
+  cerrar() {
+    this.dialogRef.close();
+  }
+
   onSubmit() {
     this.paymentService.updatePayment(this.idPayment, this.updatePaymentForm.value).subscribe({
       next: (response) => {
         console.log('Payment updated successfully:', response);
-        this.messageService.add({severity:'success', summary: 'Success', detail: 'Payment updated successfully'});
+        this.messageService.add({severity:'success', summary: 'Pago actualizado', detail: `Estado: ${this.updatePaymentForm.value.status}`});
         this.dialogRef.close();
       },
       error: (error) => {
         console.error('Error updating payment:', error);
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'Failed to update payment'});
+        this.messageService.add({severity:'error', summary: 'No se pudo actualizar el pago', detail: error?.error?.message ?? 'Intenta de nuevo'});
       }
     });
   }

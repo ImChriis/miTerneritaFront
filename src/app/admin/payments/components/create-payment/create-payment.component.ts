@@ -90,28 +90,19 @@ export class CreatePaymentComponent implements OnInit{
 
     if(!NuCedula) {
       this.messageService.add({ severity: 'error', summary: 'Debe ingresar una cédula para buscar el usuario' });
+      return;
     }
 
-    let prefix = "V";
-    if (/^[VEJ]/.test(NuCedula)) {
-    prefix = NuCedula.charAt(0);
-    NuCedula = NuCedula.substring(0, NuCedula.length + 1);
-  }
-
-  const numericOnly = NuCedula.replace(/\D/g, '');
-
-  if (!numericOnly) return;
-
-  const formattedCedula = `${prefix}-${numericOnly}`;
-
-    this.userService.searchUserByCedula(formattedCedula).subscribe({
+    // El backend acepta la cédula con o sin prefijo (V-31419200 o 31419200).
+    this.paymentFom.patchValue({ name: '', idUser: '' });
+    this.userService.searchUserByCedula(encodeURIComponent(NuCedula)).subscribe({
       next: (res: any) => {
        if(res){
         console.log(res);
          this.paymentFom.patchValue({
           cedula: res.cedula,
           name: `${res.name} ${res.lastName}`,
-          idUser: res.idUser
+          idUser: res.id
          });
 
          console.log(res);
@@ -124,7 +115,9 @@ export class CreatePaymentComponent implements OnInit{
         );
       el?.focus();
     }, 0);
-    }}})
+    }},
+      error: () => this.messageService.add({ severity: 'warn', summary: 'No hay ningún usuario con esa cédula' })
+    })
   }
 
   increment() {
@@ -145,7 +138,7 @@ agregarSeleccion() {
 
   if (this.selectedZone && this.cantidad > 0) {
     const cantidad = this.cantidad;
-    const precio = this.selectedZone.price ?? 0;
+    const precio = Number(this.selectedZone.price ?? 0);
 
     // 1. Validar límite máximo global de 10 entradas
     const cantidadTotal = this.selected.reduce((acc, item) => acc + item.cantidad, 0);
@@ -195,21 +188,39 @@ agregarSeleccion() {
   clearSelection(index: number): void {
     if (index >= 0 && index < this.selected.length) {
       this.selected.splice(index, 1);
+      this.total = this.selected.reduce((acc, item) => acc + item.total, 0);
     }
+  }
+
+  cerrar() {
+    this.ref?.close();
   }
 
   onSubmit(){
     const formData = this.paymentFom.value;
-    const payload = {
-      idEvents: formData.idEvents,
-      idUser: formData.idUser,
-      banco: formData.banco,
-      fechaTransferencia: formData.fechaTransferencia,
+    if (!formData.idUser) {
+      this.messageService.add({ severity: 'warn', summary: 'Busca al cliente por su cédula (Enter)' });
+      return;
+    }
+    if (!formData.idEvents || !this.selected.length) {
+      this.messageService.add({ severity: 'warn', summary: 'Elige el evento y agrega al menos una entrada' });
+      return;
+    }
+
+    // Pago en efectivo registrado por el admin: no lleva comprobante.
+    const payload: Record<string, unknown> = {
+      idEvents: Number(formData.idEvents),
+      idUser: Number(formData.idUser),
+      banco: formData.banco || 'Efectivo',
+      referencia: formData.referencia || 'Pago en efectivo',
       items: this.selected.map(item => ({
         idTicket: item.id,
         cantidad: item.cantidad,
     })),
     };
+    if (formData.fechaTransferencia) {
+      payload['fechaTransferencia'] = formData.fechaTransferencia;
+    }
 
     this.paymentsSevice.createPayment(payload).subscribe({
       next: (response) => {
@@ -217,7 +228,8 @@ agregarSeleccion() {
         this.ref?.close();
       },
       error: (err) => {
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'Hubo un problema al crear el pago'});
+        const detalle = err?.error?.message;
+        this.messageService.add({severity:'error', summary: 'No se pudo crear el pago', detail: Array.isArray(detalle) ? detalle.join(', ') : detalle ?? 'Intenta de nuevo'});
       }
     })
   }

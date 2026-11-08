@@ -52,16 +52,11 @@ export class PaymentsComponent implements OnInit{
   openCreateModal(){
      this.isModalOpen = true;
     this.ref = this.dialogService.open(CreatePaymentComponent, {
-      header: 'Crear pago',
-      width: '90%',
-      // height: '65vh',
+      header: 'Registrar pago',
+      width: '760px',
       modal: true,
       closable: true,
-       breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
@@ -71,17 +66,12 @@ export class PaymentsComponent implements OnInit{
   openUpdateModal(payment: Payment) {
     this.isModalOpen = true;
     this.ref = this.dialogService.open(UpdatePaymentComponent, {
-      header: 'Actualizar pago',
-      width: '90%',
-      // height: '65vh',
+      header: 'Revisar pago',
+      width: '820px',
       modal: true,
       closable: true,
       data: { payment },
-       breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;

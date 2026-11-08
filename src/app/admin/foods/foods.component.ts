@@ -1,32 +1,29 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { InputText } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { FoodsService } from '../../@core/services/foods.service';
-import { Observable, startWith, switchMap } from 'rxjs';
+import { map, Observable, startWith, switchMap } from 'rxjs';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { CreateFoodsComponent } from './components/create-foods/create-foods.component';
-import { UpdateDrinksComponent } from '../drinks/components/update-drinks/update-drinks.component';
 import { ButtonModule } from 'primeng/button';
-import { UpdateFoodsComponent } from './components/update-foods/update-foods.component';
+import { ProductoFormComponent } from '../../shared/components/producto-form/producto-form.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Food } from '../../@core/models/foods.model';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { MessageService } from 'primeng/api';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
+import { CatalogoGridComponent, ItemCatalogo } from '../../shared/components/catalogo-grid/catalogo-grid.component';
+
 
 @Component({
   selector: 'app-foods',
   imports: [
     CommonModule,
-    TableModule,
     ButtonModule,
-    InputText,
     AsyncPipe,
     CheckboxModule,
     FormsModule,
-    LoaderComponent
+    LoaderComponent,
+    CatalogoGridComponent
   ],
   templateUrl: './foods.component.html',
   styleUrl: './foods.component.scss'
@@ -36,34 +33,44 @@ export class FoodsComponent implements OnInit{
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   ref!: DynamicDialogRef;
-  foods$!: Observable<any>;
+  items$!: Observable<ItemCatalogo<Food>[]>;
+  seleccion: ItemCatalogo<Food>[] = [];
   isModalOpen = false;
   selectAll = false;
   selectedFoods: Food[] = [];
   isLoading = signal(false);
 
   ngOnInit(): void {
-    this.foods$ = this.foodsService.refreshFoodsObservable$.pipe(
+    this.items$ = this.foodsService.refreshFoodsObservable$.pipe(
       startWith(null),
       switchMap(() => {
         this.isLoading.set(true);
+        this.onSeleccion([]);
         return this.foodsService.getAllFoods();
-      })
+      }),
+      map((res: unknown) =>
+        (res as Food[]).map(f => ({
+          id: f.idFood,
+          nombre: f.description,
+          detalle: f.detalle,
+          precio: Number(f.price),
+          imagen: f.image as unknown as string,
+          disponible: f.status === 1,
+          orden: f.orden,
+          raw: f
+        }))
+      )
     )
   }
 
   openCreateModal(){
-    this.ref = this.dialogService.open(CreateFoodsComponent, {
-     header: 'Agregar Comida',
-      width: '50vw',
-      // height: '65vh',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Nueva comida',
+      width: '780px',
       modal: true,
       closable: true,
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      data: { tipo: 'comida' },
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
@@ -71,16 +78,13 @@ export class FoodsComponent implements OnInit{
   }
 
   openEditModal(foods: any){
-    this.ref = this.dialogService.open(UpdateFoodsComponent, {
-      width: '55vw',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Editar comida',
+      width: '780px',
       modal: true,
       closable: true,
-      data: { foods },
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog2'
+      data: { tipo: 'comida', producto: foods },
+      breakpoints: { '960px': '94vw' }
     });
 
     this.ref.onClose.subscribe(() => {
@@ -88,7 +92,12 @@ export class FoodsComponent implements OnInit{
     });
   }
 
-showConfirmModal(food?: Food, selectedItems: Food[] = this.selectedFoods) {
+onSeleccion(seleccion: ItemCatalogo<Food>[]) {
+    this.seleccion = seleccion;
+    this.selectedFoods = seleccion.map(i => i.raw);
+  }
+
+  showConfirmModal(food?: Food, selectedItems: Food[] = this.selectedFoods) {
   const itemsToDelete = food ? [food] : selectedItems;
 
   this.ref = this.dialogService.open(ConfirmDeleteModalComponent, {

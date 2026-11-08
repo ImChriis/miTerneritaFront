@@ -1,26 +1,26 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { InputText } from "primeng/inputtext";
-import { SelectModule } from 'primeng/select';
+import { catchError, of } from 'rxjs';
 import { TicketsService } from '../../@core/services/tickets.service';
 import { Ticket } from '../../@core/models/ticket.model';
+import { Event } from '../../@core/models/event.model';
 import { EventsService } from '../../@core/services/events.service';
-import { environment } from '../../../environments/environment.developer';
-import { TimerComponent } from '../../shared/components/timer/timer.component';
-import { TimerServiceService } from '../../@core/services/timer-service.service';
+import { byDateAsc, eventCategory, eventImage, formatTime12, isPastEvent, parseEventDate } from '../../@core/utils/event-utils';
+import { PurchaseStepsComponent } from '../../shared/components/purchase-steps/purchase-steps.component';
+import { VenueZone } from '../../shared/components/venue-map/venue-map.component';
+import { PriceSummaryComponent } from '../../shared/components/price-summary/price-summary.component';
+import { SalonMapComponent } from '../../shared/components/salon-map/salon-map.component';
+
+/** Máximo de entradas por compra */
+const MAX_TICKETS = 10;
+
+import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-ticket',
-  imports: [
-    CommonModule,
-    FormsModule,
-    InputText,
-    SelectModule,
-    TimerComponent
-],
+  imports: [CapFirstPipe, DatePipe, DecimalPipe, PurchaseStepsComponent, SalonMapComponent, PriceSummaryComponent],
   templateUrl: './ticket.component.html',
   styleUrl: './ticket.component.scss'
 })
@@ -28,147 +28,141 @@ export class TicketComponent implements OnInit {
   private ticketService = inject(TicketsService);
   private messageService = inject(MessageService);
   private eventsService = inject(EventsService);
-  private timerService = inject(TimerServiceService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  selected: any[] = [];
-  selectedTicket: any;
-  cantidad = 1;
+
+  readonly max = MAX_TICKETS;
   idEvent!: number;
-  selectedZone: Ticket | null = null;
-  zones: any[] = [];
-  name!: string;
-  date!: Date;
-  time!: string;
-  wallpaper!: string;
+
+  event = signal<Event | null>(null);
+  zones = signal<Ticket[]>([]);
+  loading = signal(true);
+  quantities = signal<Record<number, number>>({});
+  activeZone = signal<number | null>(null);
+  /** /concierto sin conciertos próximos. */
+  noConcert = signal(false);
+
+  isConcert = computed(() => !!this.event() && eventCategory(this.event()!) === 'concierto');
+  /** Con consumo se puede seguir sin entradas: una botella puede incluir el acceso. */
+  canContinue = computed(() => this.count() > 0 || this.event()?.consumo === 1);
+
+  day = computed(() => parseEventDate(this.event()?.date));
+  time = computed(() => formatTime12(this.event()?.time));
+  flyer = computed(() => eventImage(this.event()?.flyer || this.event()?.image1) || 'assets/img/optimized/fondo1.webp');
+  backdrop = computed(() => eventImage(this.event()?.image3 || this.event()?.image1) || this.flyer());
+
+  count = computed(() => Object.values(this.quantities()).reduce((acc, n) => acc + n, 0));
+
+  /** Mismo formato que esperan checkout y payment: { id, name, cantidad, total } */
+  selected = computed(() =>
+    this.zones()
+      .filter(z => (this.quantities()[z.idTicket] ?? 0) > 0)
+      .map(z => {
+        const cantidad = this.quantities()[z.idTicket];
+        return { id: z.idTicket, name: z.name, cantidad, total: cantidad * Number(z.price) };
+      })
+  );
+
+  total = computed(() => this.selected().reduce((acc, item) => acc + item.total, 0));
+
+  mapZones = computed<VenueZone[]>(() =>
+    this.zones().map(z => ({
+      id: z.idTicket,
+      name: z.name,
+      price: Number(z.price),
+      qty: this.quantities()[z.idTicket] ?? 0
+    }))
+  );
 
   ngOnInit() {
-    console.log("Asdsadsa")
-    this.idEvent = Number(this.route.snapshot.paramMap.get('id'));
-    console.log('ID del evento:', this.idEvent);
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.load(Number(id));
+      return;
+    }
 
-    this.ticketService.getTicktesByEvent(this.idEvent).subscribe({
-      next: (tickets) => {
-        this.zones = tickets;
-        console.log('Zonas obtenidas:', this.zones);
+    // /concierto: el próximo concierto de la cartelera
+    this.eventsService.getEvents().subscribe(events => {
+      const next = (events ?? [])
+        .filter(e => e.status === 1 && !isPastEvent(e) && eventCategory(e) === 'concierto')
+        .sort(byDateAsc)[0];
+      if (next) {
+        this.load(next.idEvents);
+      } else {
+        this.noConcert.set(true);
+        this.loading.set(false);
       }
     });
+  }
+
+  private load(idEvent: number) {
+    this.idEvent = idEvent;
+
+    this.ticketService
+      .getTicktesByEvent(this.idEvent)
+      .pipe(catchError(() => of([] as Ticket[])))
+      .subscribe(tickets => {
+        this.zones.set((tickets ?? []).filter(t => t.status === 1));
+        this.loading.set(false);
+      });
 
     this.eventsService.getEventById(this.idEvent).subscribe({
-    next: (event) => {
-      this.name = event.name;
-      this.date = event.date;
-      this.time = event.time;
-
-      const candidate = (event as any).image3 ?? (event as any).flyer ?? (event as any).image ?? (event as any).imagen ?? '';
-      this.wallpaper = this.getFullUrl(candidate);
-
-      document.body.style.backgroundImage = `url(${this.wallpaper})`;
-      document.body.style.backgroundPosition = 'center';
-      document.body.style.backgroundRepeat = 'no-repeat';
-      document.body.style.backgroundSize = 'cover';
-    }
-  });
-
-  this.timerService.startTimer(); // Inicia el temporizador al cargar la página
-  }
-
-  ngOnDestroy() {
-    document.body.style.backgroundImage = '';
-    document.body.style.backgroundPosition = '';
-    document.body.style.backgroundRepeat = '';
-    document.body.style.backgroundSize = '';
-  }
-
-    private getFullUrl(path: string): string {
-      if (!path) return '';
-      // absolute URL
-      if (/^https?:\/\//i.test(path)) return path;
-      if (/^(assets\/|\/)/.test(path)) return path;
-      return `${environment.apiImg}/${path}`;
-    }
-
-increment() {
-  if (this.cantidad < 10) {
-    this.cantidad++;
-  }
-}
-
-decrement() {
-  if (this.cantidad > 1) {
-    this.cantidad--;
-  }
-}
-
-agregarSeleccion() {
-  console.log('Zona seleccionada:', this.selectedZone);
-  console.log('Cantidad seleccionada:', this.cantidad);
-
-  if (this.selectedZone && this.cantidad > 0) {
-    const cantidad = this.cantidad;
-    const precio = this.selectedZone.price ?? 0;
-
-    // 1. Validar límite máximo global de 10 entradas
-    const cantidadTotal = this.selected.reduce((acc, item) => acc + item.cantidad, 0);
-    if (cantidadTotal + cantidad > 10) {
-      this.messageService.add({ 
-        severity: 'warn', 
-        summary: 'Advertencia', 
-        detail: 'No puedes seleccionar más de 10 entradas en total.' 
-      });
-      return;
-    }
-
-    // 2. Buscar si el ticket/zona ya fue agregado previamente
-    const existingIndex = this.selected.findIndex(item => item.id === this.selectedZone?.idTicket);
-
-    if (existingIndex !== -1) {
-      // Si ya existe, se acumula la cantidad y se recalcula el subtotal
-      this.selected[existingIndex].cantidad += cantidad;
-      this.selected[existingIndex].total = this.selected[existingIndex].cantidad * precio;
-    } else {
-      // Si es un ticket nuevo, se agrega el objeto al arreglo
-      const seleccionItem = {
-        id: this.selectedZone?.idTicket,
-        name: this.selectedZone.name,
-        cantidad,
-        total: cantidad * precio
-      };
-      this.selected.push(seleccionItem);
-    }
-
-    // 3. Limpiar formulario
-    this.selectedZone = null;
-    this.cantidad = 1;
-    console.log('Selección actualizada:', this.selected);
-
-  } else {
-    this.messageService.add({ 
-      severity: 'warn', 
-      summary: 'Advertencia', 
-      detail: 'Debe seleccionar un espacio válido.' 
+      next: event => this.event.set(event)
     });
   }
-}
 
-  clearSelection(index: number): void {
-    if (index >= 0 && index < this.selected.length) {
-      this.selected.splice(index, 1);
-    }
+  qty(zone: Ticket) {
+    return this.quantities()[zone.idTicket] ?? 0;
   }
 
-   goToCheckout(idEvents: number) {
-    if (this.selected.length === 0) {
+  price(zone: Ticket) {
+    return Number(zone.price);
+  }
+
+  increment(zone: Ticket) {
+    if (this.count() >= MAX_TICKETS) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debes seleccionar al menos una zona antes de continuar.'
+        summary: 'Límite alcanzado',
+        detail: `Puedes comprar hasta ${MAX_TICKETS} entradas por compra.`
+      });
+      return;
+    }
+    this.activeZone.set(zone.idTicket);
+    this.quantities.update(q => ({ ...q, [zone.idTicket]: (q[zone.idTicket] ?? 0) + 1 }));
+  }
+
+  decrement(zone: Ticket) {
+    this.activeZone.set(zone.idTicket);
+    this.quantities.update(q => ({ ...q, [zone.idTicket]: Math.max((q[zone.idTicket] ?? 0) - 1, 0) }));
+  }
+
+  clearSelection(id: number): void {
+    this.quantities.update(q => ({ ...q, [id]: 0 }));
+  }
+
+  /** Clic en una zona del plano: la resalta y agrega una entrada si aún no tiene. */
+  onPick(id: number) {
+    this.activeZone.set(id);
+    const zone = this.zones().find(z => z.idTicket === id);
+    if (zone && this.qty(zone) === 0) this.increment(zone);
+    document.getElementById(`zone-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  goToCheckout() {
+    if (!this.canContinue()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Elige tus entradas',
+        detail: 'Debes seleccionar al menos una entrada antes de continuar.'
       });
       return;
     }
 
-    this.router.navigate(['home/event/', idEvents, 'ticket', 'checkout'], {
-      state: { selected: this.selected }
+    // Con consumo se pasa por la carta: comida, bebida o una botella con acceso.
+    const step = this.event()?.consumo === 1 ? 'consume' : 'checkout';
+    this.router.navigate(['/home/event', this.idEvent, 'ticket', step], {
+      state: { selected: this.selected() }
     });
   }
 }

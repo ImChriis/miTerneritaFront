@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ResetPasswordComponent } from '../reset-password/reset-password.component';
@@ -8,7 +9,8 @@ import { ResetPasswordComponent } from '../reset-password/reset-password.compone
 @Component({
   selector: 'app-forgot-password',
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss'
@@ -19,39 +21,42 @@ export class ForgotPasswordComponent {
   private messageService = inject(MessageService);
   private dialogService = inject(DialogService);
   ref!: DynamicDialogRef;
+  loading = signal(false);
 
-  forgotPasswordForm = this.fb.group({
-    email: ['']
+  forgotPasswordForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]]
   })
 
   onSubmit(){
+      if (this.forgotPasswordForm.invalid) {
+        this.forgotPasswordForm.markAllAsTouched();
+        return;
+      }
+
+      this.loading.set(true);
       this.authService.forgotPassword(this.forgotPasswordForm.value).subscribe({
-        next: (response) => {
-          console.log("click")
-          console.log(this.forgotPasswordForm.value)
-          console.log('Correo de recuperación enviado:', response);
-          // Aquí puedes mostrar un mensaje de éxito al usuario
-          this.messageService.add({severity:'success', summary: 'Éxito', detail: 'Correo de recuperación enviado'});
+        next: () => {
+          this.loading.set(false);
+          this.messageService.add({severity:'success', summary: 'Revisa tu correo', detail: 'Te enviamos un código de recuperación'});
           this.openResetPassword();
         },
         error: (error) => {
           console.error('Error al enviar el correo de recuperación:', error);
-          // Aquí puedes manejar el error y mostrar un mensaje al usuario
-          this.messageService.add({severity:'error', summary: 'Error', detail: 'Error al enviar el correo de recuperación'});
+          this.loading.set(false);
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'No pudimos enviar el correo de recuperación'});
         }
       });
   }
 
   openResetPassword(){
     this.ref = this.dialogService.open(ResetPasswordComponent, {
-      header: 'Restablecer Contraseña',
-      width: '50%',
+      header: 'Restablecer contraseña',
+      width: '480px',
       modal: true,
       closable: true,
-      data: {  },
+      data: { email: this.forgotPasswordForm.value.email },
       breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw',
+        '640px': '92vw',
       },
       styleClass: 'custom-dialog'
     });

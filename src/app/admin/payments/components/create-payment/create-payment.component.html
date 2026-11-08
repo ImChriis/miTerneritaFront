@@ -1,82 +1,89 @@
-<div class="container">
-    <form [formGroup]="paymentFom" (ngSubmit)="onSubmit()">
-        <div class="formGroup2">
-            <div class="formGroup">
-                <label for="cedula">Cédula</label>
-                <input pInputText type="text" formControlName="cedula" placeholder="Ingrese la cédula" (keydown.enter)="searchUserByCedula($event)" />
+<form class="adm-form" [formGroup]="paymentFom" (ngSubmit)="onSubmit()" novalidate>
+    <section class="adm-section">
+        <h3>Cliente</h3>
+        <div class="adm-grid">
+            <div class="adm-field">
+                <label for="cp-cedula">Cédula</label>
+                <input pInputText id="cp-cedula" formControlName="cedula" placeholder="V-12345678" (keydown.enter)="$event.preventDefault(); searchUserByCedula($event)" (blur)="searchUserByCedula($event)" />
+                <p class="adm-hint">Escribe la cédula y pulsa Enter.</p>
             </div>
 
-            <div class="formGroup">
-                <label for="cedula">Nombre</label>
-                <input pInputText type="text" formControlName="name" readonly />
+            <div class="adm-field">
+                <span class="adm-label">Cliente</span>
+                @if (paymentFom.value.name) {
+                    <div class="adm-found"><i class="pi pi-check-circle"></i> {{ paymentFom.value.name }}</div>
+                } @else {
+                    <div class="adm-found is-empty"><i class="pi pi-user"></i> Aún no hay cliente</div>
+                }
             </div>
         </div>
+    </section>
 
-        <div class="formGroup">
-            <label for="Estado">Seleccionar Evento</label>
-            <p-select 
-            [options]="events" 
-                    optionLabel="name" 
-                    optionValue="idEvents" 
-                    formControlName="idEvents" 
-                    appendTo="body" />
+    <section class="adm-section">
+        <h3>Entradas</h3>
+        <div class="adm-field">
+            <label for="cp-evento">Evento</label>
+            <p-select inputId="cp-evento" [options]="events" optionLabel="name" optionValue="idEvents" formControlName="idEvents" [filter]="true" filterBy="name" placeholder="Elige el evento" appendTo="body" />
         </div>
 
+        <div class="adm-add">
+            <div class="adm-field">
+                <label for="cp-zona">Zona</label>
+                <p-select inputId="cp-zona" [options]="zones" optionLabel="name" [(ngModel)]="selectedZone" [ngModelOptions]="{ standalone: true }" placeholder="Elige la zona" appendTo="body" />
+            </div>
 
-            <div class="inputs">
-                <div class="inputGroup">
-                    <label for="zone">Tipo de espacio</label>
-                    <p-select id="zones" name="selectedZone" [options]="zones" optionLabel="name" [(ngModel)]="selectedZone" optionLabel="name" class="w-full md:w-56" [ngModelOptions]="{standalone: true}"></p-select>
-                </div>
-
-                <div class="inputGroup cantidad">
-                    <label for="zone">Cantidad</label>
-                    <div class="cantidad-input">
-                        <button type="button" (click)="decrement()" [disabled]="cantidad <= 1">-</button>
-                        <input pInputText type="text" id="cantidad" [value]="cantidad" readonly>
-                        <button type="button" (click)="increment()" [disabled]="cantidad >= 10">+</button>
-                    </div>
+            <div class="adm-field">
+                <span class="adm-label">Cantidad</span>
+                <div class="adm-stepper">
+                    <button type="button" (click)="decrement()" [disabled]="cantidad <= 1" aria-label="Quitar una">−</button>
+                    <output aria-live="polite">{{ cantidad }}</output>
+                    <button type="button" (click)="increment()" [disabled]="cantidad >= 10" aria-label="Agregar una">+</button>
                 </div>
             </div>
 
-            <div class="btnDetails">
-                <!-- llamar al método que añade la selección -->
-                <button class="btn2" type="button" (click)="agregarSeleccion()">Agregar</button>
+            <button type="button" class="adm-btn adm-btn--ghost" (click)="agregarSeleccion()" [disabled]="!selectedZone"><i class="pi pi-plus"></i> Agregar</button>
+        </div>
+
+        @if (selected.length) {
+            <ul class="adm-lines">
+                @for (item of selected; track item.id; let i = $index) {
+                    <li>
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            <small>{{ item.cantidad }} × ${{ item.total / item.cantidad | number: '1.2-2' }}</small>
+                        </div>
+                        <span>${{ item.total | number: '1.2-2' }}</span>
+                        <button type="button" class="adm-icon-btn" (click)="clearSelection(i)" [attr.aria-label]="'Quitar ' + item.name"><i class="pi pi-times"></i></button>
+                    </li>
+                }
+                <li class="total">
+                    <div>Total</div>
+                    <span>${{ total | number: '1.2-2' }}</span>
+                </li>
+            </ul>
+        } @else {
+            <p class="adm-hint">Elige la zona y la cantidad, y pulsa Agregar.</p>
+        }
+    </section>
+
+    <section class="adm-section">
+        <h3>Pago</h3>
+        <div class="adm-grid">
+            <div class="adm-field">
+                <span class="adm-label">Método</span>
+                <div class="adm-found is-empty"><i class="pi pi-wallet"></i> Efectivo, sin comprobante</div>
             </div>
 
-                <div class="summary" *ngIf="selected.length > 0">
-      <div class="summary" [class.empty]="selected.length === 0">
-          <!-- <div class="summaryTitle">
-            <h3>Seleccion actual</h3>
-          </div> -->
+            <div class="adm-field">
+                <label for="cp-fecha">Fecha del pago</label>
+                <input pInputText id="cp-fecha" type="date" formControlName="fechaTransferencia" />
+                <p class="adm-hint">Opcional.</p>
+            </div>
+        </div>
+    </section>
 
-          <div class="summaryList">
-            <div class="summaryInfo" *ngFor="let item of selected; let i = index">
-              <i class="pi pi-times delete" (click)="clearSelection(i)"></i>
-              <p><span>{{ item.name }} x{{ item.cantidad }}</span></p>
-              <p>Total: <span>${{ item.total | number:'1.2-2' }}</span></p>
-          </div>
-
-            <!-- placeholder para reservar espacio cuando no hay items -->
-            <div class="summaryPlaceholder" *ngIf="selected.length === 0"></div>
-          </div>
-      </div>
+    <div class="adm-actions">
+        <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn" [disabled]="!paymentFom.value.idUser || !selected.length">Registrar pago</button>
     </div>
-
-        <div class="formGroup2">
-            <div class="formGroup">
-                <label for="cedula">Total</label>
-                <input pInputText type="text" readonly [value]="total | number:'1.2-2'" />
-            </div>
-
-            <div class="formGroup">
-                <label for="cedula">Fecha</label>
-                <input pInputText type="date" formControlName="fechaTransferencia" />
-            </div>
-        </div>
-
-        <div class="btnContainer">
-            <button class="btn" pButton type="submit" label="Pagar" ></button>
-        </div>
-    </form>
-</div>
+</form>

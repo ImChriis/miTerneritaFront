@@ -1,101 +1,65 @@
-.container{
+.table {
+  max-width: 720px;
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .form-control {
     width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 5vh;
-    margin-bottom: 5vh;
-}
+    height: 48px;
+    border-radius: var(--radius-sm) !important;
+    background: var(--surface-2) !important;
+    color: var(--text) !important;
+    border-color: var(--border-strong) !important;
 
-.table{
-    margin-top: 2vh;
-    padding: 20px;
-    background-color: #232831;
-    border-radius: 20px;
-    width: 60%;
-    display: flex;
-    gap: 20px;
-    flex-direction: column;
-}
-
-.title{
-    width: 100%;
-    height: 5vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.title h1{
-    color:white;
-    margin-bottom: 0px;
-}
-
-.title p{
-    margin-top: 0px;
-    color:white;
-}
-
-.content h1{
-    font-weight: bold;
-}
-
-form{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.form-group{
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-}
-
-.form-group label{
-    display: flex;
-    color: white;
-}
-
-.form-group input{
-    background-color: transparent !important;
-    color: white !important;
-}
-
-.form-group .form-control{
-    width: 100%;
-             /* --- Remove arrows for Webkit browsers (Chrome, Safari, Edge, Opera) --- */
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
-        -webkit-appearance: none; /* This is the key property */
-        margin: 0; /* Sometimes needed to remove extra space */
+      -webkit-appearance: none;
+      margin: 0;
     }
 
-    /* --- Remove arrows for Firefox --- */
     &[type='number'] {
-        -moz-appearance: textfield; /* This makes it look like a regular text input */
+      -moz-appearance: textfield;
+      appearance: textfield;
     }
+  }
 }
 
-button{
-    background-color: transparent;
-    color: white;
-    border: 1px solid white;
-    border-radius: 50px;
-    width: 30%;
-    height: 3.5vh;
+button[type='submit'] {
+  grid-column: 1 / -1;
+  justify-self: start;
+  height: 46px;
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: var(--primary-contrast);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out);
+
+  &:hover {
+    background: var(--primary-hover);
+  }
 }
 
-button:hover{
-    opacity: 0.9;
-    cursor: pointer;
+@media (max-width: 640px) {
+  form {
+    grid-template-columns: 1fr;
+  }
 }
-

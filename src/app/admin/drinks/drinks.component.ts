@@ -5,25 +5,22 @@ import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputText } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { DrinksService } from '../../@core/services/drinks.service';
 import { MessageService } from 'primeng/api';
-import { CreateDrinksComponent } from './components/create-drinks/create-drinks.component';
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { Drink } from '../../@core/models/drink.model';
-import { UpdateDrinksComponent } from './components/update-drinks/update-drinks.component';
+import { ProductoFormComponent } from '../../shared/components/producto-form/producto-form.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
+import { CatalogoGridComponent, ItemCatalogo } from '../../shared/components/catalogo-grid/catalogo-grid.component';
+
 
 
 @Component({
   selector: 'app-drinks',
   imports: [
     CommonModule,
-    TableModule,
-    InputText,
     ButtonModule,
     DialogModule,
     BadgeModule,
@@ -32,7 +29,8 @@ import { LoaderComponent } from '../../@core/components/loader/loader.component'
     DynamicDialogModule,
     AsyncPipe,
     CheckboxModule,
-    LoaderComponent
+    LoaderComponent,
+    CatalogoGridComponent
   ],
   templateUrl: './drinks.component.html',
   styleUrl: './drinks.component.scss'
@@ -43,34 +41,46 @@ export class DrinksComponent implements OnInit{
   private messageService = inject(MessageService);
   ref: DynamicDialogRef | undefined;
   isModalOpen = false;
-  drinks$!: Observable<Drink[]>;
+  items$!: Observable<ItemCatalogo<Drink>[]>;
+  seleccion: ItemCatalogo<Drink>[] = [];
   selectAll = false;
   selectedDrinks: Drink[] = [];
   isLoading = signal(false);
 
   ngOnInit(): void {
-    this.drinks$ = this.drinksService.refreshDrinksObservable$.pipe(
+    this.items$ = this.drinksService.refreshDrinksObservable$.pipe(
       startWith(null),
       switchMap(() => {
         this.isLoading.set(true);
+        this.onSeleccion([]);
         return this.drinksService.getAllDrinks();
-      })
+      }),
+      map((res: unknown) =>
+        (res as Drink[]).map(d => ({
+          id: d.idDrinks,
+          nombre: d.description,
+          detalle: d.detalle,
+          precio: Number(d.price),
+          imagen: d.image as unknown as string,
+          disponible: d.status === 1,
+          categoria: d.categoria,
+          personas: d.personas,
+          orden: d.orden,
+          raw: d
+        }))
+      )
     )
   }
 
   openCreateModal(){
     this.isModalOpen = true;
-    this.ref = this.dialogService.open(CreateDrinksComponent, {
-      header: 'Agregar Bebida',
-      width: '50vw',
-      // height: '65vh',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Nueva bebida',
+      width: '780px',
       modal: true,
       closable: true,
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
+      data: { tipo: 'bebida' },
+      breakpoints: { '960px': '94vw' }
     });
     this.ref.onClose.subscribe(() => {
       this.isModalOpen = false;
@@ -79,16 +89,13 @@ export class DrinksComponent implements OnInit{
 
   openEditModal(drinks: Drink){
     this.isModalOpen = true;
-    this.ref = this.dialogService.open(UpdateDrinksComponent, {
-      width: '55vw',
+    this.ref = this.dialogService.open(ProductoFormComponent, {
+      header: 'Editar bebida',
+      width: '780px',
       modal: true,
       closable: true,
-      data: { drinks },
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog2'
+      data: { tipo: 'bebida', producto: drinks },
+      breakpoints: { '960px': '94vw' }
     });
 
     this.ref.onClose.subscribe(() => {
@@ -127,6 +134,11 @@ export class DrinksComponent implements OnInit{
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Ocurrió un error al eliminar la bebida' });
       }
     })
+  }
+
+  onSeleccion(seleccion: ItemCatalogo<Drink>[]) {
+    this.seleccion = seleccion;
+    this.selectedDrinks = seleccion.map(i => i.raw);
   }
 
   toggleSelectAll(drinks: Drink[], checked: boolean) {

@@ -1,0 +1,103 @@
+// ================= ESPACIOS =================
+.bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: clamp(180px, 20vw, 260px);
+  gap: 12px;
+}
+
+.bento-item {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s var(--ease-out);
+  }
+
+  figcaption {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: rgba(10, 10, 12, 0.6);
+    color: #fff;
+    font-weight: 700;
+    backdrop-filter: blur(10px);
+    transition: transform var(--dur-slow) var(--ease-out-expo);
+  }
+
+  &:hover {
+    img {
+      transform: scale(1.07);
+    }
+
+    figcaption {
+      transform: translateY(-4px);
+    }
+  }
+}
+
+.b0 {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.b1 {
+  grid-column: 2 / span 2;
+  grid-row: 1;
+}
+
+.b2 {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.b3 {
+  grid-column: 4;
+  grid-row: 1 / span 2;
+}
+
+.b4 {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+
+@media (max-width: 899px) {
+  .bento {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 180px;
+  }
+
+  .b0 {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .b1 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .b2 {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .b3 {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .b4 {
+    grid-column: 2;
+    grid-row: 3;
+  }
+}

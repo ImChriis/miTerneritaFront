@@ -55,38 +55,22 @@ export class UsersComponent implements OnInit {
 
   openCreateModal(){
      this.ref = this.dialogService.open(CreateUserComponent, {
-     header: 'Editar Usuario',
-      width: '50vw',
-      // height: '65vh',
+      header: 'Nuevo usuario',
+      width: '600px',
       modal: true,
       closable: true,
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
-    })
-    this.ref.onClose.subscribe(() => {
-      this.isModalOpen = false;
+      breakpoints: { '960px': '94vw' }
     });
   }
 
   openEditModal(user: User){
     this.ref = this.dialogService.open(EditUserComponent, {
-     header: 'Editar Usuario',
-      width: '50vw',
-      // height: '65vh',
+      header: 'Editar usuario',
+      width: '600px',
       modal: true,
       closable: true,
       data: { user: user },
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
-    })
-    this.ref.onClose.subscribe(() => {
-      this.isModalOpen = false;
+      breakpoints: { '960px': '94vw' }
     });
   }
 

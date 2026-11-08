@@ -1,6 +1,7 @@
 export interface Event{
     capacity: number;
-    date: Date;
+    // La API envía 'YYYY-MM-DD'; usa parseEventDate() de @core/utils/event-utils para mostrarla.
+    date: Date | string;
     time: string;
     description: string;
     idEvents: number;
@@ -12,4 +13,14 @@ export interface Event{
     room: string;
     status: number;
     consumo: number;
+    // Opcional: 'concierto' | 'fiesta' | ... Si el backend no lo envía se deduce del nombre.
+    category?: string | null;
+}
+
+/** Foto de la galería de un evento ("revive tu noche"). */
+export interface EventPhoto {
+    idPhoto: number;
+    idEvents: number;
+    /** Ruta relativa a apiImg: 'galeria/<uuid>.webp'. Usa eventImage(). */
+    image: string;
 }

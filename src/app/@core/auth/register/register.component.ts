@@ -1,16 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
 import { RegisterForm } from '../../models/forms/form-register';
-import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-register',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterLink
 ],
@@ -21,8 +18,10 @@ export class RegisterComponent implements OnInit{
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
-  private dialogService = inject(DialogService);
   private router = inject(Router);
+  showPass = signal(false);
+  showPass2 = signal(false);
+  loading = signal(false);
 
     private passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
       const password = group.get('password')?.value;
@@ -56,30 +55,29 @@ export class RegisterComponent implements OnInit{
     if (!control || !control.errors) {
       return ''; // Si el control no existe o no tiene errores, retorna una cadena vacía
     }
-  
+
     if (control.errors['required']) {
-      // return `El campo ${field} es obligatorio.`;
       return `El campo es obligatorio.`;
     }
     if (control.errors['minlength']) {
-      return `El campo ${field} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
+      return `Debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
     }
     if (control.errors['maxlength']) {
-      return `El campo ${field} no puede exceder los ${control.errors['maxlength'].requiredLength} caracteres.`;
+      return `No puede exceder los ${control.errors['maxlength'].requiredLength} caracteres.`;
     }
     if (control.errors['email']) {
       return 'El correo electrónico no tiene un formato válido.';
     }
     if (control.errors['pattern']) {
-      if (field === 'cedula') {
+      if (field === 'cedula' || field === 'noCedula') {
         return 'Solo se permiten números en la cédula.';
       }
-      return `El campo ${field} debe incluir al menos un carácter especial.`;
+      return 'El formato no es válido.';
     }
-  
+
     return 'Error desconocido en el campo.'; // Mensaje genérico para errores no manejados
   }
-  
+
   isValidField(field: string): boolean {
     const control = this.registerForm.get(field);
     return control ? control.invalid && (control.touched || control.dirty) : false;
@@ -91,39 +89,12 @@ export class RegisterComponent implements OnInit{
     this.registerForm.patchValue({ cedula: `${tipo}-${numero}` });
   }
 
-     showPassword() {
-    const passwordField = document.querySelector('#password') as HTMLInputElement;
-    const eyeIcon = document.querySelector('.btn-Pass i') as HTMLElement;
-    if (passwordField) {
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        eyeIcon.classList.remove('pi-eye-slash');
-        eyeIcon.classList.add('pi-eye');
-      } else {
-        passwordField.type = 'password';
-        eyeIcon.classList.remove('pi-eye');
-        eyeIcon.classList.add('pi-eye-slash');
-      }
-    }
-  }
-
-     showPassword2() {
-    const passwordField = document.querySelector('#password2') as HTMLInputElement;
-    const eyeIcon = document.querySelector('.btn-Pass i') as HTMLElement;
-    if (passwordField) {
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        eyeIcon.classList.remove('pi-eye-slash');
-        eyeIcon.classList.add('pi-eye');
-      } else {
-        passwordField.type = 'password';
-        eyeIcon.classList.remove('pi-eye');
-        eyeIcon.classList.add('pi-eye-slash');
-      }
-    }
-  }
-
     onSubmit(){
+      if (this.registerForm.invalid) {
+        this.registerForm.markAllAsTouched();
+        return;
+      }
+
       const tipoIdentificacion = this.registerForm.get('tipo')?.value;
       const numeroIdentificacion = this.registerForm.get('noCedula')?.value;
       const cedula = `${tipoIdentificacion}-${numeroIdentificacion}`;
@@ -135,14 +106,16 @@ export class RegisterComponent implements OnInit{
       delete formData.noCedula;
       delete formData.confirmPassword;
 
-      console.log(formData);
+      this.loading.set(true);
       this.authService.register(formData).subscribe({
-        next: (response) => {
-          this.messageService.add({severity:'success', summary: 'Registro Exitoso', detail: 'Usuario registrado correctamente'});
+        next: () => {
+          this.loading.set(false);
+          this.messageService.add({severity:'success', summary: 'Registro exitoso', detail: 'Tu cuenta fue creada. Ya puedes iniciar sesión.'});
           this.router.navigateByUrl('/login');
         },
         error: (err) => {
-          this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});
+          this.loading.set(false);
+          this.messageService.add({severity:'error', summary: 'Error', detail: err.error?.message || 'No se pudo crear la cuenta'});
         }
       })
     }

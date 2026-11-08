@@ -67,20 +67,12 @@ export class ClientsComponent {
 
   openEditModal(user: User){
     this.ref = this.dialogService.open(EditUserComponent, {
-     header: 'Editar Usuario',
-      width: '50vw',
-      // height: '65vh',
+      header: 'Editar cliente',
+      width: '600px',
       modal: true,
       closable: true,
       data: { user: user },
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      styleClass: 'custom-dialog'
-    })
-    this.ref.onClose.subscribe(() => {
-      this.isModalOpen = false;
+      breakpoints: { '960px': '94vw' }
     });
   }
 

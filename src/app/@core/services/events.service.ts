@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.developer';
 import { catchError, map, Subject, tap } from 'rxjs';
-import { Event } from '../models/event.model';
+import { Event, EventPhoto } from '../models/event.model';
+import { MenuEvento } from '../models/menu.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,27 @@ export class EventsService {
         throw error;
       })
     );
+  }
+
+  /** Comidas y bebidas que se pueden pre-ordenar con la entrada. */
+  getMenu(id: number) {
+    return this.http.get<MenuEvento>(`${this.api}/events/${id}/menu`);
+  }
+
+  /** Galería del evento. Pública. */
+  getPhotos(id: number) {
+    return this.http.get<EventPhoto[]>(`${this.api}/events/${id}/photos`);
+  }
+
+  /** Una tanda de fotos .webp (el backend acepta hasta 20 por petición). */
+  uploadPhotos(id: number, files: File[]) {
+    const fd = new FormData();
+    files.forEach(f => fd.append('photos', f));
+    return this.http.post<EventPhoto[]>(`${this.api}/events/${id}/photos`, fd);
+  }
+
+  deletePhoto(id: number, idPhoto: number) {
+    return this.http.delete(`${this.api}/events/${id}/photos/${idPhoto}`);
   }
 
   createEvent(data: any){

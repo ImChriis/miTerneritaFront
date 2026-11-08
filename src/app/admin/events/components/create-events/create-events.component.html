@@ -1,111 +1,95 @@
-<div class="container">
-    <form [formGroup]="eventsForm" (ngSubmit)="onSubmit()">
-        <div class="formGroup">
-            <label for="Nombre">Nombre</label>
-            <input pInputText id="Nombre" formControlName="name" type="text" />
-        </div>
-
-        <div class="formGroup2">
-            <div class="date">
-                <label for="date">Fecha</label>
-                <input pInputText id="date" formControlName="date" type="date" />
+<form class="adm-form" [formGroup]="eventsForm" (ngSubmit)="onSubmit()" novalidate>
+    <section class="adm-section">
+        <h3>Datos del evento</h3>
+        <div class="adm-grid">
+            <div class="adm-field adm-full">
+                <label for="ev-nombre">Nombre</label>
+                <input pInputText id="ev-nombre" formControlName="name" placeholder="Ej. Worldwide Party" />
             </div>
 
-            <div class="time">
-                <label for="time">Hora</label>
-                <input pInputText id="time" formControlName="time" type="time" />
-            </div>
-        </div>
-
-        <div class="formGroup2">
-            <div class="capacity">
-                <label for="capacity">Capacidad</label>
-                <input pInputText id="capacity" formControlName="capacity" type="number" />
+            <div class="adm-field">
+                <label for="ev-tipo">Tipo de evento</label>
+                <p-select inputId="ev-tipo" [options]="categorias" optionLabel="label" optionValue="value" formControlName="category" appendTo="body" />
+                <p class="adm-hint">Solo los conciertos muestran el mapa del salón.</p>
             </div>
 
-            <div class="room">
-                <label for="room">Salón</label>
-                <input pInputText id="room" formControlName="room" type="text" />
-            </div>
-        </div>
-
-        <div class="formGroup">
-                <label for="consumo">Consumo</label>
-                <p-select [options]="consumo" optionLabel="label" optionValue="value" formControlName="consumo" appendTo="body"/>
-        </div>
-
-        <div class="description">
-            <label for="Descripcion">Descripción</label>
-            <p-editor [style]="{ height: '320px' }" formControlName="description"></p-editor>
-        </div>
-
-        <!-- <div class="formGroup">
-            <label for="Estado">Estado</label>
-            <input pInputText id="Estado" formControlName="status" type="number" />
-        </div> -->
-
-        <div class="imageTitle">
-            <p>Adjunta las fotos que tendrá el evento</p>
-        </div>
-    <div class="image">
-        <div class="item">
-            <div class="upload">
-                <input type="file" accept="image/*" (change)="onFileSelect($event,'flyer')" #fileInputflyer hidden />
-                <button type="button" class="custom-file-btn" (click)="fileInputflyer.click()" title="Imagen para la seccion de eventos">flyer</button>
+            <div class="adm-field">
+                <label for="ev-salon">Salón</label>
+                <input pInputText id="ev-salon" formControlName="room" placeholder="Ej. Salón principal" />
             </div>
 
-            <!-- Preview -->
-            <div class="image-preview" *ngIf="previewUrls.flyer">
-                <img class="preview" [src]="previewUrls.flyer" alt="Vista previa" />
-                <i class="pi pi-times remove-btn" (click)="removeSelectedFile('flyer')" title="Quitar"></i>
+            <div class="adm-field">
+                <label for="ev-fecha">Fecha</label>
+                <input pInputText id="ev-fecha" type="date" formControlName="date" />
+            </div>
+
+            <div class="adm-field">
+                <label for="ev-hora">Hora</label>
+                <input pInputText id="ev-hora" type="time" formControlName="time" />
+            </div>
+
+            <div class="adm-field">
+                <label for="ev-capacidad">Capacidad</label>
+                <input pInputText id="ev-capacidad" type="number" min="1" step="1" formControlName="capacity" />
+                <p class="adm-hint">Personas en total, con el acceso de las botellas.</p>
             </div>
         </div>
 
-        <div class="item">
-             <div class="upload">
-                <input type="file" accept="image/*" (change)="onFileSelect($event,'image1')" #fileInputImage1 hidden />
-                <button type="button" class="custom-file-btn" (click)="fileInputImage1.click()" title="Imagen de fondo para la seccion de eventos">Imagen 1</button>
-            </div>
+        <div class="adm-grid">
+            <label class="adm-switch" for="ev-consumo">
+                <span>
+                    <strong>Venta de consumo</strong>
+                    <small>Se puede apartar comida y bebida al comprar.</small>
+                </span>
+                <p-toggleswitch inputId="ev-consumo" formControlName="consumo" [trueValue]="1" [falseValue]="0" />
+            </label>
 
-            <!-- Preview -->
-            <div class="image-preview" *ngIf="previewUrls.image1">
-                <img class="preview" [src]="previewUrls.image1" alt="Vista previa" />
-                <i class="pi pi-times remove-btn" (click)="removeSelectedFile('image1')" title="Quitar"></i>
-            </div>
+            <label class="adm-switch" for="ev-estado">
+                <span>
+                    <strong>A la venta</strong>
+                    <small>{{ eventsForm.controls.status.value === 1 ? 'Visible en la cartelera.' : 'Oculto para los clientes.' }}</small>
+                </span>
+                <p-toggleswitch inputId="ev-estado" formControlName="status" [trueValue]="1" [falseValue]="0" />
+            </label>
         </div>
+    </section>
 
-        <div class="item">
-             <div class="upload">
-                <input type="file" accept="image/*" (change)="onFileSelect($event,'image2')" #fileInputImage2 hidden />
-                <button type="button" class="custom-file-btn" (click)="fileInputImage2.click()" title="Imagen de fondo para las paginas">Imagen 2</button>
-            </div>
+    <app-event-tickets #entradas [category]="eventsForm.controls.category.value" />
 
-            <!-- Preview -->
-            <div class="image-preview" *ngIf="previewUrls.image2">
-                <img class="preview" [src]="previewUrls.image2" alt="Vista previa" />
-                <i class="pi pi-times remove-btn" (click)="removeSelectedFile('image2')" title="Quitar"></i>
-            </div>
+    <section class="adm-section">
+        <h3>Descripción</h3>
+        <p-editor [style]="{ height: '220px' }" formControlName="description" />
+    </section>
+
+    <section class="adm-section">
+        <h3>Fotos</h3>
+        <div class="adm-photos">
+            @for (f of fotos; track f.key) {
+                <div class="adm-photo-wrap">
+                    <input #fotoInput type="file" accept="image/*" hidden (change)="onFileSelect($event, f.key)" />
+                    <button type="button" class="adm-photo" [class.adm-photo--poster]="f.key === 'flyer'" [class.has-img]="getPreviewSrc(f.key)" (click)="fotoInput.click()" [attr.aria-label]="'Subir ' + f.label">
+                        @if (getPreviewSrc(f.key); as src) {
+                            <img class="fondo" [src]="src" alt="" aria-hidden="true" />
+                            <img class="foto" [src]="src" [alt]="f.label" />
+                        } @else {
+                            <span class="vacio"><i class="pi pi-image"></i> {{ f.label }} <small>{{ f.hint }}</small></span>
+                        }
+                    </button>
+                    <small>{{ f.label }}</small>
+                    <div class="adm-photo-actions">
+                        <button type="button" (click)="fotoInput.click()">{{ getPreviewSrc(f.key) ? 'Cambiar' : 'Subir' }}</button>
+                        @if (esNueva(f.key)) {
+                            <button type="button" class="quitar" (click)="fotoInput.value = ''; removeSelectedFile(f.key)">Descartar</button>
+                        }
+                    </div>
+                </div>
+            }
         </div>
+        <p class="adm-hint">El flyer es la portada en la cartelera; las imágenes 1 a 3 forman la galería del evento.</p>
+    </section>
 
-        <div class="item">
-             <div class="upload">
-                <input type="file" accept="image/*" (change)="onFileSelect($event,'image3')" #fileInputImage3 hidden />
-                <button type="button" class="custom-file-btn" (click)="fileInputImage3.click()" title="Imagen para el carrusel de la pagina principal">Imagen 3</button>
-            </div>
-
-            <!-- Preview -->
-            <div class="image-preview" *ngIf="previewUrls.image3">
-                <img class="preview" [src]="previewUrls.image3" alt="Vista previa" />
-                <i class="pi pi-times remove-btn" (click)="removeSelectedFile('image3')" title="Quitar"></i>
-            </div>
-        </div>
-
-        
-
+    <div class="adm-actions">
+        <button type="button" class="adm-btn adm-btn--ghost" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn" [disabled]="eventsForm.invalid || !entradas.valido()">Crear evento</button>
     </div>
-
-        <div class="btnContainer">
-            <button class="btn" pButton type="submit" label="Crear" [disabled]="eventsForm.invalid"></button>
-        </div>
-    </form>
-</div>
+</form>
