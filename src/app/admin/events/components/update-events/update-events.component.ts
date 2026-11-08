@@ -96,7 +96,6 @@ export class UpdateEventsComponent implements OnInit{
   });
 
   ngOnInit() {
-    console.log(this.event);
     this.updateEventsForm.patchValue(this.event);
 
       // inicializar previews con las imágenes que vienen del servidor (si existen)
@@ -213,9 +212,6 @@ onSubmit() {
       }
     });
 
-    for (const pair of formData.entries()) {
-      console.log('FormData', pair[0], pair[1]);
-    }
 
     this.eventsService.updateEvent(this.event.idEvents, formData).pipe(this.guardarEntradas()).subscribe({
       next: () => {
@@ -250,7 +246,6 @@ onSubmit() {
       }
     });
 
-    console.log('JSON body', jsonBody);
 
     this.eventsService.updateEventJson(this.event.idEvents, jsonBody).pipe(this.guardarEntradas()).subscribe({
       next: () => {

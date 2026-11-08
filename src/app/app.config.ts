@@ -94,7 +94,13 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,
-      withViewTransitions({ skipInitialTransition: true }),
+      withViewTransitions({
+        skipInitialTransition: true,
+        // Una navegacion que interrumpe a otra cancela la transicion: es normal, no un error de consola.
+        onViewTransitionCreated: ({ transition }) => {
+          for (const p of [transition.ready, transition.finished, transition.updateCallbackDone]) p.catch(() => {});
+        }
+      }),
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' })
     ),
     provideHttpClient(withInterceptors([tokenInterceptor, loadingInterceptor])),

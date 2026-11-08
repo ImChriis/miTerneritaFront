@@ -40,7 +40,6 @@ export class EditUserComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    console.log('User data received in EditUserComponent:', this.user);
 
     this.editUserForm.patchValue(this.user);
   }

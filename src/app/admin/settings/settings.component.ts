@@ -38,7 +38,6 @@ export class SettingsComponent implements OnInit{
         this.updateSettingsForm.patchValue(settings);
       },
       error: (error) => {
-        console.log(error);
       }
     });
   }
@@ -56,7 +55,6 @@ onSubmit() {
     tasaDolar: this.updateSettingsForm.value.tasaDolar !== null ? Number(this.updateSettingsForm.value.tasaDolar) : null
   };
 
-  console.log(formValues);
 
   this.settingsService.updateSettings(formValues).subscribe({
     next: (response) => {

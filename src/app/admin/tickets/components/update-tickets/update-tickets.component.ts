@@ -69,7 +69,6 @@ export class UpdateTicketsComponent implements OnInit{
     const formData = this.updateTicketForm.value;
     formData.price = Number(formData.price);
 
-    console.log(formData);
 
     this.ticketsService.updateTicket(this.ticket.idTicket, formData).subscribe({
       next: (response) => {

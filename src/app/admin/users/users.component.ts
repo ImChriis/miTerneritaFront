@@ -91,14 +91,12 @@ export class UsersComponent implements OnInit {
      
        this.ref.onClose.subscribe((confirmed: boolean) => {
          if (confirmed) {
-          console.log('Confirmed deletion for items:', itemsToDelete);
            itemsToDelete.forEach(item => this.executeDeleteUser(item.id));
          }
        });
      }
 
   private executeDeleteUser(id: number){
-    console.log('Deleting user with ID:', id);
 
       this.usersService.deleteUser(id).subscribe({
         next: () => {

@@ -58,7 +58,6 @@ export class CreatePaymentComponent implements OnInit{
   ngOnInit(): void {
     this.eventsService.getEvents().subscribe((events) => { 
       this.events = events;
-      console.log('Eventos obtenidos:', this.events);
     });
 
     this.paymentFom.get('idEvents')?.valueChanges.subscribe((idEvent) => {
@@ -76,7 +75,6 @@ export class CreatePaymentComponent implements OnInit{
     next: (tickets) => {
       this.zones = tickets;
       this.selectedZone = null; // Reiniciar zona seleccionada al cambiar de evento
-      console.log('Zonas obtenidas:', this.zones);
     },
     error: (err) => {
       console.error('Error al obtener entradas/zonas:', err);
@@ -98,14 +96,12 @@ export class CreatePaymentComponent implements OnInit{
     this.userService.searchUserByCedula(encodeURIComponent(NuCedula)).subscribe({
       next: (res: any) => {
        if(res){
-        console.log(res);
          this.paymentFom.patchValue({
           cedula: res.cedula,
           name: `${res.name} ${res.lastName}`,
           idUser: res.id
          });
 
-         console.log(res);
 
         this.messageService.add({ severity: 'success', summary: `Usuario: ${res.name} ${res.lastName} encontrado` });
 
@@ -133,8 +129,6 @@ decrement() {
 }
 
 agregarSeleccion() {
-  console.log('Zona seleccionada:', this.selectedZone);
-  console.log('Cantidad seleccionada:', this.cantidad);
 
   if (this.selectedZone && this.cantidad > 0) {
     const cantidad = this.cantidad;
@@ -174,7 +168,6 @@ agregarSeleccion() {
     // 3. Limpiar formulario
     this.selectedZone = null;
     this.cantidad = 1;
-    console.log('Selección actualizada:', this.selected);
 
   } else {
     this.messageService.add({ 

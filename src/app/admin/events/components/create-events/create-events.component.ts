@@ -186,10 +186,6 @@ onSubmit() {
     }
   });
 
-  // Debug (Revisa en la consola que 'date' y 'time' luzcan como "2026-05-28T...")
-  for (const pair of fd.entries()) {
-    console.log(pair[0], pair[1]);
-  }
 
   // Las entradas necesitan el id del evento recién creado.
   this.eventsService.createEvent(fd).pipe(switchMap((ev: any) => this.entradas().guardar(ev.idEvents))).subscribe({

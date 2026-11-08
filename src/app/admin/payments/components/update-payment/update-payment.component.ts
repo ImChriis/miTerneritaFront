@@ -59,7 +59,6 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
   })
 
   ngOnInit(){
-    console.log('Payment to update:', this.payment);
     
     // Tasa BCV con la que se hizo el pago; los pagos viejos sin ella usan la del día.
     const calcularBs = (tasa: number) => {
@@ -127,7 +126,6 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
   onSubmit() {
     this.paymentService.updatePayment(this.idPayment, this.updatePaymentForm.value).subscribe({
       next: (response) => {
-        console.log('Payment updated successfully:', response);
         this.messageService.add({severity:'success', summary: 'Pago actualizado', detail: `Estado: ${this.updatePaymentForm.value.status}`});
         this.dialogRef.close();
       },

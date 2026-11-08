@@ -48,7 +48,6 @@ export class PaymentService {
   return this.http.get<any[]>(`${environment.apiDolar}`).pipe(
     map((res: any[]) => {
       const tasaDolar = res?.[0]?.promedio ?? 0;
-      console.log('Tasa de cambio obtenida:', tasaDolar);
       return tasaDolar;
     }),
     catchError((error) => {

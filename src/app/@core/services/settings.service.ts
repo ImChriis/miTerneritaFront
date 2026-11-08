@@ -17,7 +17,6 @@ export class SettingsService {
   getSettings() {
     return this.http.get(`${this.api}/configuration`).pipe(
       tap((data) => {
-        console.log('Settings fetched:', data);
         this.sucursal = (data as any).CoSucursal; // Assuming the response has a 'sucursal' property
       })
     )

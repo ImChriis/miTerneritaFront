@@ -108,7 +108,6 @@ export class CreateUserComponent {
       delete formData.noCedula;
       delete formData.confirmPassword;
 
-      console.log(formData);
       this.userService.createUser(formData).subscribe({
         next: (response) => {
           this.messageService.add({severity:'success', summary: 'Registro Exitoso', detail: 'Usuario registrado correctamente'});

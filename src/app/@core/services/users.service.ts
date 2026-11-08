@@ -13,9 +13,7 @@ export class UsersService {
   public refreshUsersObservable$ = this.refreshUsers$.asObservable();
 
   getUsers(){
-    return this.http.get(`${this.api}/users`).pipe(
-      tap((u) => console.log('Users fetched:', u)),
-    )
+    return this.http.get(`${this.api}/users`)
   }
 
   createUser(userData: any){
@@ -27,7 +25,6 @@ export class UsersService {
   updateUser(id: number, userData: any){
     return this.http.put(`${this.api}/users/${id}`, userData).pipe(
       tap((res) => {
-        console.log(`User with ID ${id} updated successfully.`, res);
         this.refreshUsers$.next(); // Notify subscribers to refresh the users list
       }),
     );
@@ -36,7 +33,6 @@ export class UsersService {
   deleteUser(id: number){
     return this.http.delete(`${this.api}/users/${id}`).pipe(
       tap(() => {
-        console.log(`User with ID ${id} deleted successfully.`);
         this.refreshUsers$.next(); // Notify subscribers to refresh the users list
       }),
     );
@@ -45,7 +41,6 @@ export class UsersService {
   searchUserByCedula(cedula: string){
     return this.http.get(`${this.api}/users/${cedula}`).pipe(
       tap((res) => {
-        console.log(`Search result for cedula ${cedula}:`, res);
       }),
     );
   }
