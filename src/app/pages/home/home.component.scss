@@ -185,7 +185,9 @@
 .progress-item {
   flex: 1;
   min-width: 0;
-  padding: 0;
+  // la barra mide 3px: el relleno agranda la zona táctil sin cambiar el diseño
+  padding: 12px 0;
+  margin-block: -12px;
   border: 0;
   background: none;
   color: var(--on-media-muted);
@@ -235,8 +237,10 @@
     }
   }
 
-  &:hover {
-    color: var(--on-media);
+  @media (hover: hover) {
+    &:hover {
+      color: var(--on-media);
+    }
   }
 }
 
@@ -263,8 +267,10 @@
     color: var(--on-media);
     backdrop-filter: blur(10px);
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.24);
+    @media (hover: hover) {
+      &:hover {
+        background: rgba(255, 255, 255, 0.24);
+      }
     }
   }
 }
@@ -356,9 +362,11 @@
     font-size: 0.8rem;
   }
 
-  &:hover {
-    color: var(--text);
-    border-color: var(--border-strong);
+  @media (hover: hover) {
+    &:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
   }
 
   &.is-active {
@@ -422,8 +430,10 @@
     transform 1s var(--ease-out),
     filter 0.8s var(--ease-out);
 
-  .panel:not(.is-active):hover & {
-    transform: scale(1.06);
+  @media (hover: hover) {
+    .panel:not(.is-active):hover & {
+      transform: scale(1.06);
+    }
   }
 
   .is-active & {
@@ -763,8 +773,10 @@
     background: var(--media-scrim);
   }
 
-  &:hover img {
-    transform: scale(1.06);
+  @media (hover: hover) {
+    &:hover img {
+      transform: scale(1.06);
+    }
   }
 
   h3 {

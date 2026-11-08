@@ -69,6 +69,38 @@ textarea {
   color: inherit;
 }
 
+// Táctil: sin espera de doble toque y sin seleccionar el texto de los controles al mantener pulsado.
+a,
+button,
+label,
+[role='button'] {
+  touch-action: manipulation;
+}
+
+button,
+[role='button'] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+// iOS hace zoom al enfocar un campo con letra menor de 16px y no lo deshace.
+// !important: los estilos encapsulados de cada componente ganarían a este selector.
+@media (pointer: coarse) {
+  input:not([type='checkbox'], [type='radio'], [type='range']),
+  select,
+  textarea,
+  .p-inputtext {
+    font-size: max(16px, 1em) !important;
+  }
+}
+
+// Scroll interno de modales y paneles: no arrastra la página de atrás.
+.p-dialog-content,
+.p-select-overlay {
+  overscroll-behavior: contain;
+}
+
 a {
   color: inherit;
 }

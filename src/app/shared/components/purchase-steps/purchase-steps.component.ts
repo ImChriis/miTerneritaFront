@@ -108,8 +108,10 @@ import { TimerComponent } from '../timer/timer.component';
       }
     }
 
-    a.dot:hover {
-      transform: scale(1.08);
+    @media (hover: hover) {
+      a.dot:hover {
+        transform: scale(1.08);
+      }
     }
 
     .is-done {
@@ -132,20 +134,36 @@ import { TimerComponent } from '../timer/timer.component';
       }
     }
 
+    /* Móvil: pasos y temporizador en una sola fila; el título de la página ya dice en qué paso vas. */
     @media (max-width: 520px) {
-      .label {
-        display: none;
-      }
-
-      li.is-current .label {
-        display: block;
-        position: absolute;
-        top: 42px;
-        white-space: nowrap;
+      .bar {
+        flex-wrap: nowrap;
+        gap: 12px;
+        padding: 10px 12px;
       }
 
       .steps {
-        margin-bottom: 18px;
+        flex: 1 1 0;
+
+        &::before,
+        &::after {
+          top: 14px;
+          left: 15px;
+          right: 15px;
+        }
+      }
+
+      .label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
+
+      .dot {
+        width: 30px;
+        height: 30px;
       }
     }
   `

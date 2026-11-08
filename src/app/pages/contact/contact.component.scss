@@ -73,14 +73,16 @@
     transition: transform var(--dur) var(--ease-out);
   }
 
-  &:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
 
-    > .pi {
-      transform: translate(2px, -2px);
-      color: var(--primary);
+      > .pi {
+        transform: translate(2px, -2px);
+        color: var(--primary);
+      }
     }
   }
 }

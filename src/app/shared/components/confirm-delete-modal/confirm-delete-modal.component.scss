@@ -42,7 +42,9 @@
   background: var(--danger);
   color: #fff;
 
-  &:hover {
-    filter: brightness(1.08);
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(1.08);
+    }
   }
 }

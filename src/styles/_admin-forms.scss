@@ -104,8 +104,10 @@
   font-weight: 700;
   text-decoration: none;
 
-  &:hover {
-    text-decoration: underline;
+  @media (hover: hover) {
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -364,14 +366,18 @@
     font-weight: 700;
     cursor: pointer;
 
-    &:hover {
-      background: var(--surface-2);
+    @media (hover: hover) {
+      &:hover {
+        background: var(--surface-2);
+      }
     }
 
-    &.quitar:hover {
-      border-color: var(--danger);
-      background: var(--danger-soft);
-      color: var(--danger);
+    @media (hover: hover) {
+      &.quitar:hover {
+        border-color: var(--danger);
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
     }
   }
 }
@@ -502,9 +508,11 @@
   color: var(--text-subtle);
   cursor: pointer;
 
-  &:hover {
-    background: var(--danger-soft);
-    color: var(--danger);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
   }
 }
 
@@ -530,8 +538,10 @@
       cursor: not-allowed;
     }
 
-    &:hover:not(:disabled) {
-      background: var(--surface-3);
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background: var(--surface-3);
+      }
     }
   }
 
@@ -593,8 +603,10 @@
     background-color var(--dur) var(--ease-out),
     transform var(--dur-fast) var(--ease-out);
 
-  &:hover:not(:disabled) {
-    background: var(--primary-hover);
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
   }
 
   &:active:not(:disabled) {
@@ -612,8 +624,10 @@
   background: transparent;
   color: var(--text);
 
-  &:hover:not(:disabled) {
-    background: var(--surface-2);
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: var(--surface-2);
+    }
   }
 }
 

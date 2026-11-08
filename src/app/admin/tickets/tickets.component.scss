@@ -58,9 +58,11 @@
   height: 36px;
   border-radius: 50%;
 
-  &:hover {
-    background: var(--surface-2);
-    color: var(--text);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
   }
 }
 

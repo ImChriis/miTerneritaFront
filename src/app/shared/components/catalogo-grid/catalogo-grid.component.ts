@@ -181,9 +181,11 @@ const normalizar = (s: string) =>
         border-color var(--dur) var(--ease-out),
         transform var(--dur) var(--ease-out);
 
-      &:hover {
-        transform: translateY(-2px);
-        border-color: var(--border-strong);
+      @media (hover: hover) {
+        &:hover {
+          transform: translateY(-2px);
+          border-color: var(--border-strong);
+        }
       }
 
       &.is-selected {
@@ -345,9 +347,11 @@ const normalizar = (s: string) =>
       color: var(--text);
       cursor: pointer;
 
-      &.danger:hover {
-        border-color: #b3261e;
-        color: #b3261e;
+      @media (hover: hover) {
+        &.danger:hover {
+          border-color: #b3261e;
+          color: #b3261e;
+        }
       }
     }
 

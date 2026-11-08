@@ -217,9 +217,11 @@ export interface LineaResumen {
       color: var(--text-subtle);
       cursor: pointer;
 
-      &:hover {
-        background: var(--danger-soft);
-        color: var(--danger);
+      @media (hover: hover) {
+        &:hover {
+          background: var(--danger-soft);
+          color: var(--danger);
+        }
       }
 
       .pi {

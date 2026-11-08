@@ -88,3 +88,34 @@
     margin-left: auto;
   }
 }
+
+// Móvil: nombre y precio a la izquierda, cantidad a la derecha, en una sola fila.
+@media (max-width: 560px) {
+  .option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'info qty'
+      'price qty';
+    row-gap: 2px;
+    padding: 12px 12px 12px 14px;
+  }
+
+  .option-info {
+    grid-area: info;
+
+    small {
+      display: none;
+    }
+  }
+
+  .option-price {
+    grid-area: price;
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+
+  .tm-qty {
+    grid-area: qty;
+  }
+}

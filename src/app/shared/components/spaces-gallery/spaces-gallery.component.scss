@@ -33,13 +33,15 @@
     transition: transform var(--dur-slow) var(--ease-out-expo);
   }
 
-  &:hover {
-    img {
-      transform: scale(1.07);
-    }
+  @media (hover: hover) {
+    &:hover {
+      img {
+        transform: scale(1.07);
+      }
 
-    figcaption {
-      transform: translateY(-4px);
+      figcaption {
+        transform: translateY(-4px);
+      }
     }
   }
 }

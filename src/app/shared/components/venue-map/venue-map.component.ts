@@ -115,9 +115,11 @@ const ZONE_COLORS = ['#5b7cff', '#9b5bff', '#e0559b', '#f2994a', '#2bb3a3', '#56
         font-variant-numeric: tabular-nums;
       }
 
-      &:hover {
-        transform: translateY(-2px);
-        background: color-mix(in srgb, var(--zc) 26%, transparent);
+      @media (hover: hover) {
+        &:hover {
+          transform: translateY(-2px);
+          background: color-mix(in srgb, var(--zc) 26%, transparent);
+        }
       }
 
       &.is-active {

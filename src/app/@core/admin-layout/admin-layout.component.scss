@@ -118,9 +118,11 @@
     text-align: center;
   }
 
-  &:hover {
-    background: var(--surface-2);
-    color: var(--text);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
   }
 
   // Indicador del enlace activo
@@ -151,9 +153,11 @@
   padding-top: 10px;
   border-top: 1px solid var(--border);
 
-  .logout:hover {
-    background: var(--danger-soft);
-    color: var(--danger);
+  @media (hover: hover) {
+    .logout:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
   }
 }
 

@@ -118,6 +118,19 @@
     <router-outlet></router-outlet>
 </main>
 
+@if (inFlow()) {
+    <!-- Durante la compra: sin distracciones, solo ayuda a mano -->
+    <footer class="flow-footer">
+        <p>
+            <i class="pi pi-lock"></i> Compra segura · ¿Dudas?
+            @if (whatsapp()) {
+                <a [href]="whatsapp()" target="_blank" rel="noopener noreferrer">Escríbenos por WhatsApp</a>
+            } @else {
+                <a routerLink="/home/contact">Contáctanos</a>
+            }
+        </p>
+    </footer>
+} @else {
 <footer class="site-footer">
     <div class="tm-container footer-grid">
         <div class="footer-brand">
@@ -178,3 +191,4 @@
         <p>Desarrollado por <a class="netsolca" href="https://www.netsolca.com.ve/" target="_blank" rel="noopener noreferrer">Netsolca</a></p>
     </div>
 </footer>
+}

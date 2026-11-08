@@ -369,8 +369,10 @@
     color: var(--text-subtle);
   }
 
-  &:hover {
-    border-color: var(--text-subtle);
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--text-subtle);
+    }
   }
 
   &:focus {
@@ -443,9 +445,11 @@
     color: var(--text-muted);
     cursor: pointer;
 
-    &:hover {
-      color: var(--text);
-      background: var(--surface-3);
+    @media (hover: hover) {
+      &:hover {
+        color: var(--text);
+        background: var(--surface-3);
+      }
     }
   }
 
@@ -506,9 +510,11 @@
       transform: scale(0.9);
     }
 
-    &:hover:not(:disabled) {
-      background: var(--primary);
-      color: var(--primary-contrast);
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background: var(--primary);
+        color: var(--primary-contrast);
+      }
     }
 
     &:disabled {
@@ -673,3 +679,11 @@
   }
 }
 
+
+// Dedos: el +/- de cantidad es el control más usado al comprar; 40px se acerca al mínimo táctil (44px).
+@media (pointer: coarse) {
+  .tm-qty button {
+    width: 40px;
+    height: 40px;
+  }
+}

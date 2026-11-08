@@ -118,8 +118,29 @@
   }
 
   strong {
+    display: block;
     font-size: 1.6rem;
     font-variant-numeric: tabular-nums;
+  }
+}
+
+.copy-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  margin-top: 0.35rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.97);
   }
 }
 
@@ -165,9 +186,11 @@
   color: var(--text-muted);
   cursor: pointer;
 
-  &:hover {
-    background: var(--primary-soft);
-    color: var(--primary);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
   }
 }
 

@@ -70,3 +70,30 @@
     opacity: 0.55;
   }
 }
+
+// Móvil: va en la misma fila que los pasos, solo el anillo y la cuenta.
+@media (max-width: 520px) {
+  .timer {
+    gap: 0.45rem;
+    padding: 4px 10px 4px 4px;
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .text small {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .critical strong {
+    animation: none;
+  }
+}

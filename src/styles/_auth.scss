@@ -172,8 +172,10 @@
     text-decoration: none;
     cursor: pointer;
 
-    &:hover {
-      text-decoration: underline;
+    @media (hover: hover) {
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

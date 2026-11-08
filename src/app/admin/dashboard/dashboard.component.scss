@@ -124,10 +124,12 @@
     }
   }
 
-  &:is(a):hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--border-strong);
+  @media (hover: hover) {
+    &:is(a):hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
   }
 
   &.attention {

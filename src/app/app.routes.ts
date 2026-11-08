@@ -16,17 +16,20 @@ export const routes: Routes = [
             {
                 path: 'login',
                 loadComponent: () => import('./@core/auth/login/login.component').then(m => m.LoginComponent),
-                title: 'Iniciar sesión'
+                title: 'Iniciar sesión',
+                data: { noindex: true }
             },
             {
                 path: 'register',
                 loadComponent: () => import('./@core/auth/register/register.component').then(m => m.RegisterComponent),
-                title: 'Crear cuenta'
+                title: 'Crear cuenta',
+                data: { noindex: true }
             },
             {
                 path: 'forgotPassword',
                 loadComponent: () => import('./@core/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
-                title: 'Recuperar contraseña'
+                title: 'Recuperar contraseña',
+                data: { noindex: true }
             },
             {
                 path: 'home/event/:id',
@@ -36,12 +39,14 @@ export const routes: Routes = [
             {
                 path: 'home/contact',
                 loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent),
-                title: 'Contacto'
+                title: 'Contacto',
+                data: { description: 'Escríbenos para reservas, eventos privados o dudas con tu compra. Mi Ternerita House, Av. Fuerzas Armadas, Maracaibo.' }
             },
             {
                 // Flujo de compra y perfil: requieren sesión
                 path: '',
                 canActivate: [AuthGuard],
+                data: { noindex: true },
                 children: [
                     {
                         path: 'home/event/:id/ticket',
@@ -82,6 +87,7 @@ export const routes: Routes = [
         path: 'admin',
         component: AdminLayoutComponent,
         canActivate: [AuthGuard, AdminGuard],
+        data: { noindex: true },
         children: [
             { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
             {

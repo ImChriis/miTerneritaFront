@@ -51,7 +51,7 @@
               </div>
             </ng-template>
             <ng-template pTemplate="header">
-              <tr>
+              <tr class="cabecera">
                 <th style="min-width: 10rem" class="border">
                   <div class="flex thstyles">Fecha</div>
                 </th>
@@ -74,20 +74,20 @@
             </ng-template>
             <ng-template pTemplate="body" let-payment class="p-table">
               <tr class="table-content">
-                <td class="column-table-left mr-5">
+                <td class="column-table-left mr-5 c-fecha">
                 {{ payment.date | date: 'dd/MM/yyyy hh:mm a' : 'VE' }}
                 </td>
                 <td class="persona">
                   <strong>{{ payment.idUser?.name }}</strong>
                   <small>{{ payment.idUser?.lastName }}</small>
                 </td>
-                <td>
+                <td class="c-cedula">
                   {{ payment.idUser?.cedula }}
                 </td>
-                <td>
+                <td class="c-evento">
                   {{ payment.idEvents?.name }}
                 </td>
-                <td>
+                <td class="c-estado">
                   @if (payment.status === "Aprobado") {
                     <p class="disponible">Aprobado</p>
                   }  @else if(payment.status === "Pendiente") {
@@ -96,7 +96,7 @@
                     <p class="noDisponible">Rechazado</p> 
                   }
                 </td>
-                <td class="text-center column-table-right">
+                <td class="text-center column-table-right c-opciones">
                   <div class="option">
                     <i class="pi pi-pencil btnEdit" (click)="openUpdateModal(payment)" ></i>
                     <i class="pi pi-times btnDelete" ></i>

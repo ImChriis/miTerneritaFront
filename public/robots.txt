@@ -1,0 +1,11 @@
+# Mi Ternerita House
+User-agent: *
+Allow: /
+# Compra, cuenta y panel: privados o sin valor en buscadores
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /forgotPassword
+Disallow: /home/profile
+Disallow: /home/event/*/ticket
+Disallow: /concierto

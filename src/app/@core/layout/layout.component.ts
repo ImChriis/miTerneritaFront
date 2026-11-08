@@ -50,6 +50,8 @@ export class LayoutComponent implements OnInit {
   private url = signal(this.router.url);
 
   isHome = computed(() => this.url().split(/[?#]/)[0] === '/');
+  /** Flujo de compra (entradas, consumo, datos, pago): sin el footer completo. */
+  inFlow = computed(() => /\/ticket(\/|$)|^\/concierto$/.test(this.url().split(/[?#]/)[0]));
   /** Sobre el hero de la home la barra es transparente con texto claro. */
   overHero = computed(() => this.isHome() && !this.scrolled() && !this.mobileOpen());
 

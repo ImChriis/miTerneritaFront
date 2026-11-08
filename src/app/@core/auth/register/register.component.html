@@ -23,14 +23,14 @@
             <div class="tm-form-row">
                 <div class="tm-field">
                     <label class="tm-label" for="name">Nombre</label>
-                    <input class="tm-input" type="text" id="name" formControlName="name" autocomplete="given-name" />
+                    <input class="tm-input" type="text" id="name" formControlName="name" autocomplete="given-name" autocapitalize="words" />
                     @if (isValidField('name')) {
                         <p class="tm-error">{{ getErrorMessage('name') }}</p>
                     }
                 </div>
                 <div class="tm-field">
                     <label class="tm-label" for="lastName">Apellido</label>
-                    <input class="tm-input" type="text" id="lastName" formControlName="lastName" autocomplete="family-name" />
+                    <input class="tm-input" type="text" id="lastName" formControlName="lastName" autocomplete="family-name" autocapitalize="words" />
                     @if (isValidField('lastName')) {
                         <p class="tm-error">{{ getErrorMessage('lastName') }}</p>
                     }
@@ -41,7 +41,7 @@
                 <label class="tm-label" for="email">Correo electrónico</label>
                 <div class="tm-input-wrap">
                     <i class="pi pi-envelope"></i>
-                    <input class="tm-input" type="email" id="email" formControlName="email" autocomplete="email" />
+                    <input class="tm-input" type="email" id="email" formControlName="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" />
                 </div>
                 @if (isValidField('email')) {
                     <p class="tm-error">{{ getErrorMessage('email') }}</p>
@@ -57,7 +57,7 @@
                             <option value="E">E</option>
                             <option value="J">J</option>
                         </select>
-                        <input class="tm-input" type="number" inputmode="numeric" id="cedula" formControlName="noCedula" />
+                        <input class="tm-input" type="text" inputmode="numeric" pattern="[0-9]*" id="cedula" formControlName="noCedula" />
                     </div>
                     @if (isValidField('noCedula')) {
                         <p class="tm-error">{{ getErrorMessage('noCedula') }}</p>

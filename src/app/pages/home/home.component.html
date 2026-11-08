@@ -1,3 +1,6 @@
+<!-- Un solo h1 por página para buscadores; los títulos del carrusel son h2 -->
+<h1 class="sr-only">Mi Ternerita House: entradas para conciertos, fiestas y eventos en Maracaibo</h1>
+
 <!-- ================= HERO / CARRUSEL ================= -->
 <section
     class="hero"
@@ -43,7 +46,7 @@
                             }
                         </div>
 
-                        <h1 class="slide-title">{{ ev.name }}</h1>
+                        <h2 class="slide-title">{{ ev.name }}</h2>
 
                         <p class="slide-meta">
                             <span><i class="pi pi-calendar"></i>{{ ev.day | date: "EEEE d 'de' MMMM" | capFirst }}</span>
@@ -109,7 +112,7 @@
             <div class="slide-inner tm-container">
                 <div class="slide-copy">
                     <span class="tm-chip tm-chip--media"><i class="pi pi-sparkles"></i> Mi Ternerita House</span>
-                    <h1 class="slide-title">Vive la noche en Maracaibo</h1>
+                    <h2 class="slide-title">Vive la noche en Maracaibo</h2>
                     <p class="slide-meta"><span>Muy pronto anunciaremos nuevos eventos. ¡Mantente atento!</span></p>
                     <div class="slide-cta">
                         <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" (click)="scrollToSection('pasados')">Eventos pasados</button>

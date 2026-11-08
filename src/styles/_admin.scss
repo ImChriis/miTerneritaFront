@@ -142,8 +142,10 @@
       font-size: 0.85rem;
     }
 
-    &:hover {
-      background: var(--primary-hover) !important;
+    @media (hover: hover) {
+      &:hover {
+        background: var(--primary-hover) !important;
+      }
     }
 
     &:active {
@@ -202,8 +204,10 @@
     color: var(--text) !important;
     transition: background-color var(--dur-fast) var(--ease-out);
 
-    &:hover {
-      background: var(--surface-2) !important;
+    @media (hover: hover) {
+      &:hover {
+        background: var(--surface-2) !important;
+      }
     }
   }
 
@@ -258,17 +262,21 @@
   .btnEdit {
     color: var(--text-muted) !important;
 
-    &:hover {
-      background: var(--primary-soft);
-      color: var(--primary) !important;
+    @media (hover: hover) {
+      &:hover {
+        background: var(--primary-soft);
+        color: var(--primary) !important;
+      }
     }
   }
 
   .btnDelete {
     color: var(--danger) !important;
 
-    &:hover {
-      background: var(--danger-soft);
+    @media (hover: hover) {
+      &:hover {
+        background: var(--danger-soft);
+      }
     }
   }
 

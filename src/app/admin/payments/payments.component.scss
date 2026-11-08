@@ -14,3 +14,64 @@
     color: var(--text-muted);
   }
 }
+
+// Móvil: cada pago es una tarjeta (sin scroll horizontal) para aprobar desde el teléfono.
+@media (max-width: 640px) {
+  .cabecera {
+    display: none;
+  }
+
+  .table-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'persona estado'
+      'evento evento'
+      'fecha opciones';
+    align-items: center;
+    gap: 4px 12px;
+    padding: 12px 4px;
+
+    td {
+      padding: 0 !important;
+      border: 0 !important;
+      min-width: 0;
+    }
+  }
+
+  .persona {
+    grid-area: persona;
+
+    strong,
+    small {
+      display: inline;
+    }
+
+    small::before {
+      content: ' ';
+    }
+  }
+
+  .c-estado {
+    grid-area: estado;
+  }
+
+  .c-evento {
+    grid-area: evento;
+    color: var(--text-muted);
+  }
+
+  .c-cedula {
+    display: none;
+  }
+
+  .c-fecha {
+    grid-area: fecha;
+    color: var(--text-subtle);
+    font-size: 0.8rem;
+  }
+
+  .c-opciones {
+    grid-area: opciones;
+  }
+}

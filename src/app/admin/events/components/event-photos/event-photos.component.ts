@@ -143,8 +143,10 @@ const leerLote = (lector: FileSystemDirectoryReader) =>
       font-size: 0.7rem;
       cursor: pointer;
 
-      &:hover {
-        background: var(--danger);
+      @media (hover: hover) {
+        &:hover {
+          background: var(--danger);
+        }
       }
     }
   `

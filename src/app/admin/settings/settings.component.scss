@@ -53,8 +53,10 @@ button[type='submit'] {
   cursor: pointer;
   transition: background-color var(--dur) var(--ease-out);
 
-  &:hover {
-    background: var(--primary-hover);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--primary-hover);
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -110,6 +110,26 @@ export class PaymentComponent implements OnInit, OnDestroy {
   /** Monto esperado según el método elegido */
   expected = computed(() => (this.method() === 'zelle' ? this.total : this.totalBs()));
   amountMismatch = computed(() => this.amount() !== null && this.amount() !== this.expected());
+
+  constructor() {
+    // En el móvil teclear "1.234,56" exacto es donde más se falla: se rellena el
+    // monto esperado (y hoy como fecha) mientras el cliente no los toque.
+    const hoy = new Date();
+    this.paymentfForm.controls.fechaTransferencia.setValue(
+      `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`
+    );
+    effect(() => {
+      const esperado = this.expected();
+      const monto = this.paymentfForm.controls.totalGeneral;
+      if (esperado && !monto.dirty) monto.setValue(esperado);
+    });
+  }
+
+  /** Monto para pegar en la app del banco: sin separador de miles, coma decimal. */
+  copiarMonto() {
+    const monto = this.expected();
+    if (monto) this.copy(this.method() === 'zelle' ? monto.toFixed(2) : monto.toFixed(2).replace('.', ','));
+  }
 
   ngOnInit() {
     this.idEvents = Number(this.route.snapshot.paramMap.get('id'));

@@ -94,10 +94,11 @@
     </div>
 </div>
 
-<div class="tm-mobile-bar" [class.is-visible]="lineas().length > 0">
+<!-- Siempre a mano: el consumo es opcional y la carta puede ser larga -->
+<div class="tm-mobile-bar" [class.is-visible]="!loading() && (entradas() > 0 || lineas().length > 0)">
     <div>
-        <small>{{ entradas() }} {{ entradas() === 1 ? 'entrada' : 'entradas' }}</small>
+        <small>{{ entradas() }} {{ entradas() === 1 ? 'entrada' : 'entradas' }}{{ lineas().length ? ' + consumo' : '' }}</small>
         <strong>${{ total() | number: '1.2-2' }}</strong>
     </div>
-    <button type="button" class="tm-btn tm-btn--primary" (click)="continue()">Continuar <i class="pi pi-arrow-right"></i></button>
+    <button type="button" class="tm-btn tm-btn--primary" (click)="continue()">{{ lineas().length ? 'Continuar' : 'Seguir sin consumo' }} <i class="pi pi-arrow-right"></i></button>
 </div>

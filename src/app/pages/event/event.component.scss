@@ -16,8 +16,10 @@
     color: var(--text-muted);
     text-decoration: none;
 
-    &:hover {
-      color: var(--text);
+    @media (hover: hover) {
+      &:hover {
+        color: var(--text);
+      }
     }
   }
 
@@ -429,8 +431,9 @@
     grid-template-columns: 1fr;
   }
 
+  // Flyer más bajo: que el nombre y la fecha queden en la primera pantalla.
   .poster {
-    width: min(100%, 360px);
+    width: min(100%, 360px, 36svh);
     margin-inline: auto;
   }
 

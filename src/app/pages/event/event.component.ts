@@ -1,7 +1,8 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DomSanitizer, Title } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ADDRESS, SeoService } from '../../@core/services/seo.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { catchError, of } from 'rxjs';
@@ -18,7 +19,8 @@ import {
   eventImage,
   formatTime12,
   isPastEvent,
-  parseEventDate
+  parseEventDate,
+  stripHtml
 } from '../../@core/utils/event-utils';
 
 import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
@@ -34,7 +36,7 @@ export class EventComponent implements OnInit {
   private ticketsService = inject(TicketsService);
   private messageService = inject(MessageService);
   private sanitizer = inject(DomSanitizer);
-  private title = inject(Title);
+  private seo = inject(SeoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -62,6 +64,51 @@ export class EventComponent implements OnInit {
     return prices.length ? Math.min(...prices) : null;
   });
 
+  constructor() {
+    // Vista previa al compartir y ficha de evento para Google (con precios cuando cargan las entradas).
+    effect(() => {
+      const ev = this.event();
+      if (!ev) return;
+      const prices = this.tickets().map(t => Number(t.price)).filter(p => !Number.isNaN(p));
+      const fecha = this.day().toLocaleDateString('es-VE', { weekday: 'long', day: 'numeric', month: 'long' });
+      const resumen = stripHtml(ev.description ?? '');
+      const description = `${ev.name}: ${fecha}, ${this.time()} en Mi Ternerita House, Maracaibo.${resumen ? ' ' + resumen : ' Compra tus entradas en línea.'}`;
+      const image = this.seo.absolute(this.flyer());
+      const origin = location.origin;
+      this.seo.update({
+        title: ev.name,
+        description,
+        image,
+        type: 'article',
+        jsonLd: {
+          '@context': 'https://schema.org',
+          '@type': this.category() === 'concierto' ? 'MusicEvent' : 'Event',
+          name: ev.name,
+          description: description.slice(0, 300),
+          startDate: `${String(ev.date).slice(0, 10)}T${(ev.time || '00:00:00').slice(0, 8)}-04:00`,
+          eventStatus: 'https://schema.org/EventScheduled',
+          eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+          image: [image],
+          location: { '@type': 'Place', name: VENUE.name, address: ADDRESS },
+          organizer: { '@type': 'Organization', name: VENUE.name, url: origin + '/' },
+          ...(prices.length && !this.isPast()
+            ? {
+                offers: {
+                  '@type': 'AggregateOffer',
+                  priceCurrency: 'USD',
+                  lowPrice: Math.min(...prices),
+                  highPrice: Math.max(...prices),
+                  offerCount: prices.length,
+                  availability: 'https://schema.org/InStock',
+                  url: `${origin}/home/event/${ev.idEvents}`
+                }
+              }
+            : {})
+        }
+      });
+    });
+  }
+
   ngOnInit() {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const id = Number(params.get('id'));
@@ -77,10 +124,10 @@ export class EventComponent implements OnInit {
     this.eventsService.getEventById(id).subscribe({
       next: event => {
         this.event.set(event);
-        this.title.setTitle(`${event.name} · Mi Ternerita House`);
         this.loading.set(false);
       },
       error: () => {
+        this.seo.update({ title: 'Evento no encontrado', noindex: true });
         this.notFound.set(true);
         this.loading.set(false);
       }

@@ -24,14 +24,14 @@
                 <div class="tm-form-row">
                     <div class="tm-field">
                         <label class="tm-label" for="co-name">Nombre</label>
-                        <input class="tm-input" id="co-name" formControlName="name" autocomplete="given-name" />
+                        <input class="tm-input" id="co-name" formControlName="name" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" />
                         @if (invalid('name')) {
                             <p class="tm-error">Ingresa tu nombre.</p>
                         }
                     </div>
                     <div class="tm-field">
                         <label class="tm-label" for="co-last">Apellido</label>
-                        <input class="tm-input" id="co-last" formControlName="lastName" autocomplete="family-name" />
+                        <input class="tm-input" id="co-last" formControlName="lastName" autocomplete="family-name" autocapitalize="words" enterkeyhint="next" />
                         @if (invalid('lastName')) {
                             <p class="tm-error">Ingresa tu apellido.</p>
                         }
@@ -43,7 +43,7 @@
                         <label class="tm-label" for="co-id">Cédula</label>
                         <div class="tm-input-wrap">
                             <i class="pi pi-id-card"></i>
-                            <input class="tm-input" id="co-id" formControlName="identification" placeholder="V-12345678" />
+                            <input class="tm-input" id="co-id" formControlName="identification" placeholder="V-12345678" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="next" />
                         </div>
                         @if (invalid('identification')) {
                             <p class="tm-error">Ingresa tu cédula.</p>
@@ -53,7 +53,7 @@
                         <label class="tm-label" for="co-phone">Teléfono</label>
                         <div class="tm-input-wrap">
                             <i class="pi pi-phone"></i>
-                            <input class="tm-input" id="co-phone" type="tel" formControlName="phone" autocomplete="tel" placeholder="0414 123 4567" />
+                            <input class="tm-input" id="co-phone" type="tel" formControlName="phone" autocomplete="tel" inputmode="tel" placeholder="0414 123 4567" enterkeyhint="next" />
                         </div>
                         @if (invalid('phone')) {
                             <p class="tm-error">Ingresa un teléfono válido.</p>
@@ -65,7 +65,7 @@
                     <label class="tm-label" for="co-email">Correo electrónico</label>
                     <div class="tm-input-wrap">
                         <i class="pi pi-envelope"></i>
-                        <input class="tm-input" id="co-email" type="email" formControlName="email" autocomplete="email" />
+                        <input class="tm-input" id="co-email" type="email" formControlName="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" />
                     </div>
                     @if (invalid('email')) {
                         <p class="tm-error">Ingresa un correo válido.</p>

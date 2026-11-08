@@ -24,7 +24,7 @@
                 <label class="tm-label" for="email">Correo electrónico</label>
                 <div class="tm-input-wrap">
                     <i class="pi pi-envelope"></i>
-                    <input class="tm-input" type="email" id="email" formControlName="email" autocomplete="email" placeholder="tu@correo.com" />
+                    <input class="tm-input" type="email" id="email" formControlName="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="tu@correo.com" />
                 </div>
                 @if (isValidField('email')) {
                     <p class="tm-error">{{ getErrorMessage('email') }}</p>
