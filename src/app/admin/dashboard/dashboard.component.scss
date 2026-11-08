@@ -429,16 +429,8 @@
 }
 
 .mini-avatar {
-  display: grid;
-  place-items: center;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
-  background: var(--surface-3);
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
 }
 
 // ---------- Próximos eventos ----------

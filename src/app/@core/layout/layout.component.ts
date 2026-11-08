@@ -5,6 +5,7 @@ import { filter } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { SettingsService } from '../services/settings.service';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
+import { AvatarComponent, avatarSeed } from '../../shared/components/avatar/avatar.component';
 import { VENUE } from '../data/site';
 
 interface NavItem {
@@ -21,7 +22,8 @@ import { puedeVerPanel } from '../auth/roles';
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    ThemeToggleComponent
+    ThemeToggleComponent,
+    AvatarComponent
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
@@ -61,10 +63,7 @@ export class LayoutComponent implements OnInit {
   email = signal('');
 
   user = computed(() => (this.authService.isAuthenticated() ? this.authService.getUser() : null));
-  initials = computed(() => {
-    const u = this.user();
-    return u ? `${u.name?.[0] ?? ''}${u.lastName?.[0] ?? ''}`.toUpperCase() || 'U' : '';
-  });
+  readonly seed = avatarSeed;
   isStaff = computed(() => puedeVerPanel(this.user()?.role));
 
   constructor() {

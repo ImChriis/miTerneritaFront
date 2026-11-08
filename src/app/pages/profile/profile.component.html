@@ -1,6 +1,6 @@
 <div class="tm-container profile">
     <header class="profile-hero">
-        <span class="avatar">{{ initials() }}</span>
+        <app-avatar class="avatar" [seed]="seed" />
         <div class="who">
             <p class="tm-eyebrow">Mi cuenta</p>
             <h1>{{ fullName() || 'Mi perfil' }}</h1>

@@ -161,7 +161,7 @@
                             <tr tabindex="0" (click)="openUpdateModal(payment)" (keydown.enter)="openUpdateModal(payment)">
                                 <td>
                                     <div class="who">
-                                        <span class="mini-avatar">{{ (payment.idUser?.name?.[0] ?? '?') + (payment.idUser?.lastName?.[0] ?? '') }}</span>
+                                        <app-avatar class="mini-avatar" [seed]="seed(payment.idUser)" />
                                         <span>{{ payment.idUser?.name }} {{ payment.idUser?.lastName }}</span>
                                     </div>
                                 </td>

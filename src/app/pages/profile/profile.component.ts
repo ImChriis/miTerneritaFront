@@ -5,12 +5,14 @@ import { MessageService } from 'primeng/api';
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../@core/services/auth.service';
 import { RegisterForm } from '../../@core/models/forms/form-register';
+import { AvatarComponent, avatarSeed } from '../../shared/components/avatar/avatar.component';
 
 @Component({
   selector: 'app-profile',
   imports: [
     ReactiveFormsModule,
-    RouterLink
+    RouterLink,
+    AvatarComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -46,7 +48,7 @@ export class ProfileComponent implements OnInit {
 
   private values = toSignal(this.registerForm.valueChanges, { initialValue: this.registerForm.value });
   fullName = computed(() => `${this.values().name ?? ''} ${this.values().lastName ?? ''}`.trim());
-  initials = computed(() => `${this.values().name?.[0] ?? ''}${this.values().lastName?.[0] ?? ''}`.toUpperCase() || 'U');
+  readonly seed = avatarSeed(JSON.parse(localStorage.getItem('user') || 'null'));
 
   ngOnInit(): void {
     this.registerForm.get('tipo')?.valueChanges.subscribe(() => this.updateIdentificacion());

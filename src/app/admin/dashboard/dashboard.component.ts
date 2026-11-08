@@ -24,10 +24,11 @@ const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', '
 const LIMIT: Record<Filter, number> = { day: 14, week: 12, month: 12, year: 6 };
 
 import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
+import { AvatarComponent, avatarSeed } from '../../shared/components/avatar/avatar.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CapFirstPipe, ChartModule, DatePipe, DecimalPipe, FormsModule, RouterLink, SelectButtonModule],
+  imports: [AvatarComponent, CapFirstPipe, ChartModule, DatePipe, DecimalPipe, FormsModule, RouterLink, SelectButtonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -41,6 +42,7 @@ export class DashboardComponent implements OnInit {
   readonly tasa = inject(TasaService);
   ref: DynamicDialogRef | undefined;
   refrescandoTasa = signal(false);
+  readonly seed = avatarSeed;
 
   readonly today = new Date();
   readonly userName = (JSON.parse(localStorage.getItem('user') || '{}').name as string) ?? '';

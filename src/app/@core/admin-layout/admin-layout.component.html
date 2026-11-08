@@ -57,13 +57,13 @@
             <div class="top-actions">
                 <a routerLink="/" class="tm-btn tm-btn--ghost tm-btn--sm site-link"><i class="pi pi-external-link"></i> Ver sitio</a>
                 <app-theme-toggle />
-                <div class="me">
-                    <span class="avatar">{{ initials() }}</span>
+                <a routerLink="/home/profile" class="me" aria-label="Mi perfil" title="Mi perfil">
+                    <app-avatar class="avatar" [seed]="seed" />
                     <span class="me-text">
                         <strong>{{ nombre }} {{ lastName }}</strong>
                         <small>{{ role }}</small>
                     </span>
-                </div>
+                </a>
             </div>
         </header>
 

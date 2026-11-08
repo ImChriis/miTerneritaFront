@@ -39,7 +39,7 @@
                         aria-haspopup="menu"
                         (click)="userMenuOpen.set(!userMenuOpen())"
                     >
-                        <span class="avatar">{{ initials() }}</span>
+                        <app-avatar class="avatar" [seed]="seed(u)" />
                         <span class="avatar-name">{{ u.name }}</span>
                         <i class="pi pi-chevron-down"></i>
                     </button>

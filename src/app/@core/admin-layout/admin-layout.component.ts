@@ -1,10 +1,11 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, computed, effect, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, HostListener, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { PageTitleStrategy } from '../services/page-title.strategy';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
+import { AvatarComponent, avatarSeed } from '../../shared/components/avatar/avatar.component';
 
 interface RouteLayout {
   name: string;
@@ -25,7 +26,8 @@ const COLLAPSE_KEY = 'tm-admin-collapsed';
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    ThemeToggleComponent
+    ThemeToggleComponent,
+    AvatarComponent
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss'
@@ -43,7 +45,7 @@ export class AdminLayoutComponent implements OnInit {
 
   mobileOpen = signal(false);
   collapsed = signal(this.readCollapsed());
-  initials = computed(() => `${this.nombre[0] ?? ''}${this.lastName[0] ?? ''}`.toUpperCase() || 'A');
+  seed = '?';
 
   readonly groups: RouteGroup[] = [
     {
@@ -85,6 +87,7 @@ export class AdminLayoutComponent implements OnInit {
       this.nombre = userObj.name ?? '';
       this.lastName = userObj.lastName ?? '';
       this.role = userObj.role ?? '';
+      this.seed = avatarSeed(userObj);
     }
 
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => this.mobileOpen.set(false));
