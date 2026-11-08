@@ -6,8 +6,8 @@
                 <span class="ring"></span>
             </div>
         </div>
-    } @else if (navigating()) {
-        <div class="route-progress" role="progressbar" aria-label="Cargando página"></div>
+    } @else if (navigating() || fetching()) {
+        <div class="route-progress" role="progressbar" aria-label="Cargando"></div>
     }
 } @else if (isLoading) {
     <div class="inline-loader" role="status" aria-label="Cargando">

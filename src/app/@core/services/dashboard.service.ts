@@ -12,16 +12,4 @@ export class DashboardService {
   getTotalUsers(){
     return this.http.get(`${this.api}/users`);
   }
-
-  getNewUsers(){
-    return this.http.get(`${this.api}/users/new-today`);
-  }
-
-  getTotalInvoices(){
-    return this.http.get(`${this.api}/payment`);
-  }
-
-  getTotalTickets(){
-    return this.http.get(`${this.api}/payment-details/totals/general`);
-  }
 }

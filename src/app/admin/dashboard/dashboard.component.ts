@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { forkJoin, startWith, switchMap } from 'rxjs';
+import { startWith, switchMap } from 'rxjs';
 import { DashboardService } from '../../@core/services/dashboard.service';
 import { PaymentService } from '../../@core/services/payment.service';
 import { EventsService } from '../../@core/services/events.service';
@@ -48,11 +48,6 @@ export class DashboardComponent implements OnInit {
   loadingKpis = signal(true);
   loadingPayments = signal(true);
 
-  totalUser = signal(0);
-  usersToday = signal(0);
-  totalPayments = signal(0);
-  totalTickets = signal(0);
-
   private allPayments = signal<any[]>([]);
   private allUsers = signal<any[]>([]);
   private events = signal<Event[]>([]);
@@ -66,7 +61,38 @@ export class DashboardComponent implements OnInit {
     { label: 'Año', value: 'year' }
   ];
 
+  /** Evento elegido para los indicadores de entradas y pagos (null = todos). */
+  eventoFiltro = signal<number | null>(null);
+
   // ---------- Derivados ----------
+  /** Solo clientes: el personal y los admin no cuentan como registros. */
+  private clientes = computed(() => this.allUsers().filter(u => u.roleName === 'client'));
+  totalClientes = computed(() => this.clientes().length);
+  clientesHoy = computed(() => {
+    const hoy = new Date().toDateString();
+    return this.clientes().filter(u => u.fechaRegistro && new Date(u.fechaRegistro).toDateString() === hoy).length;
+  });
+
+  /** Eventos para el selector, el más reciente primero. */
+  eventosFiltro = computed(() => [...this.events()].sort((a, b) => byDateAsc(b, a)));
+
+  private pagosFiltrados = computed(() => {
+    const id = this.eventoFiltro();
+    return id === null ? this.allPayments() : this.allPayments().filter(p => p.idEvents?.idEvents === id);
+  });
+  pagosEvento = computed(() => {
+    const counts = { total: 0, Aprobado: 0, Pendiente: 0, entradas: 0 };
+    for (const p of this.pagosFiltrados()) {
+      counts.total++;
+      if (p.status === 'Aprobado') {
+        counts.Aprobado++;
+        // Mismo criterio que /payment-details/totals/general: entradas de pagos aprobados.
+        for (const d of p.paymentDetails ?? []) if (!d.isDeleted) counts.entradas += Number(d.ticketNum ?? 1);
+      } else if (p.status === 'Pendiente') counts.Pendiente++;
+    }
+    return counts;
+  });
+
   latestPayments = computed(() =>
     [...this.allPayments()].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 6)
   );
@@ -127,12 +153,12 @@ export class DashboardComponent implements OnInit {
 
   usersChart = computed(() => {
     const c = this.palette();
-    const { labels, data } = this.groupByPeriod(this.allUsers(), this.selectedUserFilter(), 'fechaRegistro');
+    const { labels, data } = this.groupByPeriod(this.clientes(), this.selectedUserFilter(), 'fechaRegistro');
     return {
       labels,
       datasets: [
         {
-          label: 'Nuevos usuarios',
+          label: 'Nuevos clientes',
           data,
           borderColor: c.success,
           backgroundColor: c.success + '22',
@@ -191,18 +217,10 @@ export class DashboardComponent implements OnInit {
         this.loadingPayments.set(false);
       });
 
-    forkJoin({
-      totalUser: this.dashboardService.getTotalUsers(),
-      usersToday: this.dashboardService.getNewUsers(),
-      totalPayments: this.dashboardService.getTotalInvoices(),
-      totalTickets: this.dashboardService.getTotalTickets()
-    }).subscribe({
-      next: (results: any) => {
-        this.totalUser.set(results.totalUser?.length ?? 0);
-        this.totalPayments.set(results.totalPayments?.length ?? 0);
-        this.totalTickets.set(results.totalTickets?.count ?? 0);
-        this.usersToday.set(results.usersToday?.length || 0);
-        this.allUsers.set(results.totalUser || []);
+    // Entradas y pagos salen de getAllPayments (arriba), así se pueden filtrar por evento.
+    this.dashboardService.getTotalUsers().subscribe({
+      next: (users: any) => {
+        this.allUsers.set(users || []);
         this.loadingKpis.set(false);
       },
       error: () => this.loadingKpis.set(false)

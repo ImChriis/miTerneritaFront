@@ -11,6 +11,7 @@ import { providePrimeNG } from 'primeng/config';
 import { definePreset } from '@primeng/themes';
 import Material from '@primeng/themes/material';
 import { tokenInterceptor } from './@core/interceptor/token.interceptor';
+import { loadingInterceptor } from './@core/services/loading.service';
 import { PageTitleStrategy } from './@core/services/page-title.strategy';
 
 registerLocaleData(localeEsVe);
@@ -96,7 +97,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions({ skipInitialTransition: true }),
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' })
     ),
-    provideHttpClient(withInterceptors([tokenInterceptor])),
+    provideHttpClient(withInterceptors([tokenInterceptor, loadingInterceptor])),
     provideAnimationsAsync(),
     { provide: LOCALE_ID, useValue: 'es-VE' },
     { provide: TitleStrategy, useExisting: PageTitleStrategy },

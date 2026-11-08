@@ -1,4 +1,5 @@
-import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { LoadingService } from '../../services/loading.service';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -23,6 +24,18 @@ export class LoaderComponent implements OnInit, OnDestroy {
 
   splash = signal(true);
   navigating = signal(false);
+  /** Hay peticiones a la API hace más de 250 ms (las rápidas no parpadean). */
+  fetching = signal(false);
+  private fetchTimer?: ReturnType<typeof setTimeout>;
+
+  constructor() {
+    const loading = inject(LoadingService);
+    effect(() => {
+      clearTimeout(this.fetchTimer);
+      if (loading.pending() > 0) this.fetchTimer = setTimeout(() => this.fetching.set(true), 250);
+      else this.fetching.set(false);
+    });
+  }
 
   ngOnInit() {
     if (this.mode === 'window') {
@@ -48,5 +61,6 @@ export class LoaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.routerSub?.unsubscribe();
     clearTimeout(this.doneTimer);
+    clearTimeout(this.fetchTimer);
   }
 }

@@ -27,49 +27,59 @@
     </section>
 
     <!-- KPIs -->
+    <div class="kpi-filter">
+        <label for="kpi-evento">Entradas y pagos de</label>
+        <select id="kpi-evento" class="tm-select" [ngModel]="eventoFiltro()" (ngModelChange)="eventoFiltro.set($event)">
+            <option [ngValue]="null">Todos los eventos</option>
+            @for (ev of eventosFiltro(); track ev.idEvents) {
+                <option [ngValue]="ev.idEvents">{{ ev.name }} · {{ ev.date | date: 'dd/MM/yy' }}</option>
+            }
+        </select>
+    </div>
+
     <section class="kpis">
-        <a routerLink="/admin/users" class="kpi">
+        <a routerLink="/admin/clients" class="kpi">
             <span class="kpi-icon blue"><i class="pi pi-users"></i></span>
-            <span class="kpi-label">Usuarios registrados</span>
+            <span class="kpi-label">Clientes registrados</span>
             @if (loadingKpis()) {
                 <span class="tm-skeleton kpi-sk"></span>
             } @else {
-                <strong class="kpi-value">{{ totalUser() }}</strong>
+                <strong class="kpi-value">{{ totalClientes() }}</strong>
             }
-            <span class="kpi-foot"><span class="up"><i class="pi pi-arrow-up-right"></i> {{ usersToday() }}</span> nuevos hoy</span>
+            <span class="kpi-foot"><span class="up"><i class="pi pi-arrow-up-right"></i> {{ clientesHoy() }}</span> nuevos hoy</span>
         </a>
 
         <div class="kpi">
             <span class="kpi-icon violet"><i class="pi pi-ticket"></i></span>
             <span class="kpi-label">Entradas vendidas</span>
-            @if (loadingKpis()) {
+            @if (loadingPayments()) {
                 <span class="tm-skeleton kpi-sk"></span>
             } @else {
-                <strong class="kpi-value">{{ totalTickets() }}</strong>
+                <strong class="kpi-value">{{ pagosEvento().entradas }}</strong>
             }
-            <span class="kpi-foot">Total acumulado</span>
+            <span class="kpi-foot">{{ eventoFiltro() === null ? 'Total acumulado' : 'En este evento' }}</span>
         </div>
 
         <a routerLink="/admin/payments" class="kpi">
             <span class="kpi-icon green"><i class="pi pi-receipt"></i></span>
             <span class="kpi-label">Pagos registrados</span>
-            @if (loadingKpis()) {
+            @if (loadingPayments()) {
                 <span class="tm-skeleton kpi-sk"></span>
             } @else {
-                <strong class="kpi-value">{{ totalPayments() }}</strong>
+                <strong class="kpi-value">{{ pagosEvento().total }}</strong>
             }
-            <span class="kpi-foot">{{ statusCounts().Aprobado }} aprobados</span>
+            <span class="kpi-foot">{{ pagosEvento().Aprobado }} aprobados</span>
         </a>
 
-        <a routerLink="/admin/payments" class="kpi" [class.attention]="statusCounts().Pendiente > 0">
+        <a routerLink="/admin/payments" class="kpi" [class.attention]="pagosEvento().Pendiente > 0">
             <span class="kpi-icon amber"><i class="pi pi-clock"></i></span>
             <span class="kpi-label">Pagos por verificar</span>
             @if (loadingPayments()) {
                 <span class="tm-skeleton kpi-sk"></span>
             } @else {
-                <strong class="kpi-value">{{ statusCounts().Pendiente }}</strong>
+                <strong class="kpi-value">{{ pagosEvento().Pendiente }}</strong>
             }
-            <span class="kpi-foot">{{ statusCounts().Pendiente ? 'Requieren tu revisión' : 'Todo al día' }}</span>
+            <span class="kpi-foot">{{ pagosEvento().Pendiente ? 'Requieren tu revisión' : 'Todo al día' }}</span>
         </a>
     </section>
 
@@ -202,7 +212,7 @@
         <article class="panel span-12">
             <header class="panel-head">
                 <div>
-                    <h3>Nuevos usuarios</h3>
+                    <h3>Nuevos clientes</h3>
                     <p class="tm-muted">Registros por período</p>
                 </div>
                 <p-selectButton

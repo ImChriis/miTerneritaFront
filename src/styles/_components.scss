@@ -687,3 +687,37 @@
     height: 40px;
   }
 }
+
+// Guardando (LoadingService pone .is-saving en <html> mientras hay un POST/PUT/PATCH/DELETE):
+// el botón de enviar muestra un spinner y no acepta otro toque, así no se duplican pagos ni eventos.
+.is-saving button[type='submit'] {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+  cursor: progress;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 18px;
+    height: 18px;
+    margin: auto;
+    border: 2px solid var(--primary-contrast);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: tm-spin 0.7s linear infinite;
+  }
+}
+
+@keyframes tm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-saving button[type='submit']::after {
+    animation-duration: 2s;
+  }
+}

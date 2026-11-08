@@ -43,7 +43,7 @@
                 } @else if (sinComprobante) {
                     <p>No se pudo cargar el comprobante.</p>
                 } @else {
-                    <p>Cargando comprobante…</p>
+                    <div class="tm-skeleton" style="width: 100%; aspect-ratio: 3 / 4; max-height: 420px" role="status" aria-label="Cargando comprobante"></div>
                 }
             </div>
             @if (img) {

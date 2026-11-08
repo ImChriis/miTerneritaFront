@@ -292,11 +292,14 @@
 // ---------- Dona ----------
 .donut {
   display: grid;
+  // minmax(0): sin esto la columna no baja del ancho del canvas y la dona se sale al estrechar la ventana
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
 }
 
 .donut-chart {
   position: relative;
+  min-width: 0;
   height: 200px;
 
   p-chart {
@@ -524,5 +527,24 @@
 @media (max-width: 560px) {
   .kpis {
     grid-template-columns: 1fr;
+  }
+}
+
+// Selector de evento para los indicadores de entradas y pagos
+.kpi-filter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .tm-select {
+    width: min(100%, 300px);
   }
 }
