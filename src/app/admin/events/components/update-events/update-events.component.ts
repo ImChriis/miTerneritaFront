@@ -59,6 +59,9 @@ export class UpdateEventsComponent implements OnInit{
   ];
 
   /** Tipo de evento: solo los conciertos muestran el mapa del salón. */
+  /** Salones del local. */
+  salones = ['Manhattan', 'Manhattan Bar', 'Salón Chicago', 'Ambos'];
+
   categorias = [
     { label: 'Evento', value: 'evento' },
     { label: 'Concierto', value: 'concierto' },

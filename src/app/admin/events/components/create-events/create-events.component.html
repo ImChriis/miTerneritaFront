@@ -15,7 +15,7 @@
 
             <div class="adm-field">
                 <label for="ev-salon">Salón</label>
-                <input pInputText id="ev-salon" formControlName="room" placeholder="Ej. Salón principal" />
+                <p-select inputId="ev-salon" [options]="salones" formControlName="room" appendTo="body" />
             </div>
 
             <div class="adm-field">

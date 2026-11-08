@@ -42,6 +42,9 @@ export class CreateEventsComponent {
   ]
 
   /** Tipo de evento: solo los conciertos muestran el mapa del salón. */
+  /** Salones del local. */
+  salones = ['Manhattan', 'Manhattan Bar', 'Salón Chicago', 'Ambos'];
+
   categorias = [
     { label: 'Evento', value: 'evento' },
     { label: 'Concierto', value: 'concierto' },
@@ -60,7 +63,7 @@ export class CreateEventsComponent {
     description: new FormControl('', { nonNullable: true }),
     date: new FormControl<string>('', { nonNullable: true }),
     time: new FormControl<string>('', { nonNullable: true }),
-    room: new FormControl('', { nonNullable: true }),
+    room: new FormControl('Manhattan', { nonNullable: true }),
     capacity: new FormControl<number | null>(null),
     flyer: new FormControl<File | null>(null),
     image1: new FormControl<File | null>(null),

@@ -49,6 +49,39 @@
                 >Agregar Pago</button>  
               </div>
               </div>
+
+              <div class="filtros" role="group" aria-label="Filtrar pagos">
+                <label>
+                  <span>Evento</span>
+                  <select class="tm-select" [ngModel]="filtros().evento" (ngModelChange)="filtrar({ evento: $event })">
+                    <option [ngValue]="null">Todos</option>
+                    @for (ev of eventos; track ev.id) {
+                      <option [ngValue]="ev.id">{{ ev.nombre }}</option>
+                    }
+                  </select>
+                </label>
+                <label>
+                  <span>Estado</span>
+                  <select class="tm-select" [ngModel]="filtros().estado" (ngModelChange)="filtrar({ estado: $event })">
+                    <option value="">Todos</option>
+                    @for (e of estados; track e) {
+                      <option [value]="e">{{ e }}</option>
+                    }
+                  </select>
+                </label>
+                <label>
+                  <span>Desde</span>
+                  <input class="tm-input" type="date" [ngModel]="filtros().desde" (ngModelChange)="filtrar({ desde: $event ?? '' })" [max]="filtros().hasta || null" />
+                </label>
+                <label>
+                  <span>Hasta</span>
+                  <input class="tm-input" type="date" [ngModel]="filtros().hasta" (ngModelChange)="filtrar({ hasta: $event ?? '' })" [min]="filtros().desde || null" />
+                </label>
+                @if (hayFiltros()) {
+                  <button type="button" class="limpiar" (click)="limpiarFiltros()"><i class="pi pi-filter-slash"></i> Limpiar</button>
+                }
+                <small class="conteo">{{ state.length }} {{ state.length === 1 ? 'pago' : 'pagos' }}</small>
+              </div>
             </ng-template>
             <ng-template pTemplate="header">
               <tr class="cabecera">
