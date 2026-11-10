@@ -1,4 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { TimerServiceService } from '../../@core/services/timer-service.service';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -10,6 +11,7 @@ import { EventsService } from '../../@core/services/events.service';
 import { byDateAsc, eventCategory, eventImage, formatTime12, isPastEvent, parseEventDate } from '../../@core/utils/event-utils';
 import { PurchaseStepsComponent } from '../../shared/components/purchase-steps/purchase-steps.component';
 import { VenueZone } from '../../shared/components/venue-map/venue-map.component';
+import { ACCESO_POR_BOTELLA } from '../../@core/models/menu.model';
 import { PriceSummaryComponent } from '../../shared/components/price-summary/price-summary.component';
 import { SalonMapComponent } from '../../shared/components/salon-map/salon-map.component';
 
@@ -29,6 +31,7 @@ export class TicketComponent implements OnInit {
   private messageService = inject(MessageService);
   private eventsService = inject(EventsService);
   private router = inject(Router);
+  private timerService = inject(TimerServiceService);
   private route = inject(ActivatedRoute);
 
   readonly max = MAX_TICKETS;
@@ -44,7 +47,9 @@ export class TicketComponent implements OnInit {
 
   isConcert = computed(() => !!this.event() && eventCategory(this.event()!) === 'concierto');
   /** Con consumo se puede seguir sin entradas: una botella puede incluir el acceso. */
-  canContinue = computed(() => this.count() > 0 || this.event()?.consumo === 1);
+  // Sin entradas solo se sigue si una botella puede dar el acceso.
+  reservando = signal(false);
+  canContinue = computed(() => this.count() > 0 || (ACCESO_POR_BOTELLA && this.event()?.consumo === 1));
 
   day = computed(() => parseEventDate(this.event()?.date));
   time = computed(() => formatTime12(this.event()?.time));
@@ -159,10 +164,27 @@ export class TicketComponent implements OnInit {
       return;
     }
 
-    // Con consumo se pasa por la carta: comida, bebida o una botella con acceso.
-    const step = this.event()?.consumo === 1 ? 'consume' : 'checkout';
-    this.router.navigate(['/home/event', this.idEvent, 'ticket', step], {
-      state: { selected: this.selected() }
+    // Se apartan las entradas (nadie más puede tomarlas mientras pagas) y desde
+    // ahí corre el contador, igual que el apartado en el servidor.
+    this.reservando.set(true);
+    this.eventsService.reservar(this.idEvent, this.count()).subscribe({
+      next: ({ vence }) => {
+        this.reservando.set(false);
+        this.timerService.iniciarHasta(new Date(vence).getTime());
+        // Con consumo se pasa por la carta: comida, bebida o una botella con acceso.
+        const step = this.event()?.consumo === 1 ? 'consume' : 'checkout';
+        this.router.navigate(['/home/event', this.idEvent, 'ticket', step], {
+          state: { selected: this.selected() }
+        });
+      },
+      error: err => {
+        this.reservando.set(false);
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'No se pudieron apartar',
+          detail: err?.error?.message ?? 'Intenta de nuevo en un momento.'
+        });
+      }
     });
   }
 }

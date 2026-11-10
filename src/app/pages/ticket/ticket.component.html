@@ -3,7 +3,7 @@
 </div>
 
 <div class="tm-container tm-flow">
-    <app-purchase-steps [current]="1" [eventId]="idEvent" />
+    <app-purchase-steps [current]="1" [eventId]="idEvent" [showTimer]="false" />
 
     <header class="tm-flow-head">
         <img class="thumb" src="{{ flyer() }}" alt="" />
@@ -89,7 +89,7 @@
 
                 <app-price-summary [entradas]="selected()" [quitable]="true" (quitar)="clearSelection($event)" vacio="Aún no has elegido entradas." />
 
-                <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" [disabled]="!canContinue()" (click)="goToCheckout()">
+                <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg continue" [disabled]="!canContinue() || reservando()" (click)="goToCheckout()">
                     Continuar <i class="pi pi-arrow-right"></i>
                 </button>
                 <p class="tm-hint center">Precios expresados en dólares (USD).</p>
@@ -103,5 +103,5 @@
         <small>{{ count() }} {{ count() === 1 ? 'entrada' : 'entradas' }}</small>
         <strong>${{ total() | number: '1.2-2' }}</strong>
     </div>
-    <button type="button" class="tm-btn tm-btn--primary" (click)="goToCheckout()">Continuar <i class="pi pi-arrow-right"></i></button>
+    <button type="button" class="tm-btn tm-btn--primary" [disabled]="reservando()" (click)="goToCheckout()">Continuar <i class="pi pi-arrow-right"></i></button>
 </div>

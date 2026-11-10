@@ -1,3 +1,4 @@
+import { cierreVentaIso, partirCierreVenta } from '../../../../@core/utils/event-utils';
 import { Component, inject, OnInit, viewChild } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { EventTicketsComponent } from '../event-tickets/event-tickets.component';
@@ -60,7 +61,7 @@ export class UpdateEventsComponent implements OnInit{
 
   /** Tipo de evento: solo los conciertos muestran el mapa del salón. */
   /** Salones del local. */
-  salones = ['Manhattan', 'Manhattan Bar', 'Salón Chicago', 'Ambos'];
+  salones = ['Manhattan', 'Manhattan Bar', 'Salón Chicago', 'Manhattan & Lounge'];
 
   categorias = [
     { label: 'Evento', value: 'evento' },
@@ -87,6 +88,8 @@ export class UpdateEventsComponent implements OnInit{
     description: new FormControl('', { nonNullable: true }),
     date: new FormControl('', { nonNullable: true }),
     time: new FormControl('', { nonNullable: true }),
+    cierreFecha: new FormControl('', { nonNullable: true }),
+    cierreHora: new FormControl('', { nonNullable: true }),
     room: new FormControl('', { nonNullable: true }),
     capacity: new FormControl<number | null>(null),
     flyer: new FormControl<File | null>(null),
@@ -100,6 +103,7 @@ export class UpdateEventsComponent implements OnInit{
 
   ngOnInit() {
     this.updateEventsForm.patchValue(this.event);
+    this.updateEventsForm.patchValue(partirCierreVenta(this.event.cierreVenta));
 
       // inicializar previews con las imágenes que vienen del servidor (si existen)
     (Object.keys(this.previewUrls) as Array<'flyer'|'image1'|'image2'|'image3'>).forEach(key => {
@@ -183,6 +187,10 @@ onSubmit() {
   if (this.updateEventsForm.invalid) return;
 
   const formValue = { ...this.updateEventsForm.value };
+  const cierreVenta = cierreVentaIso(formValue.cierreFecha, formValue.cierreHora);
+  delete formValue.cierreFecha;
+  delete formValue.cierreHora;
+  if (cierreVenta) (formValue as Record<string, unknown>)['cierreVenta'] = cierreVenta;
   const fileControls = ['flyer', 'image1', 'image2', 'image3'] as const;
   const hasFiles = fileControls.some((key) => formValue[key] instanceof File);
 

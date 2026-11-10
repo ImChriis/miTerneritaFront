@@ -60,11 +60,13 @@
                         <p-select inputId="pf-cat" [options]="categorias" optionLabel="label" optionValue="value" formControlName="categoria" appendTo="body" />
                     </div>
 
+                    @if (accesoPorBotella) {
                     <div class="adm-field">
                         <label for="pf-personas">Acceso General incluido</label>
                         <input pInputText id="pf-personas" type="number" min="0" max="50" step="1" formControlName="personas" />
                         <p class="adm-hint">Personas que entran con la botella. 0 = sin acceso.</p>
                     </div>
+                    }
                 }
             </div>
 

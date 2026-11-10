@@ -1,0 +1,161 @@
+.toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 36px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  span {
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &.active {
+    border-color: transparent;
+    background: var(--primary);
+    color: var(--primary-contrast);
+
+    span {
+      color: inherit;
+      opacity: 0.8;
+    }
+  }
+}
+
+:host ::ng-deep .p-datatable-tbody > tr > td,
+:host ::ng-deep .p-datatable-thead > tr > th {
+  padding-inline: 0.7rem !important;
+}
+
+td {
+  vertical-align: top !important;
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.postulante {
+  strong,
+  small {
+    display: block;
+  }
+
+  small {
+    margin-top: 0.15rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+}
+
+.contacto {
+  min-width: 13rem;
+  max-width: 16rem;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+.contacto a {
+  display: block;
+  color: var(--text);
+  font-size: 0.88rem;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--primary);
+  }
+
+  & + a {
+    margin-top: 0.2rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+}
+
+.mensaje {
+  min-width: 12rem;
+  max-width: 18rem;
+  white-space: normal !important;
+  color: var(--text-muted) !important;
+  font-size: 0.88rem;
+}
+
+.vacio {
+  padding: 2rem !important;
+  color: var(--text-muted) !important;
+  text-align: center !important;
+}
+
+:host ::ng-deep .estado {
+  width: 8.5rem;
+}
+
+.puestos {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+
+  h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0.2rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+  }
+
+  .pill:not(.active) {
+    background: var(--surface);
+  }
+}
+
+.cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--primary-soft);
+  }
+}

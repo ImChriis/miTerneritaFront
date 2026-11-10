@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, Location } from '@angular/common';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -71,6 +71,12 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private timerService = inject(TimerServiceService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
+
+  /** Vuelve a "Confirma tus datos" con lo que el usuario ya eligió (estado del historial). */
+  volver() {
+    this.location.back();
+  }
   private fb = inject(FormBuilder);
   private dialogService = inject(DialogService);
 

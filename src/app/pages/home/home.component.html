@@ -69,6 +69,9 @@
 
                     <figure class="slide-poster">
                         <img src="{{ ev.flyerUrl }}" [alt]="'Flyer de ' + ev.name" loading="lazy" />
+                        @if (comprando()[ev.idEvents]; as n) {
+                            <span class="buying" [class.is-short]="false" [attr.aria-label]="n + (n === 1 ? ' persona comprando ahora' : ' personas comprando ahora')"><span class="dot"></span>{{ n }}<span class="buying-text"> {{ n === 1 ? 'persona comprando' : 'personas comprando' }} ahora</span></span>
+                        }
                     </figure>
                 </div>
             </article>
@@ -180,6 +183,9 @@
                     @let active = activeEvent()?.idEvents === ev.idEvents;
                     <article class="panel" #panelEl [class.is-active]="active">
                         <img class="panel-bg" src="{{ ev.flyerUrl }}" alt="" loading="lazy" />
+                        @if (comprando()[ev.idEvents]; as n) {
+                            <span class="buying" [class.is-short]="!active" [attr.aria-label]="n + (n === 1 ? ' persona comprando ahora' : ' personas comprando ahora')"><span class="dot"></span>{{ n }}<span class="buying-text"> {{ n === 1 ? 'persona comprando' : 'personas comprando' }} ahora</span></span>
+                        }
 
                         <button
                             type="button"
@@ -281,6 +287,10 @@
 
         @if (concerts()[0]; as next) {
             <div class="salon-cta-card" appReveal>
+                @if (comprando()[next.idEvents]; as n) {
+                            <span class="buying" [class.is-short]="false" [attr.aria-label]="n + (n === 1 ? ' persona comprando ahora' : ' personas comprando ahora')"><span class="dot"></span>{{ n }}<span class="buying-text"> {{ n === 1 ? 'persona comprando' : 'personas comprando' }} ahora</span></span>
+                        }
+
                 <div class="salon-cta-text">
                     <p class="tm-eyebrow"><i class="pi pi-map"></i> Próximo concierto · Mapa del salón</p>
                     <h3 class="tm-h2">{{ next.name }}</h3>
@@ -312,6 +322,9 @@
             <div class="tm-scroller concert-row" #concertScroller>
                 @for (ev of otherConcerts(); track ev.idEvents; let i = $index) {
                     <article class="concert-card" appReveal [revealDelay]="i * 70">
+                        @if (comprando()[ev.idEvents]; as n) {
+                            <span class="buying" [attr.aria-label]="n + (n === 1 ? ' persona comprando ahora' : ' personas comprando ahora')"><span class="dot"></span>{{ n }}<span class="buying-text"> {{ n === 1 ? 'persona comprando' : 'personas comprando' }} ahora</span></span>
+                        }
                         <img src="{{ ev.flyerUrl }}" [alt]="'Flyer de ' + ev.name" loading="lazy" />
                         <div class="concert-info">
                             <span class="tm-chip tm-chip--media">{{ ev.day | date: "EEE d MMM" | capFirst }} · {{ ev.timeLabel }}</span>
@@ -403,5 +416,17 @@
         <a routerLink="/home/contact" class="tm-btn tm-btn--primary tm-btn--lg">
             Contáctanos <i class="pi pi-arrow-right"></i>
         </a>
+    </div>
+</section>
+
+<!-- ================= EMPLEO (anuncio junto al footer) ================= -->
+<section class="tm-container jobs" appReveal>
+    <div class="jobs-card">
+        <span class="jobs-icon" aria-hidden="true"><i class="pi pi-briefcase"></i></span>
+        <div class="jobs-copy">
+            <strong>¿Quieres trabajar con nosotros?</strong>
+            <span>Mira los puestos abiertos y envía tu CV.</span>
+        </div>
+        <a routerLink="/trabaja-con-nosotros" class="tm-btn tm-btn--ghost">Postúlate <i class="pi pi-arrow-right"></i></a>
     </div>
 </section>

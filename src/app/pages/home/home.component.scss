@@ -138,6 +138,7 @@
 }
 
 .slide-poster {
+  position: relative;
   margin: 0;
   width: clamp(220px, 22vw, 320px);
   aspect-ratio: 4 / 5;
@@ -385,6 +386,53 @@
   display: flex;
   gap: 12px;
   height: 540px;
+}
+
+// "X personas comprando ahora" encima de cada evento
+.buying {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  background: rgba(10, 10, 12, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+
+  &.is-short .buying-text {
+    display: none;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+    animation: buying-pulse 1.6s ease-out infinite;
+  }
+}
+
+@keyframes buying-pulse {
+  to {
+    box-shadow: 0 0 0 8px rgba(52, 211, 153, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buying .dot {
+    animation: none;
+  }
 }
 
 .panel {
@@ -947,6 +995,49 @@
 // ================= CTA =================
 .cta {
   padding-block: clamp(56px, 8vw, 96px) 0;
+}
+
+// ================= EMPLEO (anuncio junto al footer) =================
+.jobs {
+  padding-block: clamp(20px, 3vw, 32px) 0;
+}
+
+.jobs-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  padding: 18px 20px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+
+  .tm-btn {
+    margin-left: auto;
+    text-decoration: none;
+  }
+}
+
+.jobs-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.jobs-copy {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+
+  span {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
 }
 
 .cta-card {

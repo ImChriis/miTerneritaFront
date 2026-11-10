@@ -1,6 +1,8 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, computed, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, of, switchMap, timer } from 'rxjs';
 import { EventsService } from '../../@core/services/events.service';
 import { TicketsService } from '../../@core/services/tickets.service';
 import { Event } from '../../@core/models/event.model';
@@ -48,6 +50,12 @@ export class HomeComponent implements OnInit {
   private router = inject(Router);
   private eventService = inject(EventsService);
   private ticketsService = inject(TicketsService);
+
+  /** Personas pagando ahora por evento; se refresca cada 30 s. */
+  readonly comprando = toSignal(
+    timer(0, 30_000).pipe(switchMap(() => this.eventService.comprando().pipe(catchError(() => of({} as Record<number, number>))))),
+    { initialValue: {} as Record<number, number> }
+  );
 
   readonly skeletons = [0, 1, 2, 3, 4];
 

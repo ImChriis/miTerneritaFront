@@ -14,6 +14,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { LoaderComponent } from '../../@core/components/loader/loader.component';
 import { CatalogoGridComponent, ItemCatalogo } from '../../shared/components/catalogo-grid/catalogo-grid.component';
+import { ACCESO_POR_BOTELLA } from '../../@core/models/menu.model';
 
 
 
@@ -64,7 +65,7 @@ export class DrinksComponent implements OnInit{
           imagen: d.image as unknown as string,
           disponible: d.status === 1,
           categoria: d.categoria,
-          personas: d.personas,
+          personas: ACCESO_POR_BOTELLA ? d.personas : 0,
           orden: d.orden,
           raw: d
         }))

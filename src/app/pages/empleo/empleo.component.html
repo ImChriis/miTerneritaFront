@@ -1,0 +1,100 @@
+<div class="tm-container empleo">
+    <header class="empleo-head" appReveal>
+        <p class="tm-eyebrow"><i class="pi pi-briefcase"></i> Trabaja con nosotros</p>
+        <h1 class="tm-h1">Únete al equipo</h1>
+        <p class="tm-lead">Buscamos gente con buena energía para nuestras noches. Elige uno de los puestos abiertos, déjanos tus datos y te contactamos.</p>
+    </header>
+
+    @if (puestos()?.length === 0) {
+        <section class="tm-card tm-card--pad empleo-ok" appReveal>
+            <h2>Por ahora no tenemos vacantes</h2>
+            <p class="tm-muted">Vuelve pronto: publicamos aquí cuando busquemos personal.</p>
+            <a routerLink="/" class="tm-btn tm-btn--primary">Volver al inicio</a>
+        </section>
+    } @else if (enviada()) {
+        <section class="tm-card tm-card--pad empleo-ok" appReveal>
+            <span class="ok-icon"><i class="pi pi-check"></i></span>
+            <h2>¡Recibimos tu postulación!</h2>
+            <p class="tm-muted">La revisamos y, si tu perfil encaja, te escribimos por correo o WhatsApp.</p>
+            <a routerLink="/" class="tm-btn tm-btn--primary">Volver al inicio</a>
+        </section>
+    } @else {
+        <form class="tm-card tm-card--pad empleo-form" [formGroup]="form" (ngSubmit)="enviar()" novalidate appReveal>
+            <div class="tm-form">
+                <div class="tm-form-row">
+                    <div class="tm-field">
+                        <label class="tm-label" for="em-nombre">Nombre</label>
+                        <input class="tm-input" id="em-nombre" formControlName="nombre" autocomplete="given-name" />
+                        @if (invalido('nombre')) {
+                            <p class="tm-error">Escribe tu nombre.</p>
+                        }
+                    </div>
+                    <div class="tm-field">
+                        <label class="tm-label" for="em-apellido">Apellido</label>
+                        <input class="tm-input" id="em-apellido" formControlName="apellido" autocomplete="family-name" />
+                        @if (invalido('apellido')) {
+                            <p class="tm-error">Escribe tu apellido.</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="tm-form-row">
+                    <div class="tm-field">
+                        <label class="tm-label" for="em-cedula">Cédula</label>
+                        <input class="tm-input" id="em-cedula" formControlName="cedula" placeholder="V-12345678" />
+                        @if (invalido('cedula')) {
+                            <p class="tm-error">Escribe tu cédula.</p>
+                        }
+                    </div>
+                    <div class="tm-field">
+                        <label class="tm-label" for="em-puesto">Puesto</label>
+                        <select class="tm-select" id="em-puesto" formControlName="puesto">
+                            <option value="" disabled>Elige un puesto</option>
+                            @for (p of puestos(); track p) {
+                                <option [value]="p">{{ p }}</option>
+                            }
+                        </select>
+                        @if (invalido('puesto')) {
+                            <p class="tm-error">Elige el puesto que te interesa.</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="tm-form-row">
+                    <div class="tm-field">
+                        <label class="tm-label" for="em-email">Correo electrónico</label>
+                        <input class="tm-input" id="em-email" type="email" formControlName="email" autocomplete="email" />
+                        @if (invalido('email')) {
+                            <p class="tm-error">Escribe un correo válido.</p>
+                        }
+                    </div>
+                    <div class="tm-field">
+                        <label class="tm-label" for="em-telefono">Teléfono / WhatsApp</label>
+                        <input class="tm-input" id="em-telefono" type="tel" formControlName="telefono" autocomplete="tel" placeholder="0414 123 4567" />
+                        @if (invalido('telefono')) {
+                            <p class="tm-error">Escribe tu teléfono.</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="tm-field">
+                    <label class="tm-label" for="em-mensaje">Cuéntanos de ti <span class="tm-muted">(opcional)</span></label>
+                    <textarea class="tm-textarea" id="em-mensaje" formControlName="mensaje" rows="5" maxlength="1000" placeholder="Experiencia, disponibilidad, dónde has trabajado…"></textarea>
+                    <p class="tm-hint">{{ form.controls.mensaje.value.length }}/1000</p>
+                </div>
+
+                <div class="tm-field">
+                    <label class="tm-label" for="em-cv">CV en PDF <span class="tm-muted">(opcional, máx. 500 KB)</span></label>
+                    <input class="tm-input" id="em-cv" type="file" accept="application/pdf" #cvInput (change)="elegirCv(cvInput)" />
+                    @if (errorCv()) {
+                        <p class="tm-error">{{ errorCv() }}</p>
+                    }
+                </div>
+
+                <button class="tm-btn tm-btn--primary tm-btn--lg" type="submit" [disabled]="enviando()">
+                    {{ enviando() ? 'Enviando…' : 'Enviar postulación' }} <i class="pi pi-send"></i>
+                </button>
+            </div>
+        </form>
+    }
+</div>

@@ -81,3 +81,15 @@ export function stripHtml(html: string): string {
 export function byDateAsc(a: Event, b: Event) {
   return parseEventDate(a.date as any).getTime() - parseEventDate(b.date as any).getTime();
 }
+
+/** Fecha y hora locales del cierre de venta -> ISO para el backend; null si falta alguna. */
+export const cierreVentaIso = (fecha?: string, hora?: string): string | null =>
+  fecha && hora ? new Date(`${fecha}T${hora}`).toISOString() : null;
+
+/** ISO del backend -> { cierreFecha: 'YYYY-MM-DD', cierreHora: 'HH:mm' } en hora local. */
+export function partirCierreVenta(iso?: string | null): { cierreFecha: string; cierreHora: string } {
+  const d = iso ? new Date(iso) : null;
+  if (!d || isNaN(d.getTime())) return { cierreFecha: '', cierreHora: '' };
+  const p = (n: number) => String(n).padStart(2, '0');
+  return { cierreFecha: `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`, cierreHora: `${p(d.getHours())}:${p(d.getMinutes())}` };
+}

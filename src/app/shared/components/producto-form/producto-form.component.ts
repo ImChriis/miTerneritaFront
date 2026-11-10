@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { DrinksService } from '../../../@core/services/drinks.service';
 import { FoodsService } from '../../../@core/services/foods.service';
 import { environment } from '../../../../environments/environment.developer';
+import { ACCESO_POR_BOTELLA } from '../../../@core/models/menu.model';
 
 export type TipoProducto = 'bebida' | 'comida';
 
@@ -36,6 +37,7 @@ export class ProductoFormComponent implements OnDestroy {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly producto: any = this.config.data?.producto ?? null;
   readonly esBebida = this.tipo === 'bebida';
+  readonly accesoPorBotella = ACCESO_POR_BOTELLA;
   readonly maxDetalle = MAX_DETALLE;
   readonly categorias = ['Con alcohol', 'Sin alcohol'].map(c => ({ label: c, value: c }));
 

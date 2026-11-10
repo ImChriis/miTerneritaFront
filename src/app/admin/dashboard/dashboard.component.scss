@@ -436,6 +436,8 @@
 // ---------- Próximos eventos ----------
 .events {
   display: grid;
+  // Sin esto la columna crecía con el nombre del evento y la fila se salía del panel.
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   margin: 0;
   padding: 0;

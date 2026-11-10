@@ -14,4 +14,6 @@ export interface FormEvent {
     status: FormControl<number | null>;
     consumo: FormControl<number | null>;
     category: FormControl<string>;
+    cierreFecha: FormControl<string>;
+    cierreHora: FormControl<string>;
 }

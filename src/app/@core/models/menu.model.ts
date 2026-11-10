@@ -1,3 +1,10 @@
+/**
+ * Botellas con acceso General: apagado por ahora (igual que ACCESO_POR_BOTELLA
+ * del backend, src/consumeDetails/menu.ts). En false el menú trae personas = 0
+ * y hay que comprar al menos una entrada.
+ */
+export const ACCESO_POR_BOTELLA = false;
+
 /** GET /events/:id/menu del backend. */
 export interface ProductoMenu {
   /** Solo viene uno de los dos: se copia tal cual en `consumos` al pagar. */

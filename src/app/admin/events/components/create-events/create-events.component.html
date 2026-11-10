@@ -29,6 +29,17 @@
             </div>
 
             <div class="adm-field">
+                <label for="ev-cierre-fecha">Cierre de venta: fecha</label>
+                <input pInputText id="ev-cierre-fecha" type="date" formControlName="cierreFecha" />
+            </div>
+
+            <div class="adm-field">
+                <label for="ev-cierre-hora">Cierre de venta: hora</label>
+                <input pInputText id="ev-cierre-hora" type="time" formControlName="cierreHora" />
+                <p class="adm-hint">Desde ese momento no se apartan ni compran entradas. Vacío: sin cierre.</p>
+            </div>
+
+            <div class="adm-field">
                 <label for="ev-capacidad">Capacidad</label>
                 <input pInputText id="ev-capacidad" type="number" min="1" step="1" formControlName="capacity" />
                 <p class="adm-hint">Personas en total, con el acceso de las botellas.</p>

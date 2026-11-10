@@ -164,6 +164,7 @@
             @for (item of nav.slice(0, 4); track item.label) {
                 <a href="/#{{ item.section }}" (click)="goTo(item, $event)">{{ item.label === 'Pasados' ? 'Eventos pasados' : item.label }}</a>
             }
+            <a routerLink="/trabaja-con-nosotros">Trabaja con nosotros</a>
         </div>
 
         <div class="footer-col">

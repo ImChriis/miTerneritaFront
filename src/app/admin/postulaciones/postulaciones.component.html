@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="table">
+        <div class="catalog-head">
+            <div class="title">
+                <h1>Postulaciones</h1>
+                <p>Personas que quieren trabajar en Mi Ternerita (formulario "Trabaja con nosotros").</p>
+            </div>
+        </div>
+
+        <section class="puestos" aria-labelledby="puestos-titulo">
+            <div>
+                <h2 id="puestos-titulo">Puestos abiertos</h2>
+                <p>El formulario público solo ofrece los puestos marcados.@if (!abiertos().length) { <strong> Ninguno marcado: el formulario dice que no hay vacantes.</strong>}</p>
+            </div>
+            <div class="pills">
+                @for (puesto of puestos(); track puesto) {
+                    <button type="button" class="pill" [class.active]="abiertos().includes(puesto)" [attr.aria-pressed]="abiertos().includes(puesto)" (click)="alternarPuesto(puesto)">
+                        <i class="pi" [class.pi-check]="abiertos().includes(puesto)" [class.pi-plus]="!abiertos().includes(puesto)"></i> {{ puesto }}
+                    </button>
+                }
+            </div>
+        </section>
+
+        <div class="toolbar-row">
+            <div class="pills" role="tablist" aria-label="Filtrar por estado">
+                @for (f of pastillas(); track f.estado) {
+                    <button type="button" class="pill" role="tab" [class.active]="filtro() === f.estado" [attr.aria-selected]="filtro() === f.estado" (click)="filtro.set(f.estado)">
+                        {{ f.estado }} <span>{{ f.n }}</span>
+                    </button>
+                }
+            </div>
+            <span class="p-input-icon-left">
+                <input class="p-inputtext searchBar" type="search" placeholder="Buscar nombre, cédula, puesto…" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" aria-label="Buscar postulaciones" />
+            </span>
+        </div>
+
+        <p-table [value]="visibles()" [rows]="10" [paginator]="visibles().length > 10" [loading]="cargando()" dataKey="idPostulacion">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Postulante</th>
+                    <th>Puesto</th>
+                    <th>Contacto</th>
+                    <th>Mensaje</th>
+                    <th>Estado</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-p>
+                <tr>
+                    <td class="postulante">
+                        <strong>{{ p.nombre }} {{ p.apellido }}</strong>
+                        <small>{{ p.cedula }}</small>
+                        <small>{{ p.fecha | date: 'dd/MM/yy, h:mm a' }}</small>
+                        @if (p.cv) {
+                            <button type="button" class="cv-btn" (click)="verCv(p)"><i class="pi pi-file-pdf"></i> Ver CV</button>
+                        }
+                    </td>
+                    <td><span class="tm-chip">{{ p.puesto }}</span></td>
+                    <td class="contacto">
+                        <a [href]="'mailto:' + p.email">{{ p.email }}</a>
+                        <a [href]="whatsapp(p.telefono)" target="_blank" rel="noopener noreferrer"><i class="pi pi-whatsapp"></i> {{ p.telefono }}</a>
+                    </td>
+                    <td class="mensaje">{{ p.mensaje || '—' }}</td>
+                    <td>
+                        <div class="acciones">
+                            <p-select [options]="estados" optionLabel="label" optionValue="value" [ngModel]="p.estado" (ngModelChange)="cambiarEstado(p, $event)" appendTo="body" [attr.aria-label]="'Estado de ' + p.nombre" styleClass="estado" />
+                            <i class="pi pi-trash btnDelete" role="button" tabindex="0" [attr.aria-label]="'Eliminar postulación de ' + p.nombre" (click)="eliminar(p)" (keydown.enter)="eliminar(p)"></i>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="vacio">{{ lista().length ? 'Ninguna postulación coincide con el filtro.' : 'Todavía no hay postulaciones.' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

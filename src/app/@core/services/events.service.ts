@@ -14,6 +14,16 @@ export class EventsService {
   private refreshEvents$ = new Subject<void>();
   public refreshEventsObservable$ = this.refreshEvents$.asObservable();
 
+  /** Aparta entradas mientras se paga (aforo por evento); devuelve cuándo vence. */
+  reservar(idEvents: number, cantidad: number) {
+    return this.http.post<{ vence: string }>(`${this.api}/reservas`, { idEvents, cantidad });
+  }
+
+  /** { [idEvents]: personas comprando ahora } */
+  comprando() {
+    return this.http.get<Record<number, number>>(`${this.api}/reservas/comprando`);
+  }
+
   getEvents() {
     return this.http.get<Event[]>(`${this.api}/events`).pipe(
       map((events: Event[]) => {

@@ -67,6 +67,13 @@ export class TimerServiceService {
     this.timerSub = timer(1000, 1000).subscribe(tick);
   }
 
+  /** Arranca (o reinicia) el contador hasta `vence`, la hora en que expira el apartado. */
+  iniciarHasta(vence: number): void {
+    this.stopTimer();
+    sessionStorage.setItem(DEADLINE_KEY, String(vence));
+    this.startTimer();
+  }
+
   stopTimer(): void {
     this.timerSub?.unsubscribe();
     this.isRunning.set(false);

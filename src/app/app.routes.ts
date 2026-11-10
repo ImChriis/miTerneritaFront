@@ -43,6 +43,12 @@ export const routes: Routes = [
                 data: { description: 'Escríbenos para reservas, eventos privados o dudas con tu compra. Mi Ternerita House, Av. Fuerzas Armadas, Maracaibo.' }
             },
             {
+                path: 'trabaja-con-nosotros',
+                loadComponent: () => import('./pages/empleo/empleo.component').then(m => m.EmpleoComponent),
+                title: 'Trabaja con nosotros',
+                data: { description: 'Únete al equipo de Mi Ternerita House. Mira los puestos abiertos y envía tu postulación.' }
+            },
+            {
                 // Flujo de compra y perfil: requieren sesión
                 path: '',
                 canActivate: [AuthGuard],
@@ -109,6 +115,11 @@ export const routes: Routes = [
                 path: 'payments',
                 loadComponent: () => import('./admin/payments/payments.component').then(m => m.PaymentsComponent),
                 title: 'Pagos'
+            },
+            {
+                path: 'postulaciones',
+                loadComponent: () => import('./admin/postulaciones/postulaciones.component').then(m => m.PostulacionesComponent),
+                title: 'Postulaciones'
             },
             {
                 path: 'drinks',

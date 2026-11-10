@@ -1,3 +1,4 @@
+import { cierreVentaIso } from '../../../../@core/utils/event-utils';
 import { CommonModule } from '@angular/common';
 import { Component, inject, viewChild } from '@angular/core';
 import { switchMap } from 'rxjs';
@@ -43,7 +44,7 @@ export class CreateEventsComponent {
 
   /** Tipo de evento: solo los conciertos muestran el mapa del salón. */
   /** Salones del local. */
-  salones = ['Manhattan', 'Manhattan Bar', 'Salón Chicago', 'Ambos'];
+  salones = ['Manhattan', 'Manhattan Bar', 'Salón Chicago', 'Manhattan & Lounge'];
 
   categorias = [
     { label: 'Evento', value: 'evento' },
@@ -63,6 +64,8 @@ export class CreateEventsComponent {
     description: new FormControl('', { nonNullable: true }),
     date: new FormControl<string>('', { nonNullable: true }),
     time: new FormControl<string>('', { nonNullable: true }),
+    cierreFecha: new FormControl('', { nonNullable: true }),
+    cierreHora: new FormControl('', { nonNullable: true }),
     room: new FormControl('Manhattan', { nonNullable: true }),
     capacity: new FormControl<number | null>(null),
     flyer: new FormControl<File | null>(null),
@@ -132,6 +135,10 @@ export class CreateEventsComponent {
 
 onSubmit() {
   const fv = { ...this.eventsForm.value };
+  const cierreVenta = cierreVentaIso(fv.cierreFecha, fv.cierreHora);
+  delete fv.cierreFecha;
+  delete fv.cierreHora;
+  if (cierreVenta) (fv as Record<string, unknown>)['cierreVenta'] = cierreVenta;
   const fd = new FormData();
 
   // --- ARREGLO PARA 'DATE' Y 'TIME' (ISO 8601 ESTRICTO) ---
