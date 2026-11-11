@@ -1,68 +1,78 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { SettingsService } from '../../@core/services/settings.service';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FormSettings } from '../../@core/models/forms/form-settings';
 import { InputText } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { SettingsService } from '../../@core/services/settings.service';
+import { BANKS } from '../../pages/payment/payment.component';
 
+type Seccion = 'general' | 'pagos';
 
+/** Configuración del sitio: datos generales y cuentas que reciben los pagos. */
 @Component({
   selector: 'app-settings',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputText,
-    ButtonModule
-  ],
+  imports: [ReactiveFormsModule, InputText, SelectModule],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss'
 })
-export class SettingsComponent implements OnInit{
+export class SettingsComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private messageService = inject(MessageService);
-  private fb = inject(FormBuilder);
+  private fb = inject(FormBuilder).nonNullable;
 
-  updateSettingsForm: FormGroup<FormSettings> = this.fb.group({
-    email: new FormControl('', { nonNullable: true }),
-    phone: new FormControl('', { nonNullable: true }),
-    instagram: new FormControl('', { nonNullable: true }),
-    BCV: new FormControl<number | null>(null),
-    tasaDolar: new FormControl<number | null>(null)
-  })
+  readonly bancos = BANKS.map(b => b.label);
+  guardando = signal<Seccion | null>(null);
+
+  general = this.fb.group({
+    email: ['', Validators.email],
+    phone: [''],
+    instagram: [''],
+    BCV: [null as number | null, Validators.min(0)]
+  });
+
+  pagos = this.fb.group({
+    pmBanco: [''],
+    pmCedula: [''],
+    pmTelefono: [''],
+    zelleTitular: [''],
+    zelleTelefono: [''],
+    zelleCorreo: ['', Validators.email]
+  });
 
   ngOnInit() {
-    this.settingsService.getSettings().subscribe({
-      next: (settings) => {
-        this.updateSettingsForm.patchValue(settings);
-      },
-      error: (error) => {
-      }
+    this.settingsService.getSettings().subscribe(settings => {
+      this.general.patchValue(settings as never);
+      this.pagos.patchValue(settings as never);
     });
   }
 
-  onlyNumberInput(event: any) {
-    const input = event.target as HTMLInputElement;
-
-    input.value = input.value.replace(/[^0-9.,]/g, ''); 
+  invalido(form: FormGroup, campo: string): boolean {
+    const c = form.get(campo);
+    return !!c && c.invalid && (c.touched || c.dirty);
   }
 
-onSubmit() {
-  const formValues = {
-    ...this.updateSettingsForm.value,
-    BCV: this.updateSettingsForm.value.BCV !== null ? Number(this.updateSettingsForm.value.BCV) : null,
-    tasaDolar: this.updateSettingsForm.value.tasaDolar !== null ? Number(this.updateSettingsForm.value.tasaDolar) : null
-  };
-
-
-  this.settingsService.updateSettings(formValues).subscribe({
-    next: (response) => {
-      this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Configuración actualizada correctamente' });
-    },
-    error: (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar la configuración' });
+  guardar(seccion: Seccion) {
+    const form: FormGroup = seccion === 'general' ? this.general : this.pagos;
+    if (form.invalid) {
+      form.markAllAsTouched();
+      return;
     }
-  });
-}
+    // Vacío = sin dato (null), así un correo borrado no falla la validación.
+    const datos = Object.fromEntries(
+      Object.entries(form.getRawValue()).map(([k, v]) => [k, v === '' || v === null ? null : k === 'BCV' ? Number(v) : String(v).trim()])
+    );
+    this.guardando.set(seccion);
+    this.settingsService.updateSettings(datos).subscribe({
+      next: () => {
+        this.guardando.set(null);
+        form.markAsPristine();
+        this.messageService.add({ severity: 'success', summary: seccion === 'general' ? 'Configuración guardada' : 'Datos de pago guardados' });
+      },
+      error: err => {
+        this.guardando.set(null);
+        const detalle = err?.error?.message;
+        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar', detail: Array.isArray(detalle) ? detalle.join(', ') : detalle });
+      }
+    });
+  }
 }

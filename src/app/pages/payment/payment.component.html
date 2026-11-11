@@ -51,7 +51,7 @@
                 </div>
 
                 <ul class="bank-rows">
-                    @for (row of accounts[method()]; track row.label) {
+                    @for (row of accounts()[method()]; track row.label) {
                         <li>
                             <span>{{ row.label }}</span>
                             <strong>{{ row.value }}</strong>

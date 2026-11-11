@@ -2,6 +2,7 @@ import { DatePipe, DecimalPipe, Location } from '@angular/common';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { SettingsService } from '../../@core/services/settings.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -41,19 +42,10 @@ export const BANKS = [
   { value: 'Venezolano de credito', label: 'VENEZOLANO DE CRÉDITO' }
 ];
 
-/** Datos de las cuentas receptoras (edítalos aquí). */
-const RECEIVING_ACCOUNTS: Record<Method, { label: string; value: string }[]> = {
-  pagomovil: [
-    { label: 'Banco', value: 'Banplus' },
-    { label: 'Cuenta', value: '0124-0124-01-0123456789' },
-    { label: 'Tipo', value: 'Corriente' },
-    { label: 'Teléfono', value: '04241234567' }
-  ],
-  zelle: [
-    { label: 'Titular', value: 'Juan Perez' },
-    { label: 'Teléfono', value: '042412345674' },
-    { label: 'Correo', value: 'juanperez@gmail.com' }
-  ]
+/** Campos de Configuración que se muestran en cada método (los edita el admin). */
+const CAMPOS_CUENTA: Record<Method, [string, string][]> = {
+  pagomovil: [['Banco', 'pmBanco'], ['Cédula', 'pmCedula'], ['Teléfono', 'pmTelefono']],
+  zelle: [['Titular', 'zelleTitular'], ['Teléfono', 'zelleTelefono'], ['Correo', 'zelleCorreo']]
 };
 
 import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
@@ -81,7 +73,13 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private dialogService = inject(DialogService);
 
   readonly banks = BANKS;
-  readonly accounts = RECEIVING_ACCOUNTS;
+  private config = toSignal(inject(SettingsService).getSettings(), { initialValue: null });
+  /** Datos de la cuenta receptora de cada método, desde Configuración. */
+  readonly accounts = computed(() => {
+    const c = (this.config() ?? {}) as Record<string, string | null>;
+    const filas = (m: Method) => CAMPOS_CUENTA[m].map(([label, campo]) => ({ label, value: c[campo] ?? '' })).filter(f => f.value);
+    return { pagomovil: filas('pagomovil'), zelle: filas('zelle') };
+  });
 
   ref!: DynamicDialogRef;
   previewUrl: string | null = null;
@@ -114,7 +112,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private amount = toSignal(this.paymentfForm.controls.totalGeneral.valueChanges, { initialValue: null });
 
   /** Monto esperado según el método elegido */
-  expected = computed(() => (this.method() === 'zelle' ? this.total : this.totalBs()));
+  // Redondeo a centavos: la suma en coma flotante daba 112.03999999999999.
+  expected = computed(() => (this.method() === 'zelle' ? Math.round(this.total * 100) / 100 : this.totalBs()));
   amountMismatch = computed(() => this.amount() !== null && this.amount() !== this.expected());
 
   constructor() {

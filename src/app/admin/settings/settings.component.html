@@ -1,39 +1,106 @@
-<div class="container">
-    <div class="table">
-        <div class="title">
-            <h1>Configuración</h1>
-            <p>Actualiza los parámetros de configuración</p>
+<div class="container ajustes">
+    <div class="title">
+        <h1>Configuración</h1>
+        <p>Datos del sitio y cuentas donde los clientes te pagan.</p>
+    </div>
+
+    <!-- ================= GENERAL ================= -->
+    <form class="table bloque" [formGroup]="general" (ngSubmit)="guardar('general')" novalidate>
+        <header class="bloque-head">
+            <span class="icono"><i class="pi pi-cog"></i></span>
+            <div>
+                <h2>General</h2>
+                <p>Contacto que ven los clientes y tasa del dólar.</p>
+            </div>
+        </header>
+
+        <div class="adm-grid">
+            <div class="adm-field">
+                <label for="cf-email">Correo de contacto</label>
+                <input pInputText id="cf-email" type="email" formControlName="email" placeholder="info@miternerita.com" />
+                @if (invalido(general, 'email')) {
+                    <p class="adm-error">Escribe un correo válido.</p>
+                } @else {
+                    <p class="adm-hint">Sale en Contacto y en el correo de pago rechazado.</p>
+                }
+            </div>
+
+            <div class="adm-field">
+                <label for="cf-phone">Teléfono / WhatsApp</label>
+                <input pInputText id="cf-phone" type="tel" formControlName="phone" placeholder="0414 123 4567" />
+                <p class="adm-hint">Botón de WhatsApp para soporte.</p>
+            </div>
+
+            <div class="adm-field">
+                <label for="cf-ig">Instagram</label>
+                <input pInputText id="cf-ig" formControlName="instagram" placeholder="https://instagram.com/miternerita" />
+            </div>
+
+            <div class="adm-field">
+                <label for="cf-bcv">Tasa BCV (Bs por dólar)</label>
+                <input pInputText id="cf-bcv" type="number" min="0" step="0.0001" inputmode="decimal" formControlName="BCV" />
+                <p class="adm-hint">Se actualiza sola cada pocas horas; cámbiala solo si hace falta.</p>
+            </div>
         </div>
 
-        <form [formGroup]="updateSettingsForm" (ngSubmit)="onSubmit()" class="form">
-            <div class="form-group">
-                <label for="email">Correo Electrónico</label>
-                <input pInputText name="email" type="text" id="email" formControlName="email" class="form-control">
-            </div>
+        <div class="acciones">
+            <button type="submit" class="adm-btn" [disabled]="guardando() === 'general' || general.pristine">
+                {{ guardando() === 'general' ? 'Guardando…' : 'Guardar' }}
+            </button>
+        </div>
+    </form>
 
-            <div class="form-group">
-                <label for="instagram">Instagram</label>
-                <input pInputText name="instagram" type="text" id="instagram" formControlName="instagram" class="form-control">
+    <!-- ================= DATOS DE PAGO ================= -->
+    <form class="table bloque" [formGroup]="pagos" (ngSubmit)="guardar('pagos')" novalidate>
+        <header class="bloque-head">
+            <span class="icono"><i class="pi pi-wallet"></i></span>
+            <div>
+                <h2>Datos de pago</h2>
+                <p>Lo que ve el cliente en el paso de pago. Si dejas un campo vacío, no se muestra.</p>
             </div>
+        </header>
 
-            <div class="form-group">
-                <label for="phone">Teléfono</label>
-                <input pInputText type="number" (input)="onlyNumberInput($event)" id="phone" formControlName="phone" class="form-control">
-            </div>
-            
+        <div class="metodos">
+            <section class="metodo" aria-labelledby="t-pm">
+                <h3 id="t-pm"><i class="pi pi-mobile"></i> Pago Móvil <small>Bolívares</small></h3>
+                <div class="adm-field">
+                    <label for="cf-pm-banco">Banco</label>
+                    <p-select inputId="cf-pm-banco" [options]="bancos" formControlName="pmBanco" [editable]="true" [filter]="true" placeholder="Elige o escribe el banco" appendTo="body" />
+                </div>
+                <div class="adm-field">
+                    <label for="cf-pm-cedula">Cédula o RIF</label>
+                    <input pInputText id="cf-pm-cedula" formControlName="pmCedula" placeholder="V-12345678" />
+                </div>
+                <div class="adm-field">
+                    <label for="cf-pm-tel">Teléfono</label>
+                    <input pInputText id="cf-pm-tel" type="tel" formControlName="pmTelefono" placeholder="04141234567" />
+                </div>
+            </section>
 
-            <div class="form-group">
-                <label for="tasaDolar">Tasa Dólar</label>
-                <input pInputText type="number" pattern="[0-9]" (input)="onlyNumberInput($event)" id="tasaDolar" formControlName="tasaDolar" class="form-control">
-            </div>
-            
+            <section class="metodo" aria-labelledby="t-zelle">
+                <h3 id="t-zelle"><i class="pi pi-dollar"></i> Zelle <small>Dólares</small></h3>
+                <div class="adm-field">
+                    <label for="cf-z-titular">Titular</label>
+                    <input pInputText id="cf-z-titular" formControlName="zelleTitular" placeholder="Nombre como aparece en Zelle" />
+                </div>
+                <div class="adm-field">
+                    <label for="cf-z-tel">Teléfono</label>
+                    <input pInputText id="cf-z-tel" type="tel" formControlName="zelleTelefono" />
+                </div>
+                <div class="adm-field">
+                    <label for="cf-z-correo">Correo</label>
+                    <input pInputText id="cf-z-correo" type="email" formControlName="zelleCorreo" />
+                    @if (invalido(pagos, 'zelleCorreo')) {
+                        <p class="adm-error">Escribe un correo válido.</p>
+                    }
+                </div>
+            </section>
+        </div>
 
-            <div class="form-group">
-                <label for="bcv">BCV</label>
-                <input pInputText type="number" id="bcv" (input)="onlyNumberInput($event)" formControlName="BCV" class="form-control">
-            </div>
-
-            <button type="submit" class="p-button-success">Actualizar</button>
-        </form>
-    </div>
+        <div class="acciones">
+            <button type="submit" class="adm-btn" [disabled]="guardando() === 'pagos' || pagos.pristine">
+                {{ guardando() === 'pagos' ? 'Guardando…' : 'Guardar datos de pago' }}
+            </button>
+        </div>
+    </form>
 </div>
