@@ -52,28 +52,28 @@
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
-                <th style="min-width: 1rem" class="border">
+                <th class="border">
                   <div class="flex thstyles">
                     <p-checkbox [binary]="true"
                     [(ngModel)]="selectAll"   (ngModelChange)="toggleSelectAll(state, $event)"/>
                     </div>
                 </th>
-                <th class="name" style="min-width: 10rem">
+                <th class="name">
                   <div class="flex thstyles">Nombre</div>
                 </th>
-                <th style="min-width: 10rem">
+                <th>
                   <div class="flex thstyles">Apellido</div>
                 </th>
-                <th style="min-width: 8rem">
+                <th>
                   <div class="flex thstyles number">Cédula</div>
                 </th>
-                <th style="min-width: 20rem">
+                <th>
                   <div class="flex thstyles">Correo</div>
                 </th>
-                <th style="min-width: 1rem">
+                <th>
                   <div class="flex thstyles">Role</div>
                 </th>
-                <th class="text-center" style="min-width: 5rem" class="border2">
+                <th class="text-center" class="border2">
                   <div class="flex thstyles option">Opciones</div>
                 </th>
               </tr>
@@ -92,7 +92,7 @@
                 <td class="number">
                   {{ user.cedula }}
                 </td>
-                <td>
+                <td class="email">
                     {{ user.email }}
                 </td>
                 <td>

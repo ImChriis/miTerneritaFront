@@ -229,10 +229,13 @@
     white-space: nowrap;
   }
 
-  // Las plantillas fijan min-width: 20rem en línea; lo moderamos para que quepan las fechas
-  th.name {
-    min-width: 12rem !important;
+  // Correos largos: parten línea en vez de forzar scroll horizontal.
+  td.email,
+  td a[href^='mailto'] {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
   }
+
 
   td.name {
     font-weight: 700;
