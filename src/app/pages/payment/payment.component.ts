@@ -16,30 +16,35 @@ import { TasaService } from '../../@core/services/tasa.service';
 
 type Method = 'pagomovil' | 'zelle';
 
+/** Bancos con su código SUDEBAN (participantes BCV 2025). Se guarda y se muestra como "0191 - BNC". */
 export const BANKS = [
-  { value: 'Banesco', label: 'BANESCO BANCO UNIVERSAL S.A.C.A.' },
-  { value: '100% Banco', label: '100% BANCO, BANCO UNIVERSAL C.A.' },
-  { value: 'Bancamiga', label: 'BANCAMIGA, BANCO UNIVERSAL, C.A.' },
-  { value: 'Bancaribe', label: 'BANCARIBE C.A. BANCO UNIVERSAL' },
-  { value: 'Banco activo', label: 'BANCO ACTIVO' },
-  { value: 'Banco caroni', label: 'BANCO CARONI C.A. BANCO UNIVERSAL' },
-  { value: 'Banco de la  FANB', label: 'BANCO DE LA FANB' },
-  { value: 'Banco de la gente emprendedora', label: 'BANCO DE LA GENTE EMPRENDEDORA' },
-  { value: 'Banco de Venezuela', label: 'BANCO DE VENEZUELA' },
-  { value: 'Banco del Tesoro', label: 'BANCO DEL TESORO' },
-  { value: 'Banco digital de los trabajadores', label: 'BANCO DIGITAL DE LOS TRABAJADORES' },
-  { value: 'Banco Exterior', label: 'BANCO EXTERIOR C.A BANCO UNIVERSAL' },
-  { value: 'Banco Mercantil', label: 'BANCO MERCANTIL' },
-  { value: 'Banco Nacional de credito', label: 'BANCO NACIONAL DE CREDITO' },
-  { value: 'Banco plaza', label: 'BANCO PLAZA, BANCO UNIVERSAL' },
-  { value: 'Banco provincial', label: 'BANCO PROVINCIAL' },
-  { value: 'Banco Sofitasa', label: 'BANCO SOFITASA' },
-  { value: 'Bancrecer', label: 'BANCRECER, S.A. BANCO MICROFINANCIERO' },
-  { value: 'Banplus', label: 'BANPLUS BANCO UNIVERSAL, C.A.' },
-  { value: 'BFC banco fondo comun', label: 'BFC BANCO FONDO COMÚN' },
-  { value: 'Del sur banco universal', label: 'DEL SUR BANCO UNIVERSAL' },
-  { value: 'R4', label: 'R4, BANCO MICROFINANCIERO, C.A.' },
-  { value: 'Venezolano de credito', label: 'VENEZOLANO DE CRÉDITO' }
+  { value: '0102 - Venezuela', label: '0102 - Venezuela' },
+  { value: '0104 - Venezolano de Crédito', label: '0104 - Venezolano de Crédito' },
+  { value: '0105 - Mercantil', label: '0105 - Mercantil' },
+  { value: '0108 - Provincial', label: '0108 - Provincial' },
+  { value: '0114 - Bancaribe', label: '0114 - Bancaribe' },
+  { value: '0115 - Exterior', label: '0115 - Exterior' },
+  { value: '0128 - Caroní', label: '0128 - Caroní' },
+  { value: '0134 - Banesco', label: '0134 - Banesco' },
+  { value: '0137 - Sofitasa', label: '0137 - Sofitasa' },
+  { value: '0138 - Plaza', label: '0138 - Plaza' },
+  { value: '0146 - Bangente', label: '0146 - Bangente' },
+  { value: '0151 - BFC Fondo Común', label: '0151 - BFC Fondo Común' },
+  { value: '0156 - 100% Banco', label: '0156 - 100% Banco' },
+  { value: '0157 - Del Sur', label: '0157 - Del Sur' },
+  { value: '0163 - Tesoro', label: '0163 - Tesoro' },
+  { value: '0166 - Agrícola de Venezuela', label: '0166 - Agrícola de Venezuela' },
+  { value: '0168 - Bancrecer', label: '0168 - Bancrecer' },
+  { value: '0169 - R4', label: '0169 - R4' },
+  { value: '0171 - Activo', label: '0171 - Activo' },
+  { value: '0172 - Bancamiga', label: '0172 - Bancamiga' },
+  { value: '0173 - Internacional de Desarrollo', label: '0173 - Internacional de Desarrollo' },
+  { value: '0174 - Banplus', label: '0174 - Banplus' },
+  { value: '0175 - Digital de los Trabajadores', label: '0175 - Digital de los Trabajadores' },
+  { value: '0177 - BANFANB', label: '0177 - BANFANB' },
+  { value: '0178 - N58 Banco Digital', label: '0178 - N58 Banco Digital' },
+  { value: '0191 - BNC', label: '0191 - BNC' },
+  { value: '0601 - Instituto Municipal de Crédito Popular', label: '0601 - Instituto Municipal de Crédito Popular' }
 ];
 
 /** Campos de Configuración que se muestran en cada método (los edita el admin). */
