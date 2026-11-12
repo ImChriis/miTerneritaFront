@@ -34,6 +34,9 @@ export class SettingsComponent implements OnInit {
     pmBanco: [''],
     pmCedula: [''],
     pmTelefono: [''],
+    trBanco: [''],
+    trCuenta: [''],
+    trRif: [''],
     zelleTitular: [''],
     zelleTelefono: [''],
     zelleCorreo: ['', Validators.email]

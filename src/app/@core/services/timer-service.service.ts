@@ -10,6 +10,14 @@ const PURCHASE_FLOW = /^\/(home\/event\/\d+\/ticket|concierto)/;
 /** Hora límite guardada: recargar la página (F5) no reinicia el tiempo. */
 const DEADLINE_KEY = 'checkout_deadline';
 
+/** Paso de la compra en curso (url + history.state) para retomarla si el cliente sale. */
+const COMPRA_KEY = 'compra_en_curso';
+
+export interface CompraEnCurso {
+  url: string;
+  state: unknown;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -35,9 +43,15 @@ export class TimerServiceService {
   progress = computed(() => this.timeLeft() / this.DURATION_SECONDS);
 
   constructor() {
-    // Si el usuario sale del flujo de compra, el temporizador se descarta.
+    // Dentro del flujo se guarda cada paso; al salir (p. ej. a leer los términos)
+    // el contador se pausa en pantalla pero el apartado sigue: se puede volver.
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(e => {
-      if (!PURCHASE_FLOW.test((e as NavigationEnd).urlAfterRedirects)) this.resetCheckout();
+      const url = (e as NavigationEnd).urlAfterRedirects;
+      if (PURCHASE_FLOW.test(url)) {
+        sessionStorage.setItem(COMPRA_KEY, JSON.stringify({ url, state: history.state }));
+      } else {
+        this.stopTimer();
+      }
     });
   }
 
@@ -79,9 +93,26 @@ export class TimerServiceService {
     this.isRunning.set(false);
   }
 
+  /** Compra apartada a la que se puede volver; null si no hay o ya venció. */
+  compraPendiente(): CompraEnCurso | null {
+    const deadline = Number(sessionStorage.getItem(DEADLINE_KEY));
+    if (!deadline || deadline <= Date.now()) return null;
+    try {
+      return JSON.parse(sessionStorage.getItem(COMPRA_KEY) ?? 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  /** Milisegundos que quedan del apartado (0 si no hay). */
+  restante(): number {
+    return Math.max(Number(sessionStorage.getItem(DEADLINE_KEY)) - Date.now(), 0);
+  }
+
   resetCheckout(): void {
     this.stopTimer();
     sessionStorage.removeItem(DEADLINE_KEY);
+    sessionStorage.removeItem(COMPRA_KEY);
     this.timeLeft.set(this.DURATION_SECONDS);
   }
 

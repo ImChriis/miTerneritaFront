@@ -77,6 +77,22 @@
                 </div>
             </section>
 
+            <section class="metodo" aria-labelledby="t-tr">
+                <h3 id="t-tr"><i class="pi pi-building-columns"></i> Transferencia <small>Bolívares</small></h3>
+                <div class="adm-field">
+                    <label for="cf-tr-cuenta">Número de cuenta</label>
+                    <input pInputText id="cf-tr-cuenta" formControlName="trCuenta" placeholder="0134-0000-00-0000000000" />
+                </div>
+                <div class="adm-field">
+                    <label for="cf-tr-banco">Banco</label>
+                    <p-select inputId="cf-tr-banco" [options]="bancos" formControlName="trBanco" [editable]="true" [filter]="true" placeholder="Elige o escribe el banco" appendTo="body" />
+                </div>
+                <div class="adm-field">
+                    <label for="cf-tr-rif">RIF</label>
+                    <input pInputText id="cf-tr-rif" formControlName="trRif" placeholder="J123456789" />
+                </div>
+            </section>
+
             <section class="metodo" aria-labelledby="t-zelle">
                 <h3 id="t-zelle"><i class="pi pi-dollar"></i> Zelle <small>Dólares</small></h3>
                 <div class="adm-field">

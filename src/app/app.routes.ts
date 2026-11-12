@@ -43,6 +43,11 @@ export const routes: Routes = [
                 data: { description: 'Escríbenos para reservas, eventos privados o dudas con tu compra. Mi Ternerita House, Av. Fuerzas Armadas, Maracaibo.' }
             },
             {
+                path: 'legal/:doc',
+                loadComponent: () => import('./pages/legal/legal.component').then(m => m.LegalComponent),
+                title: 'Legal'
+            },
+            {
                 path: 'trabaja-con-nosotros',
                 loadComponent: () => import('./pages/empleo/empleo.component').then(m => m.EmpleoComponent),
                 title: 'Trabaja con nosotros',

@@ -24,6 +24,11 @@
                     <span class="method-text"><strong>Pago Móvil</strong><small>Bolívares (Bs)</small></span>
                     <i class="pi pi-check-circle check"></i>
                 </button>
+                <button type="button" role="radio" class="method" [class.is-active]="method() === 'transferencia'" [attr.aria-checked]="method() === 'transferencia'" (click)="setMethod('transferencia')">
+                    <span class="method-icon"><i class="pi pi-building-columns"></i></span>
+                    <span class="method-text"><strong>Transferencia</strong><small>Bolívares (Bs)</small></span>
+                    <i class="pi pi-check-circle check"></i>
+                </button>
                 <button type="button" role="radio" class="method" [class.is-active]="method() === 'zelle'" [attr.aria-checked]="method() === 'zelle'" (click)="setMethod('zelle')">
                     <span class="method-icon"><i class="pi pi-dollar"></i></span>
                     <span class="method-text"><strong>Zelle</strong><small>Dólares (USD)</small></span>
@@ -35,7 +40,7 @@
                 <div class="bank-head">
                     <div>
                         <p class="tm-eyebrow">1 · Transfiere a</p>
-                        <h3>{{ method() === 'zelle' ? 'Cuenta Zelle' : 'Datos de Pago Móvil' }}</h3>
+                        <h3>{{ method() === 'zelle' ? 'Cuenta Zelle' : method() === 'transferencia' ? 'Datos para transferir' : 'Datos de Pago Móvil' }}</h3>
                     </div>
                     <div class="bank-amount">
                         <small>Monto a pagar</small>
@@ -61,6 +66,7 @@
                         </li>
                     }
                 </ul>
+                <button type="button" class="copy-all" (click)="copiarTodo()"><i class="pi pi-clone"></i> Copiar todos los datos y el monto</button>
             </div>
 
             <form class="tm-form" [formGroup]="paymentfForm" (ngSubmit)="onSubmit()" novalidate>
@@ -69,7 +75,7 @@
                     <h3 class="form-title">Datos de tu transferencia</h3>
                 </div>
 
-                @if (method() === 'pagomovil') {
+                @if (method() !== 'zelle') {
                     <div class="tm-field">
                         <label class="tm-label" for="pay-bank">Banco de origen</label>
                         <select class="tm-select" id="pay-bank" formControlName="banco">
@@ -138,6 +144,14 @@
                         <p class="tm-error">Adjunta el comprobante del pago.</p>
                     }
                 </div>
+
+                <label class="acepta">
+                    <input type="checkbox" formControlName="acepta" />
+                    <span>He leído y acepto los <a routerLink="/legal/terminos" target="_blank">términos y condiciones</a> y la <a routerLink="/legal/privacidad" target="_blank">política de privacidad</a>.</span>
+                </label>
+                @if (paymentfForm.controls.acepta.invalid && paymentfForm.controls.acepta.touched) {
+                    <p class="tm-error">Debes aceptar los términos para continuar.</p>
+                }
 
                 <button type="submit" class="tm-btn tm-btn--primary tm-btn--lg tm-btn--block" [disabled]="submitting()">
                     @if (submitting()) {

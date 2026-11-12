@@ -1,7 +1,9 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, computed, effect, HostListener, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs';
+import { filter, interval } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TimerServiceService } from '../services/timer-service.service';
 import { AuthService } from '../services/auth.service';
 import { SettingsService } from '../services/settings.service';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
@@ -53,6 +55,25 @@ export class LayoutComponent implements OnInit {
 
   isHome = computed(() => this.url().split(/[?#]/)[0] === '/');
   /** Flujo de compra (entradas, consumo, datos, pago): sin el footer completo. */
+  private timerService = inject(TimerServiceService);
+  private reloj = toSignal(interval(1000), { initialValue: 0 });
+  /** Compra apartada a la que el cliente puede volver (fuera del flujo). */
+  compraPendiente = computed(() => {
+    this.reloj();
+    this.url();
+    return this.inFlow() ? null : this.timerService.compraPendiente();
+  });
+  tiempoCompra = computed(() => {
+    this.reloj();
+    const s = Math.ceil(this.timerService.restante() / 1000);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  });
+
+  volverACompra() {
+    const compra = this.timerService.compraPendiente();
+    if (compra) this.router.navigateByUrl(compra.url, { state: compra.state as Record<string, unknown> });
+  }
+
   inFlow = computed(() => /\/ticket(\/|$)|^\/concierto$/.test(this.url().split(/[?#]/)[0]));
   /** Sobre el hero de la home la barra es transparente con texto claro. */
   overHero = computed(() => this.isHome() && !this.scrolled() && !this.mobileOpen());

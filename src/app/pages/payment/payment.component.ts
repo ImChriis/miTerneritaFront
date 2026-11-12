@@ -3,7 +3,7 @@ import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SettingsService } from '../../@core/services/settings.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaymentService } from '../../@core/services/payment.service';
@@ -14,7 +14,7 @@ import { PurchaseStepsComponent } from '../../shared/components/purchase-steps/p
 import { PriceSummaryComponent } from '../../shared/components/price-summary/price-summary.component';
 import { TasaService } from '../../@core/services/tasa.service';
 
-type Method = 'pagomovil' | 'zelle';
+type Method = 'pagomovil' | 'transferencia' | 'zelle';
 
 /** Bancos con su código SUDEBAN (participantes BCV 2025). Se guarda y se muestra como "0191 - BNC". */
 export const BANKS = [
@@ -49,7 +49,8 @@ export const BANKS = [
 
 /** Campos de Configuración que se muestran en cada método (los edita el admin). */
 const CAMPOS_CUENTA: Record<Method, [string, string][]> = {
-  pagomovil: [['Banco', 'pmBanco'], ['Cédula', 'pmCedula'], ['Teléfono', 'pmTelefono']],
+  pagomovil: [['Banco', 'pmBanco'], ['Teléfono', 'pmTelefono'], ['Cédula / RIF', 'pmCedula']],
+  transferencia: [['Cuenta', 'trCuenta'], ['Banco', 'trBanco'], ['RIF', 'trRif']],
   zelle: [['Titular', 'zelleTitular'], ['Teléfono', 'zelleTelefono'], ['Correo', 'zelleCorreo']]
 };
 
@@ -57,7 +58,7 @@ import { CapFirstPipe } from '../../shared/pipes/cap-first.pipe';
 
 @Component({
   selector: 'app-payment',
-  imports: [CapFirstPipe, DatePipe, DecimalPipe, ReactiveFormsModule, PurchaseStepsComponent, PriceSummaryComponent],
+  imports: [CapFirstPipe, DatePipe, DecimalPipe, ReactiveFormsModule, RouterLink, PurchaseStepsComponent, PriceSummaryComponent],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss'
 })
@@ -83,7 +84,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   readonly accounts = computed(() => {
     const c = (this.config() ?? {}) as Record<string, string | null>;
     const filas = (m: Method) => CAMPOS_CUENTA[m].map(([label, campo]) => ({ label, value: c[campo] ?? '' })).filter(f => f.value);
-    return { pagomovil: filas('pagomovil'), zelle: filas('zelle') };
+    return { pagomovil: filas('pagomovil'), transferencia: filas('transferencia'), zelle: filas('zelle') };
   });
 
   ref!: DynamicDialogRef;
@@ -111,7 +112,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
     referencia: new FormControl<string | null>(null, Validators.required),
     fechaTransferencia: new FormControl<string | null>(null, Validators.required),
     items: new FormControl<any[]>([]),
-    totalGeneral: new FormControl<number | null>(null, Validators.required)
+    totalGeneral: new FormControl<number | null>(null, Validators.required),
+    acepta: new FormControl(false, { nonNullable: true, validators: Validators.requiredTrue })
   });
 
   private amount = toSignal(this.paymentfForm.controls.totalGeneral.valueChanges, { initialValue: null });
@@ -139,6 +141,14 @@ export class PaymentComponent implements OnInit, OnDestroy {
   copiarMonto() {
     const monto = this.expected();
     if (monto) this.copy(this.method() === 'zelle' ? monto.toFixed(2) : monto.toFixed(2).replace('.', ','));
+  }
+
+  /** Todos los datos de la cuenta + el monto, una línea cada uno, para pegarlos en el banco. */
+  copiarTodo() {
+    const monto = this.expected();
+    const filas = this.accounts()[this.method()].map(r => `${r.label}: ${r.value}`);
+    if (monto) filas.push(`Monto: ${this.method() === 'zelle' ? monto.toFixed(2) : monto.toFixed(2).replace('.', ',')}`);
+    this.copy(filas.join(String.fromCharCode(10)), 'Datos de pago copiados');
   }
 
   ngOnInit() {
@@ -170,10 +180,10 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.paymentfForm.controls.banco.setValue(method === 'zelle' ? 'Zelle' : null);
   }
 
-  async copy(value: string) {
+  async copy(value: string, resumen?: string) {
     try {
       await navigator.clipboard.writeText(value);
-      this.messageService.add({ severity: 'success', summary: 'Copiado', detail: value, life: 1800 });
+      this.messageService.add({ severity: 'success', summary: resumen ?? 'Copiado', detail: resumen ? undefined : value, life: 1800 });
     } catch {
       // portapapeles no disponible
     }
@@ -227,7 +237,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
     }
 
     // Desestructuramos para extraer lo que no queremos procesar en el loop de FormData
-    const { items: _, totalGeneral, tasaDolar, montoDolar, ...fv } = this.paymentfForm.value as any;
+    const { items: _, totalGeneral, tasaDolar, montoDolar, acepta: __, ...fv } = this.paymentfForm.value as any;
     const fd = new FormData();
 
     // 1. Construir array de items para la API

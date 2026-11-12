@@ -118,11 +118,20 @@
     <router-outlet></router-outlet>
 </main>
 
+@if (compraPendiente()) {
+    <div class="compra-pendiente" role="status">
+        <span><i class="pi pi-shopping-cart"></i> Tienes una compra en curso · tus entradas siguen apartadas <strong>{{ tiempoCompra() }}</strong></span>
+        <button type="button" class="tm-btn tm-btn--primary tm-btn--sm" (click)="volverACompra()">Volver a mi compra <i class="pi pi-arrow-right"></i></button>
+    </div>
+}
+
 @if (inFlow()) {
     <!-- Durante la compra: sin distracciones, solo ayuda a mano -->
     <footer class="flow-footer">
         <p>
-            <i class="pi pi-lock"></i> Compra segura · ¿Dudas?
+            <i class="pi pi-lock"></i> Compra segura ·
+            <a routerLink="/legal/terminos" target="_blank">Términos</a> ·
+            <a routerLink="/legal/privacidad" target="_blank">Privacidad</a> · ¿Dudas?
             @if (whatsapp()) {
                 <a [href]="whatsapp()" target="_blank" rel="noopener noreferrer">Escríbenos por WhatsApp</a>
             } @else {
@@ -189,6 +198,11 @@
 
     <div class="tm-container footer-bottom">
         <p>© {{ year }} Mi Ternerita House. Todos los derechos reservados.</p>
+        <p class="legal-links">
+            <a routerLink="/legal/terminos">Términos y condiciones</a>
+            <a routerLink="/legal/privacidad">Privacidad</a>
+            <a routerLink="/legal/aviso-legal">Aviso legal</a>
+        </p>
         <p>Desarrollado por <a class="netsolca" href="https://www.netsolca.com.ve/" target="_blank" rel="noopener noreferrer">Netsolca</a></p>
     </div>
 </footer>
