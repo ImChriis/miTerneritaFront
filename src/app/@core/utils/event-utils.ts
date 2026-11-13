@@ -68,13 +68,10 @@ export function formatTime12(time?: string | null): string {
   return `${h % 12 || 12}:${String(m || 0).padStart(2, '0')} ${suffix}`;
 }
 
+/** Texto plano de la descripción del editor: sin etiquetas y con entidades traducidas (&#39; -> '). */
 export function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const doc = new DOMParser().parseFromString(html.replace(/<[^>]*>/g, ' '), 'text/html');
+  return (doc.body.textContent ?? '').replace(/\s+/g, ' ').trim();
 }
 
 /** Ordena por fecha ascendente (próximos primero). */
