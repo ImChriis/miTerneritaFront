@@ -1,38 +1,59 @@
 <form class="adm-form" [formGroup]="updatePaymentForm" (ngSubmit)="onSubmit()" novalidate>
-    <dl class="adm-dl">
-        <div>
-            <dt>Cliente</dt>
-            <dd>{{ name }} {{ lastName }}<small>{{ cedula }}</small></dd>
-        </div>
-        <div>
-            <dt>Evento</dt>
-            <dd>{{ event }}<small>Pagado el {{ date | date: 'dd/MM/yyyy' }}</small></dd>
-        </div>
-        <div>
-            <dt>Documento</dt>
-            <dd>{{ noDocumento }}</dd>
-        </div>
-        <div>
-            <dt>Entradas</dt>
-            <dd>{{ cantidad }}</dd>
-        </div>
-        <div>
-            <dt>Total</dt>
-            <dd>${{ total | number: '1.2-2' }}
+    <div class="rv-grid">
+        <section class="rv-card">
+            <h3><i class="pi pi-user"></i> Cliente</h3>
+            <dl>
+                <div><dt>Nombre</dt><dd>{{ name }} {{ lastName }}</dd></div>
+                <div><dt>Cédula</dt><dd>{{ cedula || '—' }}</dd></div>
+                <div><dt>Correo</dt><dd class="wrap">{{ payment.idUser?.email || '—' }}</dd></div>
+                <div><dt>Teléfono</dt><dd>{{ payment.idUser?.phone || '—' }}</dd></div>
+            </dl>
+        </section>
+
+        <section class="rv-card">
+            <h3><i class="pi pi-calendar"></i> Evento</h3>
+            <dl>
+                <div><dt>Evento</dt><dd>{{ event }}</dd></div>
+                <div><dt>Fecha</dt><dd>{{ payment.idEvents?.date | date: 'dd/MM/yyyy' }}@if (payment.idEvents?.time) { · {{ payment.idEvents.time.slice(0, 5) }}}</dd></div>
+                <div><dt>Salón</dt><dd>{{ payment.idEvents?.room || '—' }}</dd></div>
+            </dl>
+        </section>
+
+        <section class="rv-card">
+            <h3><i class="pi pi-wallet"></i> Pago</h3>
+            <dl>
+                <div><dt>Documento</dt><dd>{{ noDocumento }}</dd></div>
+                <div><dt>Método</dt><dd>{{ metodo }}</dd></div>
+                @if (referencia && banco !== 'Efectivo') {
+                    <div><dt>Referencia</dt><dd>{{ referencia }}</dd></div>
+                }
+                <div><dt>Fecha del pago</dt><dd>{{ (payment.fechaTransferencia || date) | date: 'dd/MM/yyyy' }}</dd></div>
+                <div><dt>Total</dt><dd class="fuerte">${{ total | number: '1.2-2' }}</dd></div>
                 @if (totalBs) {
-                    <small>Bs {{ totalBs }}@if (tasaDolar) { · tasa {{ tasaDolar | number: '1.2-4' }}}</small>
+                    <div><dt>En bolívares</dt><dd>Bs {{ totalBs }}@if (tasaDolar) {<small>tasa {{ tasaDolar | number: '1.2-4' }}</small>}</dd></div>
                 }
-            </dd>
-        </div>
-        <div>
-            <dt>Método</dt>
-            <dd>{{ banco === 'Efectivo' ? 'Efectivo' : 'Transferencia a ' + banco }}
-                @if (banco !== 'Efectivo' && referencia) {
-                    <small>Ref. {{ referencia }}</small>
+            </dl>
+        </section>
+    </div>
+
+    <section class="rv-card">
+        <h3><i class="pi pi-shopping-bag"></i> Lo que compró</h3>
+        <ul class="rv-lineas">
+            @for (l of entradasCompradas; track $index) {
+                <li><span class="qty">{{ l.cantidad }}×</span><span class="nombre">{{ l.nombre }}</span><span class="monto">${{ l.total | number: '1.2-2' }}</span></li>
+            }
+        </ul>
+        <p class="rv-sub">Consumo</p>
+        @if (consumo.length) {
+            <ul class="rv-lineas">
+                @for (c of consumo; track $index) {
+                    <li><span class="qty">{{ c.cantidad }}×</span><span class="nombre">{{ c.nombre }}</span><span class="monto">${{ c.total | number: '1.2-2' }}</span></li>
                 }
-            </dd>
-        </div>
-    </dl>
+            </ul>
+        } @else {
+            <p class="rv-vacio">Sin consumo pre-ordenado.</p>
+        }
+    </section>
 
     @if (banco !== 'Efectivo') {
         <section class="adm-section">

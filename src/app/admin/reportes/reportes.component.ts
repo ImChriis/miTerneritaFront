@@ -131,8 +131,9 @@ import { byDateAsc, CATEGORY_LABEL, EventCategory, formatTime12, parseEventDate 
 
     .selector {
       display: grid;
+      flex: 1 1 240px;
       gap: 4px;
-      min-width: min(100%, 280px);
+      max-width: 360px;
 
       span {
         color: var(--text-muted);
@@ -145,9 +146,32 @@ import { byDateAsc, CATEGORY_LABEL, EventCategory, formatTime12, parseEventDate 
       content: none !important;
     }
 
+    // Selector y botón en una fila a la derecha; en móvil, uno debajo del otro a todo el ancho.
     .buttons {
-      flex-wrap: wrap;
+      flex: 1 1 420px;
+      flex-wrap: nowrap;
       align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .imprimir {
+      flex: none;
+    }
+
+    @media (max-width: 640px) {
+      .buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .selector {
+        flex: none;
+        max-width: none;
+      }
+
+      .imprimir {
+        width: 100% !important;
+      }
     }
 
     .hoja-sk {

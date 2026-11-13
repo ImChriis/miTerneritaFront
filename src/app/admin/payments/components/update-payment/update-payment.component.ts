@@ -29,6 +29,24 @@ export class UpdatePaymentComponent implements OnInit, OnDestroy{
   apiImg: string = environment.apiPayments;
   apiDolar: string = environment.apiDolar;
   payment = this.dialogConfig.data.payment;
+
+  /** Entradas de la compra por tipo (sin las líneas borradas). */
+  readonly entradasCompradas = ((this.payment.paymentDetails ?? []) as any[])
+    .filter(d => !d.isDeleted)
+    .map(d => ({ nombre: d.ticket?.name ?? 'Entrada', cantidad: d.ticketNum ?? 1, total: Number(d.total ?? 0) }));
+
+  /** Comida y bebida pre-ordenadas: lo que hay que entregar en barra. */
+  readonly consumo = ((this.payment.consumeDetails ?? []) as any[]).map(c => ({
+    nombre: c.idFood?.description ?? c.idDrinks?.description ?? 'Producto',
+    cantidad: (c.foodAmount || 0) + (c.drinksAmount || 0),
+    total: Number(c.totalConsume ?? 0)
+  }));
+
+  /** "Zelle", "Efectivo" o el banco desde el que pagó (Pago Móvil / transferencia). */
+  readonly metodo: string =
+    this.payment.banco === 'Zelle' || this.payment.banco === 'Efectivo'
+      ? this.payment.banco
+      : `Bs desde ${this.payment.banco ?? '—'}`;
   selectedStatus = this.payment.status;
   name!: string;
   lastName!: string;
