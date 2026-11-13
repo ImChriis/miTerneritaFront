@@ -19,6 +19,16 @@ export class EventsService {
     return this.http.post<{ vence: string }>(`${this.api}/reservas`, { idEvents, cantidad });
   }
 
+  /** Ids de eventos agotados (SOLD OUT). Público, sin cantidades. */
+  agotados() {
+    return this.http.get<number[]>(`${this.api}/reservas/agotados`);
+  }
+
+  /** Solo personal: cupo de cada evento. */
+  disponibles() {
+    return this.http.get<Record<number, { capacidad: number; vendidas: number; apartadas: number }>>(`${this.api}/reservas/disponibles`);
+  }
+
   /** { [idEvents]: personas comprando ahora } */
   comprando() {
     return this.http.get<Record<number, number>>(`${this.api}/reservas/comprando`);

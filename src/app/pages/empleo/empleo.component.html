@@ -84,8 +84,24 @@
                 </div>
 
                 <div class="tm-field">
-                    <label class="tm-label" for="em-cv">CV en PDF <span class="tm-muted">(opcional, máx. 500 KB)</span></label>
-                    <input class="tm-input" id="em-cv" type="file" accept="application/pdf" #cvInput (change)="elegirCv(cvInput)" />
+                    <span class="tm-label" id="em-cv-label">CV en PDF <span class="tm-muted">(opcional, máx. 500 KB)</span></span>
+                    <!-- El input nativo queda oculto: su botón gris no sigue el estilo de la web -->
+                    <input class="cv-input" id="em-cv" type="file" accept="application/pdf" #cvInput (change)="elegirCv(cvInput)" aria-labelledby="em-cv-label" />
+                    @if (cv(); as archivo) {
+                        <div class="cv-elegido">
+                            <i class="pi pi-file-pdf" aria-hidden="true"></i>
+                            <span class="cv-nombre">
+                                <strong>{{ archivo.name }}</strong>
+                                <small>{{ archivo.size / 1024 | number: '1.0-0' }} KB</small>
+                            </span>
+                            <button type="button" class="cv-quitar" (click)="cvInput.value = ''; cv.set(null)" aria-label="Quitar el CV"><i class="pi pi-times"></i></button>
+                        </div>
+                    } @else {
+                        <label class="cv-elegir" for="em-cv">
+                            <i class="pi pi-upload" aria-hidden="true"></i>
+                            <span><strong>Adjuntar CV</strong><small>Solo PDF, hasta 500 KB</small></span>
+                        </label>
+                    }
                     @if (errorCv()) {
                         <p class="tm-error">{{ errorCv() }}</p>
                     }

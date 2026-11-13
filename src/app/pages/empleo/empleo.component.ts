@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +10,7 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
 /** "Trabaja con nosotros": formulario público de postulación. */
 @Component({
   selector: 'app-empleo',
-  imports: [ReactiveFormsModule, RouterLink, RevealDirective],
+  imports: [DecimalPipe, ReactiveFormsModule, RouterLink, RevealDirective],
   templateUrl: './empleo.component.html',
   styleUrl: './empleo.component.scss'
 })

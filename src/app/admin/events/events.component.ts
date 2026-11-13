@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { EventsService } from '../../@core/services/events.service';
 import { CommonModule } from '@angular/common';
-import { debounceTime, defaultIfEmpty, forkJoin, map, merge, Observable, startWith, switchMap } from 'rxjs';
+import { catchError, debounceTime, defaultIfEmpty, forkJoin, map, merge, Observable, of, startWith, switchMap } from 'rxjs';
 import { TicketsService } from '../../@core/services/tickets.service';
 import { Ticket } from '../../@core/models/ticket.model';
 import { CatalogoGridComponent, ItemCatalogo } from '../../shared/components/catalogo-grid/catalogo-grid.component';
@@ -56,9 +56,13 @@ export class EventsComponent implements OnInit{
         this.isLoading.set(true);
         this.onSeleccion([]);
         // getTickets() no emite si falla: sin el default el forkJoin no emitiría nada.
-        return forkJoin({ events: this.eventsService.getEvents(), tickets: this.ticketsService.getTickets().pipe(defaultIfEmpty([] as Ticket[])) });
+        return forkJoin({
+          events: this.eventsService.getEvents(),
+          tickets: this.ticketsService.getTickets().pipe(defaultIfEmpty([] as Ticket[])),
+          cupos: this.eventsService.disponibles().pipe(catchError(() => of({} as Record<number, { capacidad: number; vendidas: number; apartadas: number }>)))
+        });
       }),
-      map(({ events, tickets }) =>
+      map(({ events, tickets, cupos }) =>
         events.map(e => {
           const dia = parseEventDate(e.date);
           const entradas = tickets
@@ -71,11 +75,14 @@ export class EventsComponent implements OnInit{
               .filter(Boolean)
               .join(' · '),
             precio: null,
-            pie: `Aforo ${e.capacity} · Consumo ${e.consumo === 1 ? 'sí' : 'no'}`,
+            // Entradas restantes: el panel solo lo ve el personal.
+            pie: cupos[e.idEvents]
+              ? `Quedan ${Math.max(e.capacity - cupos[e.idEvents].vendidas, 0)} de ${e.capacity} · Consumo ${e.consumo === 1 ? 'sí' : 'no'}`
+              : `Aforo ${e.capacity} · Consumo ${e.consumo === 1 ? 'sí' : 'no'}`,
             entradas,
             imagen: e.flyer || e.image1,
             disponible: e.status === 1,
-            estado: e.status === 1 ? 'Activo' : 'Inactivo',
+            estado: cupos[e.idEvents] && cupos[e.idEvents].vendidas >= e.capacity ? 'SOLD OUT' : e.status === 1 ? 'Activo' : 'Inactivo',
             categoria: isPastEvent(e) ? 'Pasados' : 'Próximos',
             // Los más recientes primero
             orden: -dia.getTime(),

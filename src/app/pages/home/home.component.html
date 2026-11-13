@@ -54,8 +54,8 @@
                         </p>
 
                         <div class="slide-cta">
-                            <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" (click)="buy(ev.idEvents)">
-                                <i class="pi pi-ticket"></i> Comprar entradas
+                            <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" [class.is-soldout]="agotado(ev.idEvents)" [disabled]="agotado(ev.idEvents)" (click)="buy(ev.idEvents)">
+                                <i class="pi pi-ticket"></i> {{ agotado(ev.idEvents) ? 'SOLD OUT' : 'Comprar entradas' }}
                             </button>
                             <button type="button" class="tm-btn tm-btn--glass tm-btn--lg" (click)="goToEvent(ev.idEvents)">
                                 Ver detalles
@@ -240,8 +240,8 @@
                                             }
                                         </div>
                                         <div class="panel-actions">
-                                            <button type="button" class="tm-btn tm-btn--primary" (click)="buy(ev.idEvents)">
-                                                <i class="pi pi-ticket"></i> Comprar
+                                            <button type="button" class="tm-btn tm-btn--primary" [class.is-soldout]="agotado(ev.idEvents)" [disabled]="agotado(ev.idEvents)" (click)="buy(ev.idEvents)">
+                                                <i class="pi pi-ticket"></i> {{ agotado(ev.idEvents) ? 'SOLD OUT' : 'Comprar' }}
                                             </button>
                                             <button type="button" class="tm-btn tm-btn--glass" (click)="goToEvent(ev.idEvents)">
                                                 Detalles
@@ -335,7 +335,7 @@
                                 } @else {
                                     <span>{{ ev.room }}</span>
                                 }
-                                <button type="button" class="tm-btn tm-btn--primary tm-btn--sm" (click)="buy(ev.idEvents)">Entradas</button>
+                                <button type="button" class="tm-btn tm-btn--primary tm-btn--sm" [class.is-soldout]="agotado(ev.idEvents)" [disabled]="agotado(ev.idEvents)" (click)="buy(ev.idEvents)">{{ agotado(ev.idEvents) ? 'SOLD OUT' : 'Entradas' }}</button>
                             </div>
                         </div>
                         <a class="card-link" [routerLink]="['/home/event', ev.idEvents]" [attr.aria-label]="'Ver ' + ev.name"></a>

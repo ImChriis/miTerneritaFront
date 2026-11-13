@@ -3,6 +3,15 @@ import { environment } from '../../../environments/environment.developer';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
 
+/** GET /payment/reporte/:idEvents: ventas cobradas del evento. */
+export interface ReporteEvento {
+  evento: { idEvents: number; nombre: string; fecha: string; hora: string; salon: string | null; categoria: string; capacidad: number; vendidas: number };
+  entradas: { nombre: string; cantidad: number; total: number }[];
+  consumo: { nombre: string; tipo: string; botella: boolean; cantidad: number; total: number }[];
+  pagos: { estado: string; cantidad: number; total: number }[];
+  totales: { entradas: number; consumo: number; general: number };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +20,10 @@ export class PaymentService {
   private http = inject(HttpClient);
   private refreshPayments$ = new Subject<void>();
   public refreshPaymentsObservable$ = this.refreshPayments$.asObservable();
+
+  getReporte(idEvents: number) {
+    return this.http.get<ReporteEvento>(`${this.api}/payment/reporte/${idEvents}`);
+  }
 
    getAllPayments(){
     return this.http.get<any[]>(`${this.api}/payment`).pipe(

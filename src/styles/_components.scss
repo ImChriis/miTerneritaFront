@@ -721,3 +721,18 @@
     animation-duration: 2s;
   }
 }
+
+// Evento agotado: el botón de compra queda deshabilitado y dice SOLD OUT.
+.tm-btn.is-soldout,
+.tm-btn.is-soldout:disabled {
+  background: var(--surface-3) !important;
+  color: var(--text-muted) !important;
+  box-shadow: none !important;
+  letter-spacing: 0.08em;
+  cursor: not-allowed;
+  opacity: 1;
+
+  .pi {
+    display: none;
+  }
+}

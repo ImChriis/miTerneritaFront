@@ -445,3 +445,32 @@
     flex: 1 1 auto;
   }
 }
+
+// Cupo restante (solo personal)
+.staff-cupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+
+  strong {
+    color: var(--text);
+    font-size: 1.05rem;
+  }
+
+  .solo {
+    margin-left: auto;
+    color: var(--text-subtle);
+    font-size: 0.72rem;
+  }
+
+  &.agotado strong {
+    color: var(--danger);
+  }
+}

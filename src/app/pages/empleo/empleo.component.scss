@@ -39,3 +39,113 @@
   color: var(--success);
   font-size: 1.4rem;
 }
+
+// CV: el input nativo oculto (accesible por la etiqueta) y una tarjeta propia.
+.cv-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cv-elegir,
+.cv-elegido {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 64px;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+}
+
+.cv-elegir {
+  border: 1.5px dashed var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+
+  > .pi {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+
+  strong,
+  small {
+    display: block;
+  }
+
+  strong {
+    color: var(--text);
+  }
+
+  small {
+    font-size: 0.8rem;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--primary);
+    }
+  }
+}
+
+// Foco del input oculto visible en la tarjeta (teclado)
+.cv-input:focus-visible + .cv-elegir {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.cv-elegido {
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+
+  > .pi {
+    color: var(--danger);
+    font-size: 1.5rem;
+  }
+}
+
+.cv-nombre {
+  flex: 1;
+  min-width: 0;
+
+  strong,
+  small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+}
+
+.cv-quitar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+  }
+}

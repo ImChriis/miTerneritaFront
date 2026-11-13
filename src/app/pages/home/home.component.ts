@@ -57,6 +57,14 @@ export class HomeComponent implements OnInit {
     { initialValue: {} as Record<number, number> }
   );
 
+  /** Eventos agotados: sus botones de compra dicen SOLD OUT. */
+  private readonly agotados = toSignal(this.eventService.agotados().pipe(catchError(() => of([] as number[]))), {
+    initialValue: [] as number[]
+  });
+  agotado(id: number) {
+    return this.agotados().includes(id);
+  }
+
   readonly skeletons = [0, 1, 2, 3, 4];
 
   private raw = signal<Event[]>([]);

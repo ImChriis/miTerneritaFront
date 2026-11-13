@@ -378,3 +378,28 @@
     color: var(--text) !important;
   }
 }
+
+// Impresión desde el panel (reportes): solo el contenido, sin menú ni barra superior.
+@media print {
+  .sidebar,
+  .topbar,
+  .admin-footer,
+  .scrim,
+  p-toast {
+    display: none !important;
+  }
+
+  body,
+  .admin-content,
+  .admin-content .table {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  .main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

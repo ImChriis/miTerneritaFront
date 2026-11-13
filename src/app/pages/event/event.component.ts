@@ -3,6 +3,8 @@ import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ADDRESS, SeoService } from '../../@core/services/seo.service';
+import { AuthService } from '../../@core/services/auth.service';
+import { puedeVerPanel } from '../../@core/auth/roles';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { catchError, of } from 'rxjs';
@@ -37,6 +39,7 @@ export class EventComponent implements OnInit {
   private messageService = inject(MessageService);
   private sanitizer = inject(DomSanitizer);
   private seo = inject(SeoService);
+  private auth = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -109,6 +112,11 @@ export class EventComponent implements OnInit {
     });
   }
 
+  /** SOLD OUT: el evento ya vendió todo su aforo. */
+  readonly agotado = signal(false);
+  /** Cupo restante: solo se pide y se muestra al personal (admin y user). */
+  readonly cupo = signal<{ restantes: number; capacidad: number; apartadas: number } | null>(null);
+
   ngOnInit() {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const id = Number(params.get('id'));
@@ -134,6 +142,21 @@ export class EventComponent implements OnInit {
     });
 
     this.fotos.set([]);
+    this.agotado.set(false);
+    this.cupo.set(null);
+    this.eventsService
+      .agotados()
+      .pipe(catchError(() => of([] as number[])))
+      .subscribe(ids => this.agotado.set(ids.includes(id)));
+    if (puedeVerPanel(this.auth.getUser()?.role)) {
+      this.eventsService
+        .disponibles()
+        .pipe(catchError(() => of({} as Record<number, { capacidad: number; vendidas: number; apartadas: number }>)))
+        .subscribe(cupos => {
+          const c = cupos[id];
+          if (c) this.cupo.set({ capacidad: c.capacidad, apartadas: c.apartadas, restantes: Math.max(c.capacidad - c.vendidas - c.apartadas, 0) });
+        });
+    }
     this.eventsService
       .getPhotos(id)
       .pipe(catchError(() => of([] as EventPhoto[])))

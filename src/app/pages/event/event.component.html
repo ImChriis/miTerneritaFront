@@ -72,10 +72,20 @@
                     </li>
                 </ul>
 
+                @if (cupo(); as c) {
+                    <p class="staff-cupo" [class.agotado]="c.restantes === 0">
+                        <i class="pi pi-ticket"></i>
+                        <strong>{{ c.restantes }}</strong> de {{ c.capacidad }} entradas restantes
+                        @if (c.apartadas) {
+                            <small>({{ c.apartadas }} apartadas ahora)</small>
+                        }
+                        <small class="solo">Solo lo ve el personal</small>
+                    </p>
+                }
                 <div class="head-actions">
                     @if (!isPast()) {
-                        <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" (click)="goToEventTicket(ev.idEvents)">
-                            <i class="pi pi-ticket"></i> Comprar entradas
+                        <button type="button" class="tm-btn tm-btn--primary tm-btn--lg" [class.is-soldout]="agotado()" [disabled]="agotado()" (click)="goToEventTicket(ev.idEvents)">
+                            <i class="pi pi-ticket"></i> {{ agotado() ? 'SOLD OUT' : 'Comprar entradas' }}
                         </button>
                     }
                     <button type="button" class="tm-btn tm-btn--ghost tm-btn--lg" (click)="share()">
@@ -124,8 +134,8 @@
                                 </li>
                             }
                         </ul>
-                        <button type="button" class="tm-btn tm-btn--primary tm-btn--block" (click)="goToEventTicket(ev.idEvents)">
-                            Elegir entradas <i class="pi pi-arrow-right"></i>
+                        <button type="button" class="tm-btn tm-btn--primary tm-btn--block" [class.is-soldout]="agotado()" [disabled]="agotado()" (click)="goToEventTicket(ev.idEvents)">
+                            {{ agotado() ? 'SOLD OUT' : 'Elegir entradas' }} <i class="pi pi-arrow-right"></i>
                         </button>
                     } @else {
                         <p class="tm-muted">Las entradas para este evento estarán disponibles muy pronto.</p>
@@ -159,8 +169,8 @@
                         }
                     </p>
                     <p class="buy-date">{{ day() | date: "EEE d 'de' MMM" | capFirst }} · {{ time() }}</p>
-                    <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg" (click)="goToEventTicket(ev.idEvents)">
-                        <i class="pi pi-ticket"></i> Comprar entradas
+                    <button type="button" class="tm-btn tm-btn--primary tm-btn--block tm-btn--lg" [class.is-soldout]="agotado()" [disabled]="agotado()" (click)="goToEventTicket(ev.idEvents)">
+                        <i class="pi pi-ticket"></i> {{ agotado() ? 'SOLD OUT' : 'Comprar entradas' }}
                     </button>
                     <ul class="assurances">
                         <li><i class="pi pi-shield"></i> Pago verificado por nuestro equipo</li>
@@ -175,8 +185,8 @@
                     <small>Desde</small>
                     <strong>{{ minPrice() !== null ? '$' + (minPrice() | number: '1.0-2') : 'Muy pronto' }}</strong>
                 </div>
-                <button type="button" class="tm-btn tm-btn--primary" (click)="goToEventTicket(ev.idEvents)">
-                    <i class="pi pi-ticket"></i> Comprar entradas
+                <button type="button" class="tm-btn tm-btn--primary" [class.is-soldout]="agotado()" [disabled]="agotado()" (click)="goToEventTicket(ev.idEvents)">
+                    <i class="pi pi-ticket"></i> {{ agotado() ? 'SOLD OUT' : 'Comprar entradas' }}
                 </button>
             </div>
         }
